@@ -176,33 +176,33 @@ Decimal number: 13`
           code: `//write a program convert decimal fraction to binary fraction number
 		  #include <stdio.h>
 
-int main() {
-    float num, frac;
-    int intside, rem, i=0;
-    printf("Enter a decimal number: ");
-    scanf("%f", &num);
-    intside = (int)num;       
-    frac = num - intside;     
-    int bin[32];
-    while (intside > 0) {
-        bin[i] = intside % 2;
-        intside = intside / 2;
-        i++;
-    }
-    printf("Binary: ");
-    for (i = i - 1; i >= 0; i--) {
-        printf("%d", bin[i]);
-    }
-    printf(".");
-    for (i = 0; i < 5; i++) {
-        frac = frac * 2;
-        rem = (int)frac;
-        printf("%d", rem);
-        frac = frac - rem;
-    }
-
-    return 0;
-}
+			int main() {
+			    float num, frac;
+			    int intside, rem, i=0;
+			    printf("Enter a decimal number: ");
+			    scanf("%f", &num);
+			    intside = (int)num;       
+			    frac = num - intside;     
+			    int bin[32];
+			    while (intside > 0) {
+			        bin[i] = intside % 2;
+			        intside = intside / 2;
+			        i++;
+			    }
+			    printf("Binary: ");
+			    for (i = i - 1; i >= 0; i--) {
+			        printf("%d", bin[i]);
+			    }
+			    printf(".");
+			    for (i = 0; i < 5; i++) {
+			        frac = frac * 2;
+			        rem = (int)frac;
+			        printf("%d", rem);
+			        frac = frac - rem;
+			    }
+			
+			    return 0;
+			}
 
 `,
           output: `Enter a decimal number: 45.26
@@ -399,34 +399,34 @@ The division of two floating point numbers is 3.6480
         "Program 1": {
           code: `//write a program implement Bisection method.
 		  #include<stdio.h>
-#include<math.h>
-double f(double x){
-	return pow(x,3)-x-2;
-}
-int main(){
-	double a=1.5,b=2,c,val;
-	int max_itr,i;
-	printf("This program compute the value of root of the equation --> f(x) = x^3-x-2\n");
-	printf("Enter the value of a(approx root) and b(approx root) is  %lf , %lf\n" , a,b);
-	printf("Enter the maximum iterationn you want to perform?");
-	scanf("%d",&max_itr);
-	for(i=0;i<max_itr;i++){
-		c= (a+b)/2.0;
-		printf("The solution of %d iteration\n",i+1);
-		printf("The value of x in %d iteration: %lf\n",i+1,c);
-	
-		printf("The value of f(x) in %d iteration : %lf\n",i+1,f(c));
-		if(f(c)>0){
-			a=c;
-		}
-		else{
-			b=c;
-		}
-	}
-	printf("\n\nThe approximate root after %d iteration is x = %lf\n",max_itr,c);
-	return 0;
-	
-}
+			#include<math.h>
+			double f(double x){
+				return pow(x,3)-x-2;
+			}
+			int main(){
+				double a=1.5,b=2,c,val;
+				int max_itr,i;
+				printf("This program compute the value of root of the equation --> f(x) = x^3-x-2\n");
+				printf("Enter the value of a(approx root) and b(approx root) is  %lf , %lf\n" , a,b);
+				printf("Enter the maximum iterationn you want to perform?");
+				scanf("%d",&max_itr);
+				for(i=0;i<max_itr;i++){
+					c= (a+b)/2.0;
+					printf("The solution of %d iteration\n",i+1);
+					printf("The value of x in %d iteration: %lf\n",i+1,c);
+				
+					printf("The value of f(x) in %d iteration : %lf\n",i+1,f(c));
+					if(f(c)>0){
+						a=c;
+					}
+					else{
+						b=c;
+					}
+				}
+				printf("\n\nThe approximate root after %d iteration is x = %lf\n",max_itr,c);
+				return 0;
+				
+			}
 `,
           output: `Enter the value of a(approx root) and b(approx root) is 1.500000 2.000000 
 		  Enter the maximun iterationn you want to perform?7
@@ -1591,6 +1591,7 @@ The value of y on 0.1000 is 0.8214`
   </script>
 </body>
 </html>
+
 
 
 
