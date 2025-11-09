@@ -118,7 +118,7 @@
       "UNIT 1": {
         "Program 1": {
           code: `// write a program convert decimal to binary number
-		  #include <stdio.h>
+#include <stdio.h>
 
 int main() {
     int n, b[32], i = 0,j;
@@ -174,35 +174,35 @@ Decimal number: 13`
         },     
         "Program 3": {
           code: `//write a program convert decimal fraction to binary fraction number
-		  #include <stdio.h>
+ #include <stdio.h>
 
-			int main() {
-			    float num, frac;
-			    int intside, rem, i=0;
-			    printf("Enter a decimal number: ");
-			    scanf("%f", &num);
-			    intside = (int)num;       
-			    frac = num - intside;     
-			    int bin[32];
-			    while (intside > 0) {
-			        bin[i] = intside % 2;
-			        intside = intside / 2;
-			        i++;
-			    }
-			    printf("Binary: ");
-			    for (i = i - 1; i >= 0; i--) {
-			        printf("%d", bin[i]);
-			    }
-			    printf(".");
-			    for (i = 0; i < 5; i++) {
-			        frac = frac * 2;
-			        rem = (int)frac;
-			        printf("%d", rem);
-			        frac = frac - rem;
-			    }
+int main() {
+float num, frac;
+int intside, rem, i=0;
+printf("Enter a decimal number: ");
+scanf("%f", &num);
+intside = (int)num;       
+frac = num - intside;     
+int bin[32];
+while (intside > 0) {
+ bin[i] = intside % 2;
+ intside = intside / 2;
+ i++;
+ }
+printf("Binary: ");
+ for (i = i - 1; i >= 0; i--) {
+	 printf("%d", bin[i]);
+}
+printf(".");
+for (i = 0; i < 5; i++) {
+ frac = frac * 2;
+ rem = (int)frac;
+ printf("%d", rem);
+ frac = frac - rem;
+ }
 			
-			    return 0;
-			}
+return 0;
+}
 
 `,
           output: `Enter a decimal number: 45.26
@@ -1577,6 +1577,7 @@ The value of y on 0.1000 is 0.8214`
   </script>
 </body>
 </html>
+
 
 
 
