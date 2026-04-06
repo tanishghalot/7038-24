@@ -116,31 +116,44 @@
 
     const topicPrograms = {
       "UNIT 1": {
-        "Program 1": {
-          code: `// write a program convert decimal to binary number
-#include <stdio.h>
-
-int main() {
-    int n, b[32], i = 0,j;
-
-    printf("Enter a decimal number: ");
-    scanf("%d", &n);
-    while (n > 0) {
-        b[i] = n % 2;
-        n = n / 2;
-        i++;
-    }
-
-    printf("Binary number: ");
-    for ( j = i - 1; j >= 0; j--) {
-        printf("%d", b[j]);
-    }
-
-    return 0;
-}
-
-`,
-          output: `Enter a decimal number: 24
+        "QUERY9": {
+    "question": "SELECT JOB,SAL FROM SCOTT.EMP;",
+    "output": [
+      {"JOB": "CLERK",     "SAL": 800},
+      {"JOB": "SALESMAN",  "SAL": 1600},
+      {"JOB": "SALESMAN",  "SAL": 1250},
+      {"JOB": "MANAGER",   "SAL": 2975},
+      {"JOB": "SALESMAN",  "SAL": 1250},
+      {"JOB": "MANAGER",   "SAL": 2850},
+      {"JOB": "MANAGER",   "SAL": 2450},
+      {"JOB": "ANALYST",   "SAL": 3000},
+      {"JOB": "PRESIDENT", "SAL": 5000},
+      {"JOB": "SALESMAN",  "SAL": 1500},
+      {"JOB": "CLERK",     "SAL": 1100},
+      {"JOB": "CLERK",     "SAL": 950},
+      {"JOB": "ANALYST",   "SAL": 3000},
+      {"JOB": "CLERK",     "SAL": 1300}
+    ]
+  },
+  "QUERY10": {
+    "question": "SELECT ENAME,MGR FROM SCOTT.EMP;",
+    "output": [
+      {"ENAME": "SMITH",  "MGR": 7902},
+      {"ENAME": "ALLEN",  "MGR": 7698},
+      {"ENAME": "WARD",   "MGR": 7698},
+      {"ENAME": "JONES",  "MGR": 7839},
+      {"ENAME": "MARTIN", "MGR": 7698},
+      {"ENAME": "BLAKE",  "MGR": 7839},
+      {"ENAME": "CLARK",  "MGR": 7839},
+      {"ENAME": "SCOTT",  "MGR": 7566},
+      {"ENAME": "KING",   "MGR": null},
+      {"ENAME": "TURNER", "MGR": 7698},
+      {"ENAME": "ADAMS",  "MGR": 7788},
+      {"ENAME": "JAMES",  "MGR": 7698},
+      {"ENAME": "FORD",   "MGR": 7566},
+      {"ENAME": "MILLER", "MGR": 7782}
+    ]
+  }
 
 Binary number: 11000`
         },
