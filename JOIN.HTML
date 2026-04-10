@@ -331,6 +331,155 @@
   ]
 },
 {
+  "question": "Display employees who earn more than at least one manager.",
+  "sql": "SELECT ENAME FROM SCOTT.EMP WHERE SAL > (SELECT MIN(E1.SAL) FROM SCOTT.EMP E1, SCOTT.EMP E2 WHERE E1.EMPNO = E2.MGR);",
+  "output": [
+    ["ENAME"],
+    ["ALLEN"],
+    ["WARD"],
+    ["JONES"],
+    ["MARTIN"],
+    ["BLAKE"],
+    ["CLARK"],
+    ["SCOTT"],
+    ["KING"],
+    ["TURNER"],
+    ["FORD"]
+  ]
+},
+{
+  "question": "Display employees who share same job and department.",
+  "sql": "SELECT E1.ENAME, E1.JOB FROM SCOTT.EMP E1, SCOTT.EMP E2 WHERE E1.JOB = E2.JOB AND E1.EMPNO <> E2.EMPNO AND E1.DEPTNO = E2.DEPTNO;",
+  "output": [
+    ["ENAME","JOB"],
+    ["ALLEN","SALESMAN"],
+    ["WARD","SALESMAN"],
+    ["MARTIN","SALESMAN"],
+    ["TURNER","SALESMAN"],
+    ["SMITH","CLERK"],
+    ["ADAMS","CLERK"]
+  ]
+},
+{
+  "question": "Display employees working in same department as their manager.",
+  "sql": "SELECT E1.ENAME FROM SCOTT.EMP E1, SCOTT.EMP E2 WHERE E1.MGR = E2.EMPNO AND E1.DEPTNO = E2.DEPTNO;",
+  "output": [
+    ["ENAME"],
+    ["SMITH"],
+    ["ALLEN"],
+    ["WARD"],
+    ["MARTIN"],
+    ["TURNER"],
+    ["JAMES"]
+  ]
+},
+{
+  "question": "Display employees whose manager works in a different department.",
+  "sql": "SELECT E1.ENAME FROM SCOTT.EMP E1, SCOTT.EMP E2 WHERE E1.MGR = E2.EMPNO AND E1.DEPTNO <> E2.DEPTNO;",
+  "output": [
+    ["ENAME"],
+    ["JONES"],
+    ["BLAKE"],
+    ["CLARK"],
+    ["SCOTT"],
+    ["ADAMS"],
+    ["FORD"],
+    ["MILLER"]
+  ]
+},
+{
+  "question": "Display employees who are highest paid in their department.",
+  "sql": "SELECT E1.ENAME FROM SCOTT.EMP E1 WHERE E1.SAL = (SELECT MAX(E2.SAL) FROM SCOTT.EMP E2 WHERE E1.DEPTNO = E2.DEPTNO);",
+  "output": [
+    ["ENAME"],
+    ["KING"],
+    ["SCOTT"],
+    ["FORD"],
+    ["BLAKE"]
+  ]
+},
+{
+  "question": "Display employees earning more than their department average.",
+  "sql": "SELECT E1.ENAME FROM SCOTT.EMP E1 WHERE SAL > (SELECT AVG(E2.SAL) FROM SCOTT.EMP E2 WHERE E1.DEPTNO = E2.DEPTNO);",
+  "output": [
+    ["ENAME"],
+    ["ALLEN"],
+    ["JONES"],
+    ["BLAKE"],
+    ["CLARK"],
+    ["SCOTT"],
+    ["KING"],
+    ["FORD"]
+  ]
+},
+{
+  "question": "Display employees not assigned to any department.",
+  "sql": "SELECT ENAME FROM SCOTT.EMP E, SCOTT.DEPT D WHERE E.DEPTNO = D.DEPTNO(+) AND D.DNAME IS NULL;",
+  "output": [
+    ["ENAME"]
+  ]
+},
+{
+  "question": "Display employees not assigned to any department.",
+  "sql": "SELECT ENAME FROM SCOTT.EMP E, SCOTT.DEPT D WHERE E.DEPTNO = D.DEPTNO(+) AND D.DNAME IS NULL;",
+  "output": [
+    ["ENAME"]
+  ]
+},
+{
+  "question": "Display all departments with employees (even if no employees).",
+  "sql": "SELECT DNAME, ENAME FROM SCOTT.EMP E, SCOTT.DEPT D WHERE E.DEPTNO(+) = D.DEPTNO;",
+  "output": [
+    ["DNAME","ENAME"],
+    ["ACCOUNTING","CLARK"],
+    ["ACCOUNTING","KING"],
+    ["ACCOUNTING","MILLER"],
+    ["RESEARCH","SMITH"],
+    ["RESEARCH","JONES"],
+    ["RESEARCH","SCOTT"],
+    ["RESEARCH","ADAMS"],
+    ["RESEARCH","FORD"],
+    ["SALES","ALLEN"],
+    ["SALES","WARD"],
+    ["SALES","MARTIN"],
+    ["SALES","BLAKE"],
+    ["SALES","TURNER"],
+    ["SALES","JAMES"],
+    ["OPERATIONS",null]
+  ]
+},
+{
+  "question": "Display all employees with department name (even if no department).",
+  "sql": "SELECT DNAME, ENAME FROM SCOTT.EMP E, SCOTT.DEPT D WHERE E.DEPTNO = D.DEPTNO(+);",
+  "output": [
+    ["DNAME","ENAME"],
+    ["RESEARCH","SMITH"],
+    ["SALES","ALLEN"],
+    ["SALES","WARD"],
+    ["RESEARCH","JONES"],
+    ["SALES","MARTIN"],
+    ["SALES","BLAKE"],
+    ["ACCOUNTING","CLARK"],
+    ["RESEARCH","SCOTT"],
+    ["ACCOUNTING","KING"],
+    ["SALES","TURNER"],
+    ["RESEARCH","ADAMS"],
+    ["SALES","JAMES"],
+    ["RESEARCH","FORD"],
+    ["ACCOUNTING","MILLER"]
+  ]
+},
+{
+  "question": "Display employees whose manager works in department 10.",
+  "sql": "SELECT E1.ENAME FROM SCOTT.EMP E1, SCOTT.EMP E2 WHERE E1.MGR = E2.EMPNO AND E2.DEPTNO = 10;",
+  "output": [
+    ["ENAME"],
+    ["JONES"],
+    ["BLAKE"],
+    ["CLARK"]
+  ]
+},
+{
   "question": "Display employees whose department location is DALLAS.",
   "sql": "SELECT ENAME FROM SCOTT.EMP E, SCOTT.DEPT D WHERE D.LOC = 'DALLAS' AND E.DEPTNO = D.DEPTNO;",
   "output": [
