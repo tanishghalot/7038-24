@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Topic Page</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #DEF2F1;
+      padding: 20px;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      padding: 15px;
+      border: 1px solid black;
+      border-radius: 15px;
+      font-size: 26px;
+      font-weight: bold;
+      background: #78E7E0 ;
+      color: #17252a;
+      margin-bottom: 30px;
+    }
+
+    /* Query Box */
+    .query-box {
+      background: #DEF2F1;
+      border: 0px solid black;
+      border-radius: 15px;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+
+    .query-title {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    button {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 15px;
+      background: #78E7E0 ;
+      color: black;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #2B7A78;
+    }
+
+    /* Answer Section */
+    .answer {
+      display: none;
+      margin-top: 15px;
+      border-top: 2px solid black;
+      padding-top: 10px;
+    }
+
+    .answer-container {
+      display: flex;
+      gap: 20px;
+    }
+
+    .query-code {
+      width: 50%;
+      background: #DEF2F1;
+      padding: 10px;
+      border: 1px solid black;
+      border-radius: 5px;
+      font-family: monospace;
+    }
+
+    .output {
+      width: 50%;
+      background: #DEF2F1;
+      padding: 10px;
+      border: 1px solid black;
+      border-radius: 5px;
+      font-family: monospace;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      border-radius: 5px;
+    }
+
+    th, td {
+      border: 1px solid black;
+      border-radius: 5px;
+      padding: 6px;
+      text-align: center;
+    }
+
+    /* Responsive */
+    @media (max-width: 700px) {
+      .answer-container {
+        flex-direction: column;
+      }
+
+      .query-code, .output {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Topic Title -->
+  <div class="header" id="VIEW">
+    VIEWS
+  </div>
+
+  <!-- Query List -->
+  <div id="queryList"></div>
+
+  <script>
+    // SAMPLE DATA (EDIT THIS)
+    const topicData = {
+      title: "VIRTUAL TABLE",
+      queries: [
+        {
+question : "Create a view to display employee name, salary, and department number from EMP table. (VIEW – EMP TABLE)",
+sql:` CREATE VIEW EMPTABLE AS SELECT ENAME , SAL, DEPTNO FROM EMP;`,
+output:`SQL> CREATE VIEW EMPTABLE AS SELECT ENAME , SAL, DEPTNO FROM EMP
+
+
+
+View EMPTABLE created. `
+},
+{
+question : "Create a view to display employee name and department name by joining EMP and DEPT tables. (VIEW – EMP + DEPT JOIN)",
+sql:`CREATE VIEW  EMP__DEPT  AS SELECT ENAME , DEPTNAME FROM EMP E,DEPT D WHERE E.DEPTNO = D.DEPTNO; `,
+output:` SQL> CREATE VIEW  EMP__DEPT  AS SELECT ENAME , DNAME FROM EMP E,DEPT D WHERE E.DEPTNO = D.DEPTNO
+
+
+
+View EMP__DEPT created.`
+},
+{
+question : "Create a view to display employees working in department 10. (VIEW – FILTER CONDITION)",
+sql:` CREATE VIEW FILTER_EMP AS SELECT ENAME FROM EMP WHERE DEPTNO = 10;
+`,
+output:`SQL> CREATE VIEW FILTER_EMP AS SELECT ENAME FROM EMP WHERE DEPTNO = 10
+
+
+
+View FILTER_EMP created. `
+},
+{
+question : "Create a view to display employee name, job, and annual salary (SAL * 12). (VIEW – CALCULATED COLUMN)",
+sql:`CREATE VIEW CALEMP AS SELECT ENAME , JOB , SAL*12 AS ANNUAL_SAL FROM EMP;
+ `,
+output:`SQL> CREATE VIEW CALEMP AS SELECT ENAME , JOB , SAL*12 AS ANNUAL_SAL FROM EMP
+
+
+
+View CALEMP created.`
+},
+{
+question : "Create a view to display department name and location from DEPT table. (VIEW – DEPT TABLE)",
+sql:` CREATE VIEW DEPTVIEW AS SELECT DNAME , LOC FROM DEPT;
+`,
+output:` SQL> CREATE VIEW DEPTVIEW AS SELECT DNAME , LOC FROM DEPT
+
+
+
+View DEPTVIEW created.`
+},
+{
+question : "Create a view to display employee name, department name, and location. (VIEW – JOIN EMP & DEPT)",
+sql:` CREATE OR REPLACE VIEW EMP_DEPT AS SELECT ENAME,DNAME ,LOC FROM EMP E,DEPT D WHERE E.DEPTNO = D.DEPTNO;
+`,
+output:`SQL> CREATE VIEW DEPTVIEW AS SELECT DNAME , LOC FROM DEPT
+
+
+
+View DEPTVIEW created. `
+},
+{
+question : "Create a view to display employees earning more than 3000. (VIEW – CONDITION)",
+sql:`CREATE OR REPLACE VIEW EARING_EMP AS SELECT ENAME , SAL FROM EMP WHERE SAL>3000;
+ `,
+output:` SQL> CREATE OR REPLACE VIEW EARING_EMP AS SELECT ENAME , SAL FROM EMP WHERE SAL>3000
+
+
+
+View EARING_EMP created.`
+},
+{
+question : "Create a view to display department-wise total salary using EMP table. (VIEW – GROUP FUNCTION)",
+sql:`CREATE OR REPLACE VIEW GROUP_EMP AS SELECT DEPTNO,SUM(SAL) AS TOTAL_SALARY FROM EMP GROUP BY DEPTNO;
+ `,
+output:`SQL> CREATE OR REPLACE VIEW GROUP_EMP AS SELECT DEPTNO,SUM(SAL) AS TOTAL_SALARY FROM EMP GROUP BY DEPTNO
+
+
+
+View GROUP_EMP created. `
+},
+{
+question : "Create a view to display only managers (JOB = 'MANAGER'). (VIEW – FILTER)",
+sql:` CREATE OR REPLACE VIEW FILTER AS SELECT * FROM EMP WHERE JOB = 'MANAGER';
+`,
+output:`SQL> CREATE OR REPLACE VIEW FILTER AS SELECT * FROM EMP WHERE JOB = 'MANAGER'
+
+
+
+View FILTER created. `
+},
+{
+question : "Create a view with column aliases for employee name and salary. (VIEW – ALIASING)",
+sql:` CREATE OR REPLACE VIEW ALIASING AS SELECT ENAME AS EMPLOYEE_NAME , SAL AS SALARY FROM EMP;
+`,
+output:`SQL> CREATE OR REPLACE VIEW ALIASING AS SELECT ENAME AS EMPLOYEE_NAME , SAL AS SALARY FROM EMP
+
+
+
+View ALIASING created.`
+},
+{
+question : "Create a view for employees in department 20 with WITH CHECK OPTION. (WITH CHECK OPTION – EMP)",
+sql:`CREATE OR REPLACE VIEW CHECK_EMP AS SELECT * FROM EMP WHERE DEPTNO = 20 WITH CHECK OPTION;
+ `,
+output:`SQL> CREATE OR REPLACE VIEW CHECK_EMP AS SELECT * FROM EMP WHERE DEPTNO = 20 WITH CHECK OPTION
+
+
+
+View CHECK_EMP created. `
+},
+{
+question : "Insert a new employee into the above view with department 20. (WITH CHECK OPTION – VALID INSERT)",
+sql:`INSERT INTO CHECK_EMP VALUES(7055,'LISA','CLERK',NULL,'01-JAN-1982',2000,NULL,20);
+ `,
+output:` SQL> INSERT INTO CHECK_EMP VALUES(7055,'LISA','CLERK',NULL,'01-JAN-1982',2000,NULL,20)
+
+
+
+1 row inserted.`
+},
+{
+question : "Try inserting an employee with department 30 into the same view. (WITH CHECK OPTION – INVALID INSERT)",
+sql:` INSERT INTO CHECK_EMP VALUES(7065,'TILSA','CLERK',NULL,'01-JAN-1952',2000,NULL,30);
+`,
+output:`SQL> INSERT INTO CHECK_EMP VALUES(7065,'TILSA','CLERK',NULL,'01-JAN-1952',2000,NULL,30)
+
+ORA-01402: view WITH CHECK OPTION where-clause violation `
+},
+{
+question : "Update department number through the view from 20 to 30. What happens? (WITH CHECK OPTION – UPDATE RESTRICTION)",
+sql:`CREATE OR REPLACE VIEW emp_view AS SELECT * FROM emp WHERE deptno = 20 WITH CHECK OPTION;
+ `,
+output:`SQL> CREATE OR REPLACE VIEW emp_view AS SELECT * FROM emp WHERE deptno = 20 WITH CHECK OPTION
+
+
+
+View EMP_VIEW created. `
+},
+{
+question : "Create a view for employees with salary > 2000 and enforce condition using WITH CHECK OPTION. (WITH CHECK OPTION – SALARY CONDITION)",
+sql:`CREATE OR REPLACE VIEW CHECK_SAL_EMP AS SELECT * FROM EMP WHERE SAL>2000 WITH CHECK OPTION;
+ `,
+output:`SQL> CREATE OR REPLACE VIEW CHECK_SAL_EMP AS SELECT * FROM EMP WHERE SAL>2000 WITH CHECK OPTION
+
+
+
+View CHECK_SAL_EMP created. `
+},
+{
+question : "Create a READ ONLY view to display employee details. (READ ONLY VIEW – EMP)",
+sql:`CREATE OR REPLACE VIEW READ_EMP AS SELECT * FROM EMP WITH READ ONLY;
+ `,
+output:`SQL> CREATE OR REPLACE VIEW READ_EMP AS SELECT * FROM EMP WITH READ ONLY
+
+
+
+View READ_EMP created. `
+},
+{
+question : "Create a READ ONLY view to display employee name and department name. (READ ONLY VIEW – JOIN EMP & DEPT)",
+sql:`CREATE OR REPLACE VIEW READ_EMPDEPT AS SELECT ENAME , DNAME FROM EMP E,DEPT D WHERE E.DEPTNO = D.DEPTNO WITH READ ONLY;
+ `,
+output:`SQL> CREATE OR REPLACE VIEW READ_EMPDEPT AS SELECT ENAME , DNAME FROM EMP E,DEPT D WHERE E.DEPTNO = D.DEPTNO WITH READ ONLY
+
+
+
+View READ_EMPDEPT created. `
+},
+{
+question : "Try updating salary through a READ ONLY view. (READ ONLY VIEW – UPDATE RESTRICTION)",
+sql:` UPDATE READ_EMP SET SAL = 3000 WHERE SAL<2800;`,
+output:`SQL> UPDATE READ_EMP SET SAL = 3000 WHERE SAL<2800
+
+ORA-42399: cannot perform a DML operation on a read-only view `
+},
+{
+question : "Try inserting a new employee through a READ ONLY view. (READ ONLY VIEW – INSERT RESTRICTION)",
+sql:` INSERT INTO READ_EMP VALUES(7028,'ABCD','GROUPSS',NULL,'01-JAN-1932',2999,NULL,10);
+`,
+output:` SQL> INSERT INTO READ_EMP VALUES(7028,'ABCD','GROUPSS',NULL,'01-JAN-1932',2999,NULL,10)
+
+ORA-42399: cannot perform a DML operation on a read-only view`
+},
+{
+question : "Create a READ ONLY view for employees in department 10. (READ ONLY VIEW – FILTER)",
+sql:` CREATE OR REPLACE VIEW READ_EMP_DEPTNO AS SELECT * FROM EMP WHERE DEPTNO = 10 WITH READ ONLY;
+`,
+output:` SQL> CREATE OR REPLACE VIEW READ_EMP_DEPTNO AS SELECT * FROM EMP WHERE DEPTNO = 10 WITH READ ONLY
+
+
+
+View READ_EMP_DEPTNO created.`
+}
+
+
+
+
+      ]
+    };
+
+    // Set Title
+    document.getElementById("VIEW").innerText = topicData.title;
+
+    const container = document.getElementById("queryList");
+
+    // Create Queries
+    topicData.queries.forEach((q, index) => {
+      const div = document.createElement("div");
+      div.className = "query-box";
+
+      div.innerHTML = `
+        <div class="query-title">
+          (${index + 1}) ${q.question}
+        </div>
+
+        <button onclick="toggleAnswer(${index})">
+          Show Answer
+        </button>
+
+        <div class="answer" id="answer-${index}">
+          <div class="answer-container">
+            
+            <div class="query-code">
+              <PRE>${q.sql}</PRE>
+            </div>
+
+            <div class="output">
+              <PRE>${q.output}</PRE>
+            </div>
+
+          </div>
+        </div>
+      `;
+
+      container.appendChild(div);
+    });
+
+    // Toggle Answer
+    function toggleAnswer(index) {
+      const ans = document.getElementById(`answer-${index}`);
+      ans.style.display = ans.style.display === "block" ? "none" : "block";
+    }
+
+  </script>
+
+</body>
+</html>

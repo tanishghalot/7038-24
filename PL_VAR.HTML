@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Topic Page</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #DEF2F1;
+      padding: 20px;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      padding: 15px;
+      border: 1px solid black;
+      border-radius: 15px;
+      font-size: 26px;
+      font-weight: bold;
+      background: #78E7E0 ;
+      color: #17252a;
+      margin-bottom: 30px;
+    }
+
+    /* Query Box */
+    .query-box {
+      background: #DEF2F1;
+      border: 0px solid black;
+      border-radius: 15px;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+
+    .query-title {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    button {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 15px;
+      background: #78E7E0 ;
+      color: black;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #2B7A78;
+    }
+
+    /* Answer Section */
+    .answer {
+      display: none;
+      margin-top: 15px;
+      border-top: 2px solid black;
+      padding-top: 10px;
+    }
+
+    .answer-container {
+      display: flex;
+      gap: 20px;
+    }
+
+    .query-code {
+      width: 50%;
+      background: #DEF2F1;
+      padding: 10px;
+      border: 1px solid black;
+      border-radius: 5px;
+      font-family: monospace;
+    }
+
+    .output {
+      width: 50%;
+      background: #DEF2F1;
+      padding: 10px;
+      border: 1px solid black;
+      border-radius: 5px;
+      font-family: monospace;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      border-radius: 5px;
+    }
+
+    th, td {
+      border: 1px solid black;
+      border-radius: 5px;
+      padding: 6px;
+      text-align: center;
+    }
+
+    /* Responsive */
+    @media (max-width: 700px) {
+      .answer-container {
+        flex-direction: column;
+      }
+
+      .query-code, .output {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Topic Title -->
+  <div class="header" id="PLOUT">
+    PL:OUTPUT,VARIABLE,DATATYPE
+  </div>
+
+  <!-- Query List -->
+  <div id="queryList"></div>
+
+  <script>
+    // SAMPLE DATA (EDIT THIS)
+    const topicData = {
+      title: "PL :OUTPUT,VARIABLE,DATATYPE",
+      queries: [
+        {
+  "question": "Write a PL/SQL block to print your name and city in two separate lines. (Output Statement)",
+  "sql": `BEGIN
+    DBMS_OUTPUT.PUT_LINE('TANISH KUMAR');
+    DBMS_OUTPUT.PUT_LINE('CHANDIGARH');
+    
+END;`,
+  "output": "TANISH KUMAR\nCHANDIGARH"
+},
+{
+  "question": "Write a PL/SQL block to display numbers from 1 to 5 using DBMS_OUTPUT.PUT_LINE. (Output Statement)",
+  "sql": `BEGIN
+    DBMS_OUTPUT.PUT_LINE('1 ');
+    DBMS_OUTPUT.PUT_LINE('2');
+    DBMS_OUTPUT.PUT_LINE('3');
+    DBMS_OUTPUT.PUT_LINE('4');
+    DBMS_OUTPUT.PUT_LINE('5');
+    
+END;`,
+  "output": "1\n2\n3\n4\n5"
+},
+{
+  "question": "Write a PL/SQL block to print the current system date. (Output Statement)",
+  "sql": `BEGIN
+    DBMS_OUTPUT.PUT_LINE('CURRENT SYSTEM DATE :'||SYSDATE);
+END;`,
+  "output": "CURRENT SYSTEM DATE :08-APR-26"
+},
+{
+  "question": "Write a PL/SQL block to display employee name and salary (use variables). (Output + Variables)",
+  "sql": `DECLARE
+ENAME VARCHAR2(30);
+SALARY NUMBER(4);
+BEGIN
+    ENAME := &ENAME;
+    SALARY := &SALARY;
+    DBMS_OUTPUT.PUT_LINE('EMPLOYEE NAME:'||ENAME);
+    DBMS_OUTPUT.PUT_LINE('EMPLOYEE SALARY:'||SALARY);
+END;`,
+  "output": "EMPLOYEE NAME: <user TANISH\nEMPLOYEE SALARY: 5000"
+},
+{
+  "question": "Write a PL/SQL block to declare a variable and assign your age, then display it. (Variables)",
+  "sql": `DECLARE
+AGE NUMBER(2);
+BEGIN
+    AGE := &AGE;
+    DBMS_OUTPUT.PUT_LINE('AGE :'||AGE);
+END;`,
+  "output": "AGE: 21"
+},
+{
+  "question": "Write a PL/SQL block to declare two variables and print their sum. (Variables)",
+  "sql": `DECLARE
+X NUMBER;
+Y NUMBER;
+BEGIN
+    X := &ENTER;
+    Y := &ENTER;
+    DBMS_OUTPUT.PUT_LINE('SUM OF TWO NUMBER :'||X+Y);
+END;`,
+  "output": "SUM OF TWO NUMBER: 8"
+},
+{
+  "question": "Write a PL/SQL block to store employee name and salary in variables and display them. (Variables)",
+  "sql": `DECLARE
+ENAME VARCHAR2(20);
+SAL NUMBER(4);
+BEGIN
+    ENAME := 'RAHUL YADAV';
+    SAL := 2500;
+    DBMS_OUTPUT.PUT_LINE('EMPLOYEE NAME:'||ENAME);
+    DBMS_OUTPUT.PUT_LINE('EMPLOYEE SALARY:'||SAL);
+END;`,
+  "output": "EMPLOYEE NAME: RAHUL YADAV\nEMPLOYEE SALARY: 2500"
+},
+{
+  "question": "Write a PL/SQL block to swap two numbers using variables. (Variables)",
+  "sql": `DECLARE
+X NUMBER(2);
+Y NUMBER(2);
+BEGIN
+    X := &X;
+    Y := &Y;
+    DBMS_OUTPUT.PUT_LINE('NUMBERS BEFORE SWAPING:'||X||Y);
+    X := X-Y;
+    Y := X+Y;
+    X := Y-X;
+    DBMS_OUTPUT.PUT_LINE('NUMBERS AFTER SWAPING:'||X||Y);
+END;`,
+  "output": "NUMBERS BEFORE SWAPING:57\NNUMBERS AFTER SWAPING:75"
+},
+{
+  "question": "Write a PL/SQL block to calculate area of a rectangle using variables. (Variables)",
+  "sql": `DECLARE
+L NUMBER(2);
+B NUMBER(2);
+BEGIN
+    L := &LENGTH;
+    B := &BREATH;
+    DBMS_OUTPUT.PUT_LINE('AREA OF RECTANGLE  :'||L*B);
+END;`,
+  "output": "AREA OF RECTANGLE: 15"
+},
+{
+  "question": "Write a PL/SQL block to declare a constant value for PI and calculate area of a circle. (Constants)",
+  "sql": `DECLARE
+PI CONSTANT NUMBER :=3.14;
+R NUMBER(2);
+BEGIN
+    R := &RADIUS;
+    DBMS_OUTPUT.PUT_LINE('AREA OF CIRCLE  :'||PI*R*R);
+END;`,
+  "output": "AREA OF CIRCLE: 78.5"
+},
+{
+   "question": "Write a PL/SQL block to declare a constant tax rate and calculate total salary after tax. (Constants)",
+  "sql": `DECLARE
+    TRATE CONSTANT NUMBER := 0.18;
+    S NUMBER(5);
+BEGIN
+    S := &SALARY;
+    DBMS_OUTPUT.PUT_LINE('TOTAL SALARY AFTER TAX : ' || (S - (TRATE * S)));
+END;`,
+  "output": "TOTAL SALARY AFTER TAX: 3690"
+},
+{
+    "question": "Write a PL/SQL block where constant value cannot be changed (try modifying and observe error). (Constants)",
+  "sql": `DECLARE
+M CONSTANT NUMBER := 25;
+B NUMBER(2);
+BEGIN
+    B := &NUMBER;
+    M := B;
+    DBMS_OUTPUT.PUT_LINE('VALUE OF CONSTANT AFTER MODIFYING:'||M);
+END;`,
+  "output": "Error: cannot assign value to constant"
+},
+{
+    "question": "Write a PL/SQL block to calculate simple interest using constant rate of interest. (Constants)",
+  "sql": `DECLARE
+RATE CONSTANT NUMBER := 0.1;
+P NUMBER(6);
+T NUMBER(2);
+BEGIN
+    P := &PRINCIPAL_AMOUNT;
+    T := &TIME;
+    DBMS_OUTPUT.PUT_LINE('SIMPLE INTEREST ON GIVEN DATA :'||(P*RATE*T));
+END;`,
+  "output": "SIMPLE INTEREST ON GIVEN DATA :200"
+},
+{
+   "question": "Write a PL/SQL block using different datatypes: NUMBER, VARCHAR2, DATE. (Datatypes)",
+  "sql": `DECLARE
+N NUMBER := 10;
+V VARCHAR2(20) := 'HELLO';
+D DATE := SYSDATE;
+BEGIN 
+    DBMS_OUTPUT.PUT_LINE(N||' '||V||' '||D);
+END;`,
+  "output": "10, 'HELLO' and 08-APR-26"
+},
+{
+    "question": "Write a PL/SQL block to declare a variable using %TYPE from EMP table salary column. (Datatypes)",
+  "sql": `DECLARE
+s scott.emp.sal%type;
+
+BEGIN
+    select sal into s from scott.emp where ename = 'KING';
+    DBMS_OUTPUT.PUT_LINE(s);
+END;`,
+  "output": "5000"
+},
+{
+    "question": "Write a PL/SQL block to declare a record using %ROWTYPE and display employee details. (Datatypes)",
+  "sql": `DECLARE
+R scott.emp%rowtype;
+
+BEGIN
+    select * into r from scott.emp where ename = 'KING';
+    DBMS_OUTPUT.PUT_LINE(r.job);
+END;`,
+  "output": "PRESIDENT"
+},
+{
+    "question": "Write a PL/SQL block to store and display current date using DATE datatype. (Datatypes)",
+  "sql": `DECLARE
+  d date;
+BEGIN
+    d := sysdate;
+    DBMS_OUTPUT.PUT_LINE(d);
+END;`,
+  "output": "08-APR-26"
+},
+{
+    "question": "Write a PL/SQL block to convert number to string and display it. (Datatypes + Conversion)",
+  "sql": `DECLARE
+  d number;
+BEGIN
+    d := '100';
+    DBMS_OUTPUT.PUT_LINE(d);
+END; `,
+  "output": "100"
+},
+{
+    "question": "Write a PL/SQL block using variables, constants, and output statement together. (Combined Concepts)",
+  "sql": `DECLARE
+  num number;
+  c constant number;
+BEGIN
+    num := 20;
+    c := 30;
+    DBMS_OUTPUT.PUT_LINE(num || c);
+END; `,
+  "output": "2030"
+},
+{
+    "question": "Write a PL/SQL block to display employee details using %ROWTYPE, constants, and comments. (Combined Concepts)",
+  "sql": `
+DECLARE 
+R SCOTT.EMP%ROWTYPE; 
+BONUS CONSTANT NUMBER := 0.1; 
+BEGIN 
+    SELECT * INTO R FROM SCOTT.EMP WHERE ENAME='KING'; 
+    DBMS_OUTPUT.PUT_LINE(R.ENAME || ' ' || R.SAL*BONUS); 
+END;`,
+  "output": "salary bonus :450"
+},
+{
+    "question": "Write a PL/SQL block to calculate bonus (10% of salary) and display result using proper comments. (Variables + Output + Comments)",
+  "sql": `DECLARE
+    sal number(4);
+    bonus constant number := 0.1;
+BEGIN
+    -- user salary in integer
+    sal := &salary;
+    DBMS_OUTPUT.PUT_LINE('salary bonus :'||sal*bonus);
+END`,
+  "output": "SALARY BONUS: 500"
+},
+{
+    "question": "Write a PL/SQL block that uses all concepts: variable, constant, datatype, and output. (Full Practice)",
+  "sql": `DECLARE
+    rate constant number:= 0.15;
+    salary number := 5000;
+    bonus number;
+BEGIN
+    -- user salary in integer
+    bonus := salary*rate;
+    -- output
+    DBMS_OUTPUT.PUT_LINE('salary bonus :'||bonus);
+END; `,
+  "output": "SALARY BONUS: 750"
+}
+      ]
+    };
+
+    // Set Title
+    document.getElementById("PLOUT").innerText = topicData.title;
+
+    const container = document.getElementById("queryList");
+
+    // Create Queries
+    topicData.queries.forEach((q, index) => {
+      const div = document.createElement("div");
+      div.className = "query-box";
+
+      div.innerHTML = `
+        <div class="query-title">
+          (${index + 1}) ${q.question}
+        </div>
+
+        <button onclick="toggleAnswer(${index})">
+          Show Answer
+        </button>
+
+        <div class="answer" id="answer-${index}">
+          <div class="answer-container">
+            
+            <div class="query-code">
+              <pre>${q.sql}</pre>
+            </div>
+
+            <div class="output">
+              ${q.output}
+            </div>
+
+          </div>
+        </div>
+      `;
+
+      container.appendChild(div);
+    });
+
+    // Toggle Answer
+    function toggleAnswer(index) {
+      const ans = document.getElementById(`answer-${index}`);
+      ans.style.display = ans.style.display === "block" ? "none" : "block";
+    }
+
+  </script>
+
+</body>
+</html>

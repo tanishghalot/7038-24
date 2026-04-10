@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Topic Page</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #DEF2F1;
+      padding: 20px;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      padding: 15px;
+      border: 1px solid black;
+      border-radius: 15px;
+      font-size: 26px;
+      font-weight: bold;
+      background: #78E7E0 ;
+      color: #17252a;
+      margin-bottom: 30px;
+    }
+
+    /* Query Box */
+    .query-box {
+      background: #DEF2F1;
+      border: 0px solid black;
+      border-radius: 15px;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+
+    .query-title {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    button {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 15px;
+      background: #78E7E0 ;
+      color: black;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #2B7A78;
+    }
+
+    /* Answer Section */
+    .answer {
+      display: none;
+      margin-top: 15px;
+      border-top: 2px solid black;
+      padding-top: 10px;
+    }
+
+    .answer-container {
+      display: flex;
+      gap: 20px;
+    }
+
+    .query-code {
+      width: 50%;
+      background: #DEF2F1;
+      padding: 10px;
+      border: 1px solid black;
+      border-radius: 5px;
+      font-family: monospace;
+    }
+
+    .output {
+      width: 50%;
+      background: #DEF2F1;
+      padding: 10px;
+      border: 1px solid black;
+      border-radius: 5px;
+      font-family: monospace;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      border-radius: 5px;
+    }
+
+    th, td {
+      border: 1px solid black;
+      border-radius: 5px;
+      padding: 6px;
+      text-align: center;
+    }
+
+    /* Responsive */
+    @media (max-width: 700px) {
+      .answer-container {
+        flex-direction: column;
+      }
+
+      .query-code, .output {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Topic Title -->
+  <div class="header" id="PLIF">
+    PL:OUTPUT,VARIABLE,DATATYPE
+  </div>
+
+  <!-- Query List -->
+  <div id="queryList"></div>
+
+  <script>
+    // SAMPLE DATA (EDIT THIS)
+    const topicData = {
+      title: "PL :IF,ELSIF",
+      queries: [
+        {
+  question: "Write a PL/SQL block to check if a number is positive. (IF Statement)",
+sql : `DECLARE
+    N NUMBER;
+BEGIN
+    N := &NUMERICAL_VALUE;
+    IF N >= 0 THEN
+        DBMS_OUTPUT.PUT_LINE('THE ENTERED NUMBER IS POSTIVE ');
+    ELSE
+        DBMS_OUTPUT.PUT_LINE('THE ENTERED NUMBER IS NEGATIVE ');
+    END IF;
+
+END;`,
+  output: "THE ENTERED NUMBER IS NEGATIVE"
+},
+{
+  question: "Write a PL/SQL block to check if an employee’s salary is greater than 3000. (IF Statement)",
+sql : `DECLARE
+    S NUMBER;
+BEGIN
+    S := &SALARY;
+    IF S > 3000 THEN
+        DBMS_OUTPUT.PUT_LINE('THE SALARY OF THE EMPLOYEE IS GREATER THAN 3000');
+    ELSE
+        DBMS_OUTPUT.PUT_LINE('THE SALARY OF THE EMPLOYEE IS NOT GREATER THAN 3000');
+    END IF;
+
+END;`,
+  "output": "THE SALARY OF THE EMPLOYEE IS GREATER THAN 3000"
+},
+{
+  question: "Write a PL/SQL block to check if a given number is even. (IF Statement)",
+sql : `DECLARE
+    N NUMBER;
+BEGIN
+    N := &NUMERIC_VALUE;
+    IF MOD(N, 2) = 0 THEN
+        DBMS_OUTPUT.PUT_LINE('THE ENTERED NUMBER IS EVEN');
+    ELSE
+        DBMS_OUTPUT.PUT_LINE('THE ENTERED NUMBER IS ODD');
+    END IF;
+
+END;`,
+  "output": " THE ENTERED NUMBER IS ODD"
+},
+{
+  question: "Write a PL/SQL block to display a message if today is Monday. (IF Statement)",
+sql : `DECLARE
+    D VARCHAR2(20);
+BEGIN
+    D := &DAY;
+    D := UPPER(D);
+    IF D = 'MONDAY' THEN
+        DBMS_OUTPUT.PUT_LINE('Today is MONDAY');
+    ELSE
+        DBMS_OUTPUT.PUT_LINE('Today is not MONDAY');
+    END IF;
+
+END;`,
+  "output": "TODAY IS MONDAY"
+},
+{
+  question: "Write a PL/SQL block to check if a number is divisible by 5. (IF Statement)",
+sql : `DECLARE
+    NUM NUMBER;
+BEGIN
+    NUM := &ENTER_NUMBER;
+    IF MOD(NUM, 5) = 0 THEN
+        DBMS_OUTPUT.PUT_LINE('GIVEN NUMBER IS DIVISIBLE BY 5');
+    ELSE
+        DBMS_OUTPUT.PUT_LINE('GIVEN NUMBER IS NOT DIVISIBLE BY 5');
+    END IF;
+
+END;`,
+  "output": " GIVEN NUMBER IS DIVISIBLE BY 5"
+},
+{
+  question: "Write a PL/SQL block to check whether a number is even or odd. (IF-ELSE Statement)",
+sql : `DECLARE
+    N NUMBER;
+BEGIN
+    N := &NUMERIC_VALUE;
+    IF MOD(N, 2) = 0 THEN
+        DBMS_OUTPUT.PUT_LINE('THE ENTERED NUMBER IS EVEN');
+    ELSE
+        DBMS_OUTPUT.PUT_LINE('THE ENTERED NUMBER IS ODD');
+    END IF;
+
+END;`,
+  "output": " THE ENTERED NUMBER IS ODD"
+},
+{
+  question: "Write a PL/SQL block to check whether a number is positive or negative. (IF-ELSE Statement)",
+sql : `DECLARE
+    N NUMBER;
+BEGIN
+    N := &NUMERICAL_VALUE;
+    IF N >= 0 THEN
+        DBMS_OUTPUT.PUT_LINE('THE ENTERED NUMBER IS POSTIVE ');
+    ELSE
+        DBMS_OUTPUT.PUT_LINE('THE ENTERED NUMBER IS NEGATIVE ');
+    END IF;
+
+END;`,
+  "output": "THE ENTERED NUMBER IS POSTIVE"
+},
+{
+  question: "Write a PL/SQL block to compare two numbers and display the greater one. (IF-ELSE Statement)",
+sql : `DECLARE
+    A NUMBER;
+    B NUMBER;
+BEGIN
+    A := &FIRST_NUMERICAL_VALUE;
+    B := &SECOND_NUMERICAL_VALUE;
+    IF A > B THEN
+        DBMS_OUTPUT.PUT_LINE('FIRST NUMBER IS GREATER THAN SECOND NUMBER');
+    ELSE
+        DBMS_OUTPUT.PUT_LINE('SECOND NUMBER IS GREATER THAN FIRST NUMBER');
+    END IF;
+END;`,
+  "output": "FIRST NUMBER IS GREATER THAN SECOND NUMBER"
+},
+{
+  question: "Write a PL/SQL block to check whether a student passed (marks ≥ 40) or failed. (IF-ELSE Statement)",
+sql : `DECLARE
+    MARKS NUMBER;
+
+BEGIN 
+    MARKS := &STUDENT_MARKS;
+    IF MARKS>=40 THEN
+        DBMS_OUTPUT.PUT_LINE('THE STUDENT PASSED');
+    ELSE
+        DBMS_OUTPUT.PUT_LINE('THE STUDENT FAILED');
+    END IF;
+END;`,
+  "output": " THE STUDENT FAILED"
+},
+{
+  question: "Write a PL/SQL block to check if salary is above average (use fixed value). (IF-ELSE Statement)",
+sql : `DECLARE
+ AVERAGE CONSTANT NUMBER := 3480;
+ num number;
+
+BEGIN
+    NUM := &NUMBERIC_VALUE;
+    IF NUM>AVERAGE THEN
+        DBMS_OUTPUT.PUT_LINE('THE SALARY IS ABOVE THE AVERAGE');
+    ELSE
+        DBMS_OUTPUT.PUT_LINE('THE SALARY IS NOT ABOVE AVERAGE');
+    END IF;
+END;`,
+  "output": "THE SALARY IS NOT ABOVE AVERAGE"
+},
+{
+  question: "Write a PL/SQL block to assign grades based on marks. (IF-ELSIF-ELSE)",
+sql : `DECLARE 
+    MARKS NUMBER;
+BEGIN
+    MARKS:= &MARK;
+    IF MARKS>=80 THEN
+        DBMS_OUTPUT.PUT_LINE('A GRADE');
+    ELSIF MARKS>=60 AND MARKS<80 THEN
+        DBMS_OUTPUT.PUT_LINE('B GRADE');
+    ELSIF MARKS>=40 AND MARKS<60 THEN
+        DBMS_OUTPUT.PUT_LINE('C GRADE');
+    ELSE  
+        DBMS_OUTPUT.PUT_LINE('FAIL');
+    END IF;
+END;`,
+  "output": "C GRADE"
+},
+{
+  question: "Write a PL/SQL block to find the greatest of three numbers. (IF-ELSIF-ELSE)",
+sql : `DECLARE
+A NUMBER;
+B NUMBER;
+C NUMBER;
+BEGIN
+    A := &ENTER_A;
+    B := &ENTER_B;
+    C := &ENTER_C;
+    IF A>B THEN
+        IF A>C THEN
+            DBMS_OUTPUT.PUT_LINE('A IS GREATEST NUMBER');
+        END IF;
+    ELSIF B>A THEN
+        IF B>C THEN
+            DBMS_OUTPUT.PUT_LINE('B IS GREATEST NUMBER');
+        END IF;
+    ELSE 
+        DBMS_OUTPUT.PUT_LINE('C IS GREATEST NUMBER');
+    END IF;
+END;`,
+  "output": "A IS GREATEST NUMBER"
+},
+{
+  question: "Write a PL/SQL block to check if number is positive, negative or zero. (IF-ELSIF-ELSE)",
+sql : `DECLARE
+    N NUMBER;
+BEGIN
+    N := &NUMERICAL_VALUE;
+    IF N > 0 THEN
+        DBMS_OUTPUT.PUT_LINE('THE ENTERED NUMBER IS POSTIVE ');
+    ELSIF N<0 THEN
+        DBMS_OUTPUT.PUT_LINE('THE ENTERED NUMBER IS NEGATIVE ');
+    ELSE
+        DBMS_OUTPUT.PUT_LINE('THE ENTERED NUMBER IS ZERO ');
+    END IF;
+
+END;`,
+  "output": "ZERO"
+},
+{
+  question: "Write a PL/SQL block to categorize salary. (IF-ELSIF-ELSE)",
+sql : `DECLARE
+    SALARY NUMBER;
+BEGIN
+    SALARY :=&SALARY;
+    IF SALARY>5000 THEN
+        DBMS_OUTPUT.PUT_LINE('IT IS HIGH SALARY ');
+    ELSIF SALARY >3000 AND SALARY <5000 THEN
+        DBMS_OUTPUT.PUT_LINE('IT IS MEDIUM SALARY ');
+    ELSIF SALARY<3000 THEN 
+        DBMS_OUTPUT.PUT_LINE('IT IS LOW SALARY ');
+    ELSE
+        DBMS_OUTPUT.PUT_LINE('ENTER THE VALID SALARY ');
+    END IF;
+END;`,
+  "output": "IT IS LOW SALARY "
+},
+{
+  question: "Write a PL/SQL block using CASE to display day of week. (CASE Statement)",
+sql : `DECLARE 
+    NUM VARCHAR2(10); -- corrected datatype
+BEGIN
+    NUM := CASE &NUMERIC_VALUE
+               WHEN 1 THEN 'SUNDAY'
+               WHEN 2 THEN 'MONDAY'
+               WHEN 3 THEN 'TUESDAY'
+               WHEN 4 THEN 'WEDNESDAY'
+               WHEN 5 THEN 'THURSDAY'
+               WHEN 6 THEN 'FRIDAY'
+               WHEN 7 THEN 'SATURDAY'
+               ELSE 'INVALID NUMBER'  -- optional
+           END;
+    DBMS_OUTPUT.PUT_LINE('RESULT IS :' || NUM);
+END;`,
+  "output": "RESULT IS :TUESDAY"
+},
+{
+question: "Write a PL/SQL block to categorize salary. (IF-ELSIF-ELSE)",
+sql : `DECLARE
+    SALARY NUMBER :=&NUMERIC_VALUE;
+    LEVEL  VARCHAR(20);
+BEGIN
+    LEVEL := CASE
+              WHEN SALARY>5000 THEN 'HIGH'
+              WHEN SALARY<5000 AND SALARY>3000 THEN 'MEDIUM'
+              WHEN SALARY>3000 THEN 'LOW'
+              ELSE 'INVALID SALARY'
+            END;
+    DBMS_OUTPUT.PUT_LINE('SALARY '||SALARY);
+    DBMS_OUTPUT.PUT_LINE('LEVEL '||LEVEL);
+END;`,
+  "output": "HIGH"
+},
+{
+  question: "Write a PL/SQL block using CASE to assign grades. (CASE Statement)",
+sql : `DECLARE
+    marks NUMBER := &ENTER_MARKS;  
+    grade VARCHAR2(2);             
+BEGIN
+    grade := CASE 
+                   WHEN marks >= 90 THEN 'A+'
+                   WHEN marks >= 80 THEN 'A'
+                   WHEN marks >= 70 THEN 'B+'
+                   WHEN marks >= 60 THEN 'B'
+                   WHEN marks >= 50 THEN 'C'
+                   ELSE 'F'
+               END;
+
+    DBMS_OUTPUT.PUT_LINE('Marks: ' || marks);
+    DBMS_OUTPUT.PUT_LINE('Grade: ' || grade);
+END;`,
+  "output": "C"
+},
+{
+  question: "Write a PL/SQL block using CASE to check even/odd. (CASE Statement)",
+sql : `DECLARE
+    NUM NUMBER :=&NUMERIC_VALUE;
+    CH VARCHAR2(10);
+BEGIN
+    CH := CASE
+                WHEN MOD(NUM,2) = 0 THEN 'EVEN'
+                ELSE 'ODD'
+            END;
+    DBMS_OUTPUT.PUT_LINE('NUMBER'||NUM);
+    DBMS_OUTPUT.PUT_LINE('CHECKED AS '||CH);
+END;   `,
+  "output": "EVEN"
+},
+{
+  question: "Write a PL/SQL block using CASE to display department name. (CASE Statement)",
+sql : `DECLARE
+    DEPT SCOTT.DEPT.DEPTNO%TYPE :=&NUMERIC_VALUE;
+    DNAME  SCOTT.DEPT.DNAME%TYPE;
+BEGIN
+    DNAME := CASE DEPT
+              WHEN 10 THEN 'ACCOUNTING'
+              WHEN 20 THEN 'RESEARCH'
+              WHEN 30 THEN 'SALES'
+              WHEN 40 THEN 'OPERATIONS'
+              ELSE 'INVALID DEPTNO'
+            END;
+    DBMS_OUTPUT.PUT_LINE('DEPTNO '||DEPT);
+    DBMS_OUTPUT.PUT_LINE('DEPT NAME '||DNAME);
+END;`,
+  "output": "ACCOUNTING"
+},
+{
+  question: "Write a PL/SQL block to print numbers from 1 to 10 but skip number 5. (CONTINUE Statement)",
+sql : `DECLARE
+    NUM NUMBER := 1;
+BEGIN
+    WHILE NUM <= 20 LOOP
+        
+        IF MOD(NUM, 2) = 0 THEN
+            NUM := NUM + 1;   -- increment before CONTINUE
+            CONTINUE;
+        END IF;
+
+        DBMS_OUTPUT.PUT_LINE(NUM);
+        NUM := NUM + 1;       -- increment for odd case
+        
+    END LOOP;
+END;`,
+  "output": "1 2 3 4 6 7 8 9 10"
+},
+{
+"question" : "Write a PL/SQL block to display only odd numbers between 1 and 20 using CONTINUE.",
+sql : `DECLARE
+    NUM NUMBER;
+BEGIN
+    NUM := 1;
+    WHILE NUM<=20 LOOP
+        IF MOD(NUM,2) = 0 THEN
+            NUM := NUM +1;
+            CONTINUE; 
+        END IF;  
+        DBMS_OUTPUT.PUT_LINE(NUM);
+        NUM := NUM + 1;
+        
+    END LOOP;
+END;`,
+  "output": `1
+3
+5
+7
+9
+11
+13
+15
+17`
+    },
+{
+question: "Write a PL/SQL block to skip multiples of 3 while printing numbers 1–15.(CONTINUE Statement)",
+sql : `DECLARE
+    NUM NUMBER;
+BEGIN
+    NUM := 1;
+    WHILE NUM<=15 LOOP
+        IF MOD(NUM,3) = 0 THEN
+            NUM := NUM +1;
+            CONTINUE; 
+        END IF;  
+        DBMS_OUTPUT.PUT_LINE(NUM);
+        NUM := NUM + 1;
+        
+    END LOOP;
+END;`,
+  "output": `1
+2
+4
+5
+7
+8
+10
+11
+13
+14`
+    },
+{
+  question: "Write a PL/SQL block to exit loop when number reaches 5. (EXIT Statement)",
+sql : `DECLARE
+    NUM NUMBER;
+BEGIN
+    NUM := 1;
+    WHILE NUM<=20 LOOP
+        IF NUM = 5 THEN
+            EXIT;
+        END IF;  
+        DBMS_OUTPUT.PUT_LINE(NUM);
+        NUM := NUM + 1;
+    END LOOP;
+END;`,
+  "output": "1 2 3 4"
+},
+{
+  question: "Write a PL/SQL block to simulate login system. (IF-ELSE Practical)",
+sql : `DECLARE
+    v_username VARCHAR2(20) := 'admin';
+    v_password VARCHAR2(20) := '1234';
+
+    u_name VARCHAR2(20);
+    u_pass VARCHAR2(20);
+BEGIN
+    -- Take input
+    u_name := '&Enter_Username';
+    u_pass := '&Enter_Password';
+
+    -- Check login
+    IF u_name = v_username AND u_pass = v_password THEN
+        DBMS_OUTPUT.PUT_LINE('Login Successful');
+    ELSE
+        DBMS_OUTPUT.PUT_LINE('Invalid Username or Password');
+    END IF;
+END;`,
+  "output": "Login Successful"
+}
+              ]
+    };
+
+    // Set Title
+    document.getElementById("PLIF").innerText = topicData.title;
+
+    const container = document.getElementById("queryList");
+
+    // Create Queries
+    topicData.queries.forEach((q, index) => {
+      const div = document.createElement("div");
+      div.className = "query-box";
+
+      div.innerHTML = `
+        <div class="query-title">
+          (${index + 1}) ${q.question}
+        </div>
+
+        <button onclick="toggleAnswer(${index})">
+          Show Answer
+        </button>
+
+        <div class="answer" id="answer-${index}">
+          <div class="answer-container">
+            
+            <div class="query-code">
+              <PRE>${q.sql}</PRE>
+            </div>
+
+            <div class="output">
+              ${q.output}
+            </div>
+
+          </div>
+        </div>
+      `;
+
+      container.appendChild(div);
+    });
+
+    // Toggle Answer
+    function toggleAnswer(index) {
+      const ans = document.getElementById(`answer-${index}`);
+      ans.style.display = ans.style.display === "block" ? "none" : "block";
+    }
+
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Topic Page</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #DEF2F1;
+      padding: 20px;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      padding: 15px;
+      border: 1px solid black;
+      border-radius: 15px;
+      font-size: 26px;
+      font-weight: bold;
+      background: #78E7E0 ;
+      color: #17252a;
+      margin-bottom: 30px;
+    }
+
+    /* Query Box */
+    .query-box {
+      background: #DEF2F1;
+      border: 0px solid black;
+      border-radius: 15px;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+
+    .query-title {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    button {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 15px;
+      background: #78E7E0 ;
+      color: black;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #2B7A78;
+    }
+
+    /* Answer Section */
+    .answer {
+      display: none;
+      margin-top: 15px;
+      border-top: 2px solid black;
+      padding-top: 10px;
+    }
+
+    .answer-container {
+      display: flex;
+      gap: 20px;
+    }
+
+    .query-code {
+      width: 50%;
+      background: #DEF2F1;
+      padding: 10px;
+      border: 1px solid black;
+      border-radius: 5px;
+      font-family: monospace;
+    }
+
+    .output {
+      width: 50%;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      border-radius: 5px;
+    }
+
+    th, td {
+      border: 1px solid black;
+      border-radius: 5px;
+      padding: 6px;
+      text-align: center;
+    }
+
+    /* Responsive */
+    @media (max-width: 700px) {
+      .answer-container {
+        flex-direction: column;
+      }
+
+      .query-code, .output {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Topic Title -->
+  <div class="header" id="SCA">
+    SCALAR
+  </div>
+
+  <!-- Query List -->
+  <div id="queryList"></div>
+
+  <script>
+    // SAMPLE DATA (EDIT THIS)
+    const topicData = {
+      title: "SCALAR FUNCTION : DATE,NUMERIC,STRING",
+      queries: [
+        {
+  "question": "Display employee name, hire date, current date, and number of days worked.",
+  "sql": "SELECT ENAME, HIREDATE, SYSDATE, SYSDATE - HIREDATE AS WORKED_DAYS FROM SCOTT.EMP;",
+  "output": [
+    ["ENAME","HIREDATE","SYSDATE","WORKED_DAYS"],
+    ["SMITH","17-DEC-80","10-APR-26",16540],
+    ["ALLEN","20-FEB-81","10-APR-26",16475],
+    ["WARD","22-FEB-81","10-APR-26",16473],
+    ["JONES","02-APR-81","10-APR-26",16434],
+    ["MARTIN","28-SEP-81","10-APR-26",16255],
+    ["BLAKE","01-MAY-81","10-APR-26",16405],
+    ["CLARK","09-JUN-81","10-APR-26",16366],
+    ["SCOTT","19-APR-87","10-APR-26",14241],
+    ["KING","17-NOV-81","10-APR-26",16205],
+    ["TURNER","08-SEP-81","10-APR-26",16275],
+    ["ADAMS","23-MAY-87","10-APR-26",14207],
+    ["JAMES","03-DEC-81","10-APR-26",16189],
+    ["FORD","03-DEC-81","10-APR-26",16189],
+    ["MILLER","23-JAN-82","10-APR-26",16138]
+  ]
+},
+{
+  "question": "Display employee name and formatted hire date.",
+  "sql": "SELECT ENAME, TO_CHAR(hiredate, 'Day, Month DD, YYYY') FROM SCOTT.EMP;",
+  "output": [
+    ["ENAME","FORMATTED_HIREDATE"],
+    ["SMITH","Wednesday, December 17, 1980"],
+    ["ALLEN","Friday, February 20, 1981"],
+    ["WARD","Sunday, February 22, 1981"],
+    ["JONES","Thursday, April 02, 1981"],
+    ["MARTIN","Monday, September 28, 1981"],
+    ["BLAKE","Friday, May 01, 1981"],
+    ["CLARK","Tuesday, June 09, 1981"],
+    ["SCOTT","Sunday, April 19, 1987"],
+    ["KING","Tuesday, November 17, 1981"],
+    ["TURNER","Tuesday, September 08, 1981"],
+    ["ADAMS","Saturday, May 23, 1987"],
+    ["JAMES","Thursday, December 03, 1981"],
+    ["FORD","Thursday, December 03, 1981"],
+    ["MILLER","Saturday, January 23, 1982"]
+  ]
+},
+{
+  "question": "Find employees who joined in the same month as the current system date (ignore year).",
+  "sql": "SELECT ENAME, HIREDATE FROM SCOTT.EMP WHERE EXTRACT(MONTH FROM HIREDATE) = EXTRACT(MONTH FROM SYSDATE);",
+  "output": [
+    ["ENAME","HIREDATE"],
+    ["JONES","02-APR-81"],
+    ["SCOTT","19-APR-87"]
+  ]
+},
+{
+  "question": "Display employee name and last day of their joining month. (Given SQL executed)",
+  "sql": "SELECT ENAME, LAST_DAY(HIREDATE) FROM SCOTT.EMP;",
+  "output": [
+    ["ENAME","LAST_DAY"],
+    ["SMITH","31-DEC-80"],
+    ["ALLEN","28-FEB-81"],
+    ["WARD","28-FEB-81"],
+    ["JONES","30-APR-81"],
+    ["MARTIN","30-SEP-81"],
+    ["BLAKE","31-MAY-81"],
+    ["CLARK","30-JUN-81"],
+    ["SCOTT","30-APR-87"],
+    ["KING","30-NOV-81"],
+    ["TURNER","30-SEP-81"],
+    ["ADAMS","31-MAY-87"],
+    ["JAMES","31-DEC-81"],
+    ["FORD","31-DEC-81"],
+    ["MILLER","31-JAN-82"]
+  ]
+},
+{
+  "question": "Find employees who have completed more than 10 years in the company.",
+  "sql": "SELECT ENAME, HIREDATE FROM SCOTT.EMP WHERE HIREDATE <= ADD_MONTHS(SYSDATE, -120);",
+  "output": [
+    ["ENAME","HIREDATE"],
+    ["SMITH","17-DEC-80"],
+    ["ALLEN","20-FEB-81"],
+    ["WARD","22-FEB-81"],
+    ["JONES","02-APR-81"],
+    ["MARTIN","28-SEP-81"],
+    ["BLAKE","01-MAY-81"],
+    ["CLARK","09-JUN-81"],
+    ["KING","17-NOV-81"],
+    ["TURNER","08-SEP-81"],
+    ["JAMES","03-DEC-81"],
+    ["FORD","03-DEC-81"],
+    ["MILLER","23-JAN-82"],
+    ["SCOTT","19-APR-87"],
+    ["ADAMS","23-MAY-87"]
+  ]
+},
+{
+  "question": "Display employee name and number of months worked in the company.",
+  "sql": "SELECT ENAME, FLOOR(MONTHS_BETWEEN(SYSDATE, HIREDATE)) FROM SCOTT.EMP;",
+  "output": [
+    ["ENAME","MONTHS_WORKED"],
+    ["SMITH",543],
+    ["ALLEN",541],
+    ["WARD",541],
+    ["JONES",540],
+    ["MARTIN",533],
+    ["BLAKE",540],
+    ["CLARK",539],
+    ["SCOTT",472],
+    ["KING",534],
+    ["TURNER",533],
+    ["ADAMS",471],
+    ["JAMES",534],
+    ["FORD",534],
+    ["MILLER",533]
+  ]
+},
+{
+  "question": "Display employee name, hire date, and hire date after adding 3 years and 6 months.",
+  "sql": "SELECT ENAME, HIREDATE, ADD_MONTHS(HIREDATE,42) FROM SCOTT.EMP;",
+  "output": [
+    ["ENAME","HIREDATE","NEW_HIREDATE"],
+    ["SMITH","17-DEC-80","17-JUN-84"],
+    ["ALLEN","20-FEB-81","20-AUG-84"],
+    ["WARD","22-FEB-81","22-AUG-84"],
+    ["JONES","02-APR-81","02-OCT-84"],
+    ["MARTIN","28-SEP-81","28-MAR-85"],
+    ["BLAKE","01-MAY-81","01-NOV-84"],
+    ["CLARK","09-JUN-81","09-DEC-84"],
+    ["SCOTT","19-APR-87","19-OCT-90"],
+    ["KING","17-NOV-81","17-MAY-85"],
+    ["TURNER","08-SEP-81","08-MAR-85"],
+    ["ADAMS","23-MAY-87","23-NOV-90"],
+    ["JAMES","03-DEC-81","03-JUN-85"],
+    ["FORD","03-DEC-81","03-JUN-85"],
+    ["MILLER","23-JAN-82","23-JUL-85"]
+  ]
+},
+{
+  "question": "Display difference between SYSDATE and HIREDATE (in days as per given SQL).",
+  "sql": "SELECT SYSDATE - HIREDATE FROM SCOTT.EMP;",
+  "output": [
+    ["DAYS_DIFF"],
+    [16540],
+    [16475],
+    [16473],
+    [16434],
+    [16255],
+    [16405],
+    [16366],
+    [14241],
+    [16205],
+    [16275],
+    [14207],
+    [16189],
+    [16189],
+    [16138]
+  ]
+},
+{
+  "question": "Display employee name and salary rounded to nearest 1000.",
+  "sql": "SELECT ENAME, ROUND(SAL,-3) FROM SCOTT.EMP;",
+  "output": [
+    ["ENAME","ROUNDED_SAL"],
+    ["SMITH",1000],
+    ["ALLEN",2000],
+    ["WARD",1000],
+    ["JONES",3000],
+    ["MARTIN",1000],
+    ["BLAKE",3000],
+    ["CLARK",2000],
+    ["SCOTT",3000],
+    ["KING",5000],
+    ["TURNER",2000],
+    ["ADAMS",1000],
+    ["JAMES",1000],
+    ["FORD",3000],
+    ["MILLER",1000]
+  ]
+},
+{
+  "question": "Display salary truncated (as per given SQL).",
+  "sql": "SELECT TRUNC(SAL,-2) FROM SCOTT.EMP;",
+  "output": [
+    ["TRUNC_SAL"],
+    [800],
+    [1600],
+    [1200],
+    [2900],
+    [1200],
+    [2800],
+    [2400],
+    [3000],
+    [5000],
+    [1500],
+    [1100],
+    [900],
+    [3000],
+    [1300]
+  ]
+},
+{
+  "question": "Display employee name and square root of salary.",
+  "sql": "SELECT ENAME, SQRT(SAL) FROM SCOTT.EMP;",
+  "output": [
+    ["ENAME","SQRT(SAL)"],
+    ["SMITH",28.28],
+    ["ALLEN",40.00],
+    ["WARD",35.36],
+    ["JONES",54.54],
+    ["MARTIN",35.36],
+    ["BLAKE",53.39],
+    ["CLARK",49.50],
+    ["SCOTT",54.77],
+    ["KING",70.71],
+    ["TURNER",38.73],
+    ["ADAMS",33.17],
+    ["JAMES",30.82],
+    ["FORD",54.77],
+    ["MILLER",36.06]
+  ]
+},
+{
+  "question": "Find the absolute difference between salary and 5000.",
+  "sql": "SELECT ABS(SAL-5000) FROM SCOTT.EMP;",
+  "output": [
+    ["ABS_DIFF"],
+    [4200],
+    [3400],
+    [3750],
+    [2025],
+    [3750],
+    [2150],
+    [2550],
+    [2000],
+    [0],
+    [3500],
+    [3900],
+    [4050],
+    [2000],
+    [3700]
+  ]
+},
+{
+  "question": "Display salary rounded up to the nearest integer.",
+  "sql": "SELECT CEIL(SAL) FROM SCOTT.EMP;",
+  "output": [
+    ["CEIL_SAL"],
+    [800],
+    [1600],
+    [1250],
+    [2975],
+    [1250],
+    [2850],
+    [2450],
+    [3000],
+    [5000],
+    [1500],
+    [1100],
+    [950],
+    [3000],
+    [1300]
+  ]
+},
+{
+  "question": "Display salary rounded (as per given SQL).",
+  "sql": "SELECT ROUND(SAL,-3) FROM SCOTT.EMP;",
+  "output": [
+    ["ROUNDED_SAL"],
+    [1000],
+    [2000],
+    [1000],
+    [3000],
+    [1000],
+    [3000],
+    [2000],
+    [3000],
+    [5000],
+    [2000],
+    [1000],
+    [1000],
+    [3000],
+    [1000]
+  ]
+},
+{
+  "question": "Generate a random number between 1 and 500 for each employee.",
+  "sql": "SELECT CEIL(DBMS_RANDOM.VALUE(1,501)) FROM SCOTT.EMP;",
+  "output": [
+    ["RANDOM_NO"],
+    [123],
+    [456],
+    [78],
+    [299],
+    [12],
+    [401],
+    [87],
+    [250],
+    [499],
+    [65],
+    [321],
+    [210],
+    [390],
+    [145]
+  ]
+},
+{
+  "question": "Display remainder when salary is divided by 2000.",
+  "sql": "SELECT MOD(SAL,2000) FROM SCOTT.EMP;",
+  "output": [
+    ["REMAINDER"],
+    [800],
+    [1600],
+    [1250],
+    [975],
+    [1250],
+    [850],
+    [450],
+    [1000],
+    [1000],
+    [1500],
+    [1100],
+    [950],
+    [1000],
+    [1300]
+  ]
+},
+{
+  "question": "Display salary raised to the power of 3.",
+  "sql": "SELECT POWER(SAL,3) FROM SCOTT.EMP;",
+  "output": [
+    ["SAL^3"],
+    [512000000],
+    [4096000000],
+    [1953125000],
+    [26382484375],
+    [1953125000],
+    [23149125000],
+    [14706125000],
+    [27000000000],
+    [125000000000],
+    [3375000000],
+    [1331000000],
+    [857375000],
+    [27000000000],
+    [2197000000]
+  ]
+},
+{
+  "question": "Round salary to nearest hundred and thousand.",
+  "sql": "SELECT ROUND(SAL,-2), ROUND(SAL,-3) FROM SCOTT.EMP;",
+  "output": [
+    ["ROUND_100","ROUND_1000"],
+    [800,1000],
+    [1600,2000],
+    [1300,1000],
+    [3000,3000],
+    [1300,1000],
+    [2900,3000],
+    [2500,2000],
+    [3000,3000],
+    [5000,5000],
+    [1500,2000],
+    [1100,1000],
+    [1000,1000],
+    [3000,3000],
+    [1300,1000]
+  ]
+},
+{
+  "question": "Display employee names in uppercase and lowercase.",
+  "sql": "SELECT UPPER(ENAME), LOWER(ENAME) FROM SCOTT.EMP;",
+  "output": [
+    ["UPPER","LOWER"],
+    ["SMITH","smith"],
+    ["ALLEN","allen"],
+    ["WARD","ward"],
+    ["JONES","jones"],
+    ["MARTIN","martin"],
+    ["BLAKE","blake"],
+    ["CLARK","clark"],
+    ["SCOTT","scott"],
+    ["KING","king"],
+    ["TURNER","turner"],
+    ["ADAMS","adams"],
+    ["JAMES","james"],
+    ["FORD","ford"],
+    ["MILLER","miller"]
+  ]
+},
+{
+  "question": "Display employee name and its length.",
+  "sql": "SELECT LENGTH(ENAME) FROM SCOTT.EMP;",
+  "output": [
+    ["LENGTH"],
+    [5],
+    [5],
+    [4],
+    [5],
+    [6],
+    [5],
+    [5],
+    [5],
+    [4],
+    [6],
+    [5],
+    [5],
+    [4],
+    [6]
+  ]
+},
+{
+  "question": "Display first 4 characters of employee name.",
+  "sql": "SELECT SUBSTR(ENAME,1,4) FROM SCOTT.EMP;",
+  "output": [
+    ["SUBSTR"],
+    ["SMIT"],
+    ["ALLE"],
+    ["WARD"],
+    ["JONE"],
+    ["MART"],
+    ["BLAK"],
+    ["CLAR"],
+    ["SCOT"],
+    ["KING"],
+    ["TURN"],
+    ["ADAM"],
+    ["JAME"],
+    ["FORD"],
+    ["MILL"]
+  ]
+},
+{
+  "question": "Concatenate employee name and job using - symbol.",
+  "sql": "SELECT CONCAT(ENAME,'-',JOB) FROM SCOTT.EMP;",
+  "output": [
+    ["ENAME-JOB"],
+    ["SMITH-CLERK"],
+    ["ALLEN-SALESMAN"],
+    ["WARD-SALESMAN"],
+    ["JONES-MANAGER"],
+    ["MARTIN-SALESMAN"],
+    ["BLAKE-MANAGER"],
+    ["CLARK-MANAGER"],
+    ["SCOTT-ANALYST"],
+    ["KING-PRESIDENT"],
+    ["TURNER-SALESMAN"],
+    ["ADAMS-CLERK"],
+    ["JAMES-CLERK"],
+    ["FORD-ANALYST"],
+    ["MILLER-CLERK"]
+  ]
+},
+{
+  "question": "Replace all occurrences of letter ‘A’ with ‘#’ in employee names.",
+  "sql": "SELECT REPLACE(ENAME,'A','#') FROM SCOTT.EMP;",
+  "output": [
+    ["REPLACED"],
+    ["SMITH"],
+    ["#LLEN"],
+    ["W#RD"],
+    ["JONES"],
+    ["M#RTIN"],
+    ["BL#KE"],
+    ["CL#RK"],
+    ["SCOTT"],
+    ["KING"],
+    ["TURNER"],
+    ["#D#MS"],
+    ["J#MES"],
+    ["FORD"],
+    ["MILLER"]
+  ]
+},
+{
+  "question": "Remove leading and trailing spaces from employee name.",
+  "sql": "SELECT TRIM(ENAME) FROM SCOTT.EMP;",
+  "output": [
+    ["TRIMMED"],
+    ["SMITH"],
+    ["ALLEN"],
+    ["WARD"],
+    ["JONES"],
+    ["MARTIN"],
+    ["BLAKE"],
+    ["CLARK"],
+    ["SCOTT"],
+    ["KING"],
+    ["TURNER"],
+    ["ADAMS"],
+    ["JAMES"],
+    ["FORD"],
+    ["MILLER"]
+  ]
+},
+{
+  "question": "Remove leading and trailing spaces from employee name.",
+  "sql": "SELECT TRIM(ENAME) FROM SCOTT.EMP;",
+  "output": [
+    ["TRIMMED"],
+    ["SMITH"],
+    ["ALLEN"],
+    ["WARD"],
+    ["JONES"],
+    ["MARTIN"],
+    ["BLAKE"],
+    ["CLARK"],
+    ["SCOTT"],
+    ["KING"],
+    ["TURNER"],
+    ["ADAMS"],
+    ["JAMES"],
+    ["FORD"],
+    ["MILLER"]
+  ]
+},
+{
+  "question": "Display employee name with first letter capital and rest lowercase.",
+  "sql": "SELECT INITCAP(ENAME) FROM SCOTT.EMP;",
+  "output": [
+    ["INITCAP"],
+    ["Smith"],
+    ["Allen"],
+    ["Ward"],
+    ["Jones"],
+    ["Martin"],
+    ["Blake"],
+    ["Clark"],
+    ["Scott"],
+    ["King"],
+    ["Turner"],
+    ["Adams"],
+    ["James"],
+    ["Ford"],
+    ["Miller"]
+  ]
+},
+{
+  "question": "Display last 3 characters of employee name.",
+  "sql": "SELECT SUBSTR(ENAME,-3) FROM SCOTT.EMP;",
+  "output": [
+    ["LAST_3"],
+    ["ITH"],
+    ["LEN"],
+    ["ARD"],
+    ["NES"],
+    ["TIN"],
+    ["AKE"],
+    ["ARK"],
+    ["OTT"],
+    ["ING"],
+    ["NER"],
+    ["AMS"],
+    ["MES"],
+    ["ORD"],
+    ["LER"]
+  ]
+},
+{
+  "question": "Pad employee name with * on the left (length 10 assumed).",
+  "sql": "SELECT LPAD(ENAME,10,'*') FROM SCOTT.EMP;",
+  "output": [
+    ["LPAD"],
+    ["*****SMITH"],
+    ["*****ALLEN"],
+    ["******WARD"],
+    ["*****JONES"],
+    ["****MARTIN"],
+    ["*****BLAKE"],
+    ["*****CLARK"],
+    ["*****SCOTT"],
+    ["******KING"],
+    ["****TURNER"],
+    ["*****ADAMS"],
+    ["*****JAMES"],
+    ["******FORD"],
+    ["****MILLER"]
+  ]
+},
+{
+  "question": "Display employee names starting with 'S'.",
+  "sql": "SELECT CONCAT('S',ENAME) FROM SCOTT.EMP;",
+  "output": [
+    ["INCORRECT_OUTPUT"],
+    ["SSMITH"],
+    ["SALLEN"],
+    ["SWARD"],
+    ["SJONES"],
+    ["SMARTIN"],
+    ["SBLAKE"],
+    ["SCLARK"],
+    ["SSCOTT"],
+    ["SKING"],
+    ["STURNER"],
+    ["SADAMS"],
+    ["SJAMES"],
+    ["SFORD"],
+    ["SMILLER"]
+  ]
+}, 
+{
+  "question": "Count number of characters excluding spaces.",
+  "sql": "SELECT LENGTH(REPLACE(ENAME,' ','')) FROM SCOTT.EMP;",
+  "output": [
+    ["CHAR_COUNT"],
+    [5],
+    [5],
+    [4],
+    [5],
+    [6],
+    [5],
+    [5],
+    [5],
+    [4],
+    [6],
+    [5],
+    [5],
+    [4],
+    [6]
+  ]
+},
+{
+  "question": "Extract domain name from email column.",
+  "sql": "SELECT SUBSTR('tani23453@gmail.com', INSTR('tani23453@gmail.com','@')) FROM DUAL;",
+  "output": [
+    ["DOMAIN"],
+    ["@gmail.com"]
+  ]
+},
+{
+  "question": "Convert current date into format DD/MM/YYYY.",
+  "sql": "SELECT TO_DATE('2024-12-27','YYYY-MM-DD') FROM DUAL;",
+  "output": [
+    ["DATE"],
+    ["27-DEC-24"]
+  ]
+},
+{
+  "question": "Convert string '15-08-2020' into DATE format.",
+  "sql": "SELECT TO_DATE('15-08-2020','YYYY-MM-DD') FROM DUAL;",
+  "output": "ERROR: ORA-01843: not a valid month"
+},
+{
+  "question": "Convert salary into character with currency format.",
+  "sql": "SELECT '₹' || TO_CHAR(SAL, '9,99,999') FROM SCOTT.EMP;",
+  "output": [
+    ["FORMATTED_SALARY"],
+    ["₹    800"],
+    ["₹  1,600"],
+    ["₹  1,250"],
+    ["₹  2,975"],
+    ["₹  1,250"],
+    ["₹  2,850"],
+    ["₹  2,450"],
+    ["₹  3,000"],
+    ["₹  5,000"],
+    ["₹  1,500"],
+    ["₹  1,100"],
+    ["₹    950"],
+    ["₹  3,000"],
+    ["₹  1,300"]
+  ]
+},
+
+    ]
+    };
+
+    // Set Title
+    document.getElementById("SCA").innerText = topicData.title;
+
+    const container = document.getElementById("queryList");
+
+    // Create Queries
+    topicData.queries.forEach((q, index) => {
+      const div = document.createElement("div");
+      div.className = "query-box";
+
+      div.innerHTML = `
+        <div class="query-title">
+          (${index + 1}) ${q.question}
+        </div>
+
+        <button onclick="toggleAnswer(${index})">
+          Show Answer
+        </button>
+
+        <div class="answer" id="answer-${index}">
+          <div class="answer-container">
+            
+            <div class="query-code">
+              ${q.sql}
+            </div>
+
+            <div class="output">
+              ${createTable(q.output)}
+            </div>
+
+          </div>
+        </div>
+      `;
+
+      container.appendChild(div);
+    });
+
+    // Toggle Answer
+    function toggleAnswer(index) {
+      const ans = document.getElementById(`answer-${index}`);
+      ans.style.display = ans.style.display === "block" ? "none" : "block";
+    }
+
+    // Create Table
+    function createTable(data) {
+      let html = "<table>";
+
+      data.forEach((row, i) => {
+        html += "<tr>";
+        row.forEach(cell => {
+          html += i === 0 ? `<th>${cell}</th>` : `<td>${cell}</td>`;
+        });
+        html += "</tr>";
+      });
+
+      html += "</table>";
+      return html;
+    }
+  </script>
+
+</body>
+</html>

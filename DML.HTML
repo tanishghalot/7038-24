@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Topic Page</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #DEF2F1;
+      padding: 20px;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      padding: 15px;
+      border: 1px solid black;
+      border-radius: 15px;
+      font-size: 26px;
+      font-weight: bold;
+      background: #78E7E0 ;
+      color: #17252a;
+      margin-bottom: 30px;
+    }
+
+    /* Query Box */
+    .query-box {
+      background: #DEF2F1;
+      border: 0px solid black;
+      border-radius: 15px;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+
+    .query-title {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    button {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 15px;
+      background: #78E7E0 ;
+      color: black;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #2B7A78;
+    }
+
+    /* Answer Section */
+    .answer {
+      display: none;
+      margin-top: 15px;
+      border-top: 2px solid black;
+      padding-top: 10px;
+    }
+
+    .answer-container {
+      display: flex;
+      gap: 20px;
+    }
+
+    .query-code {
+      width: 50%;
+      background: #DEF2F1;
+      padding: 10px;
+      border: 1px solid black;
+      border-radius: 5px;
+      font-family: monospace;
+    }
+
+    .output {
+      width: 50%;
+      background: #DEF2F1;
+      padding: 10px;
+      border: 1px solid black;
+      border-radius: 5px;
+      font-family: monospace;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      border-radius: 5px;
+    }
+
+    th, td {
+      border: 1px solid black;
+      border-radius: 5px;
+      padding: 6px;
+      text-align: center;
+    }
+
+    /* Responsive */
+    @media (max-width: 700px) {
+      .answer-container {
+        flex-direction: column;
+      }
+
+      .query-code, .output {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Topic Title -->
+  <div class="header" id="DML">
+    PL CURSORS
+  </div>
+
+  <!-- Query List -->
+  <div id="queryList"></div>
+
+  <script>
+    // SAMPLE DATA (EDIT THIS)
+    const topicData = {
+      title: "DATA MANIPULATION LANGUAGE",
+      queries: [
+        {
+question : "Insert a record into STUDENT table with values: SID = 101, SNAME = 'RAHUL', AGE = 20, COURSE = 'MCA'.",
+sql:`INSERT INTO STUDENT(SID,SNAME,AGE , COURSE)
+VALUES(101,'RAHUL',20,'MCA'); `,
+output:` SQL> INSERT INTO STUDENT(SID,SNAME,AGE , COURSE)
+     VALUES(101,'RAHUL',20,'MCA')
+
+
+
+1 row inserted.`
+},
+{
+question : "Insert a record into EMPLOYEE table with EID = 201, ENAME = 'ANITA', SALARY = 45000, DEPTNO = 10.",
+sql:`
+INSERT INTO EMPLOYEEE(EID,ENAME ,SALARY, DEPTNO) VALUES(20,'ANITA',45000,10);
+ `,
+output:` SQL> INSERT INTO EMPLOYEEE(EID,ENAME ,SALARY, DEPTNO) VALUES(21,'ANITA',45000,10)
+
+
+
+1 row inserted.`
+},
+{
+question : "Insert a new department into DEPT table; DEPTNO = 50, DNAME = 'TRAINING', LOC = 'DELHI'",
+sql:` 
+INSERT INTO DEPT (DEPTNO,DNAME,LOC) VALUES(51,'TRAINING','DELHI');
+`,
+output:`SQL> INSERT INTO DEPT (DEPTNO,DNAME,LOC) VALUES(51,'TRAINING','DELHI')
+
+
+
+1 row inserted.`
+},
+{
+question : "Insert a record into BOOK table with only BOOK_ID, TITLE, and PRICE.",
+sql:`
+INSERT INTO BOOK (BOOK_ID,TITLE,PRICE) VALUES(21,'THE WHITE NIGHTS',220);
+ `,
+output:` SQL> INSERT INTO BOOK (BOOK_ID,TITLE,PRICE) VALUES(21,'THE WHITE NIGHTS',220)
+
+
+
+1 row inserted.
+`
+},
+{
+question : "Insert multiple rows into COURSE table.",
+sql:`
+INSERT ALL
+    INTO COURSE VALUES(23 ,'BCA',3)
+    INTO COURSE VALUES(24,'BCOM',3)
+    INTO COURSE VALUES(25,'BBA',3)
+ SELECT * FROM DUAL;  `,
+output:`3 rows inserted. `
+},
+{
+question : "Insert data into EMP_COPY table from the EMP table.",
+sql:` 
+INSERT INTO EMP_COPY(EID,ENAME,SALARY,DEPTNO) SELECT EMPNO,ENAME,SAL,DEPTNO FROM EMP;
+`,
+output:` SQL> INSERT INTO EMP_COPY(EID,ENAME,SALARY,DEPTNO) SELECT EMPNO,ENAME,SAL,DEPTNO FROM EMP
+
+
+
+14 rows inserted.
+`
+},
+{
+question : "Insert employees from EMP whose salary is greater than 3000 into EMP_HIGH_SAL.",
+sql:` 
+INSERT INTO EMP_HIGH_SAL(EID,ENAME,SALARY,DEPTNO) SELECT EMPNO,ENAME,SAL,DEPTNO FROM EMP WHERE SAL>3000;
+`,
+output:`SQL> INSERT INTO EMP_HIGH_SAL(EID,ENAME,SALARY,DEPTNO) SELECT EMPNO,ENAME,SAL,DEPTNO FROM EMP WHERE SAL>3000
+
+
+
+1 row inserted. `
+},
+{
+question : "Insert employees hired after 1981 into EMP_NEW_HIRE.",
+sql:`
+INSERT INTO EMP_NEW_HIRE SELECT EMPNO,ENAME FROM EMP WHERE HIREDATE > '31-DEC-1981';
+ `,
+output:`SQL> INSERT INTO EMP_NEW_HIRE SELECT EMPNO,ENAME FROM EMP WHERE HIREDATE > '31-DEC-1981'
+
+
+
+3 rows inserted. `
+},
+{
+question : "Insert department numbers and names from DEPT into a table called DEPT_BACKUP.",
+sql:`create table DEPTBACKUP AS SELECT * FROM SCOTT.EMP; `,
+output:`SQL> create table DEPTBACKUP AS SELECT * FROM SCOTT.EMP
+
+
+
+Table DEPTBACKUP created.
+ `
+},
+{
+question : "Insert employee names and salaries into a table EMP_SALARY_RECORD.",
+sql:`CREATE TABLE EMP_SAL_RECORD AS SELECT ENAME , SAL FROM SCOTT.EMP; `,
+output:`SQL> CREATE TABLE EMP_SAL_RECORD AS SELECT ENAME , SAL FROM SCOTT.EMP
+
+
+
+Table EMP_SAL_RECORD created. `
+},
+{
+question : "Update the salary of employee SMITH to 2000. Stat Solving Increase salary of all employees by 10%.",
+sql:`UPDATE EMP SET SAL = 2000 WHERE ENAME = 'SMITH'; `,
+output:` SQL> UPDATE EMP SET SAL = 2000 WHERE ENAME = 'SMITH'
+
+
+
+1 row updated.`
+},
+{
+question : "Increase salary of all employees by 10%.",
+sql:`UPDATE EMP SET SAL = SAL + (0.1*SAL); `,
+output:`SQL> UPDATE EMP SET SAL = SAL + (0.1*SAL)
+
+
+
+14 rows updated. `
+},
+{
+question : "Update the department number of employee ALLEN to 20.",
+sql:`
+UPDATE EMP SET DEPTNO = 10 WHERE ENAME = 'ALLEN'; `,
+output:`SQL> UPDATE EMP SET DEPTNO = 10 WHERE ENAME = 'ALLEN'
+
+
+
+1 row updated. `
+},
+{
+question : "Update commission of SALESMAN to 500.",
+sql:`UPDATE EMP SET COMM = 500 WHERE JOB = 'SALESMAN'; `,
+output:` SQL> UPDATE EMP SET COMM = 500 WHERE JOB = 'SALESMAN'
+
+
+
+4 rows updated.`
+},
+{
+question : "Update job of employee MILLER to MANAGER.",
+sql:` UPDATE EMP SET JOB = 'MANAGER' WHERE ENAME = 'MILLER';`,
+output:`SQL> UPDATE EMP SET JOB = 'MANAGER' WHERE ENAME = 'MILLER'
+
+
+
+1 row updated. `
+},
+{
+question : "Increase salary of employees in department 10 by 20%.",
+sql:`UPDATE EMP SET SAL = SAL + (0.2*SAL) WHERE DEPTNO = 10;`,
+output:`SQL> UPDATE EMP SET SAL = SAL + (0.2*SAL) WHERE DEPTNO = 10
+
+
+
+4 rows updated. `
+},
+{
+question : "Update salary of employees whose job is CLERK to 1500.",
+sql:` UPDATE EMP SET SAL = 1500 WHERE JOB = 'CLERK';`,
+output:`SQL> UPDATE EMP SET SAL = 1500 WHERE JOB = 'CLERK'
+
+
+
+3 rows updated.`
+},
+{
+question : "Update location of department 30 to MUMBAI.",
+sql:`UPDATE DEPT SET LOC = 'MUMBAI' WHERE DEPTNO = 30; `,
+output:`SQL> UPDATE DEPT SET LOC = 'MUMBAI' WHERE DEPTNO = 30
+
+
+
+1 row updated.
+ `
+},
+{
+question : "Update commission of employees who have NULL commission to 100.",
+sql:`UPDATE EMP SET COMM = 100 WHERE COMM IS NULL;`,
+output:`SQL> UPDATE EMP SET COMM = 100 WHERE COMM IS NULL
+
+
+
+10 rows updated. `
+},
+{
+question : "Update salary of employees who earn less than average salary.",
+sql:` UPDATE EMP SET SAL = 2000 WHERE SAL<(SELECT AVG(SAL) FROM SCOTT.EMP);`,
+output:`SQL> UPDATE EMP SET SAL = 2000 WHERE SAL<(SELECT AVG(SAL) FROM SCOTT.EMP)
+
+
+
+7 rows updated. `
+},
+{
+question : "Delete employee SMITH from EMP table.",
+sql:`DELETE FROM EMP WHERE ENAME = 'SMITH';`,
+output:` SQL> UPDATE EMP SET SAL = 2000 WHERE SAL<(SELECT AVG(SAL) FROM SCOTT.EMP)
+
+
+
+7 rows updated.
+`
+},
+{
+question : "Delete all employees working in department 30.",
+sql:`DELETE FROM EMP WHERE DEPTNO = 30; `,
+output:`SQL> DELETE FROM EMP WHERE DEPTNO = 30
+
+
+
+5 rows deleted.
+`
+},
+{
+question : "Delete employees whose salary is less than 1000.",
+sql:`DELETE FROM EMP WHERE SAL<1000; `,
+output:`SQL> DELETE FROM EMP WHERE SAL<1000
+
+
+
+0 rows deleted. `
+},
+{
+question : "Delete employees hired before 1981.",
+sql:` DELETE FROM EMP WHERE HIREDATE <'01-JAN-1981';`,
+output:` SQL> DELETE FROM EMP WHERE HIREDATE <'01-JAN-1981'
+
+
+
+1 row deleted.
+`
+},
+{
+question : "Delete employees who do not receive commission.",
+sql:`DELETE FROM EMP WHERE COMM IS NULL; `,
+output:`SQL> DELETE FROM EMP WHERE HIREDATE <'01-JAN-1981'
+
+
+
+1 row deleted. `
+},
+{
+question : "Delete departments located in CHICAGO.",
+sql:` DELETE FROM DEPT WHERE LOC = 'CHICAGO';`,
+output:`SQL> DELETE FROM DEPT WHERE LOC = 'CHICAGO'
+
+
+
+0 rows deleted.`
+},
+{
+question : "Delete employees whose job is CLERK.",
+sql:`DELETE FROM EMP WHERE JOB = 'CLERK';
+ `,
+output:` SQL> DELETE FROM EMP WHERE JOB = 'CLERK'
+
+
+
+1 row deleted.`
+},
+{
+question : "Delete employees earning the minimum salary.",
+sql:`DELETE FROM EMP WHERE SAL = (SELECT MIN(SAL) FROM SCOTT.EMP); `,
+output:`SQL> DELETE FROM EMP WHERE SAL = (SELECT MIN(SAL) FROM SCOTT.EMP)
+
+
+
+0 rows deleted. `
+},
+{
+question : "Delete employees working in departments located in NEW YORK.",
+sql:` DELETE FROM EMP WHERE DEPTNO = (SELECT DEPTNO FROM DEPT WHERE LOC = 'NEW YORK');`,
+output:`SQL> DELETE FROM EMP WHERE DEPTNO = (SELECT DEPTNO FROM DEPT WHERE LOC = 'NEW YORK')
+
+
+
+4 rows deleted. `
+},
+{
+question : "Delete employees whose manager number is NULL.",
+sql:`DELETE FROM EMP WHERE MGR IS NULL; `,
+output:`SQL> DELETE FROM EMP WHERE MGR IS NULL
+
+
+
+0 rows deleted.
+ `
+}
+
+
+      ]
+    };
+
+    // Set Title
+    document.getElementById("DML").innerText = topicData.title;
+
+    const container = document.getElementById("queryList");
+
+    // Create Queries
+    topicData.queries.forEach((q, index) => {
+      const div = document.createElement("div");
+      div.className = "query-box";
+
+      div.innerHTML = `
+        <div class="query-title">
+          (${index + 1}) ${q.question}
+        </div>
+
+        <button onclick="toggleAnswer(${index})">
+          Show Answer
+        </button>
+
+        <div class="answer" id="answer-${index}">
+          <div class="answer-container">
+            
+            <div class="query-code">
+              <PRE>${q.sql}</PRE>
+            </div>
+
+            <div class="output">
+              <PRE>${q.output}</PRE>
+            </div>
+
+          </div>
+        </div>
+      `;
+
+      container.appendChild(div);
+    });
+
+    // Toggle Answer
+    function toggleAnswer(index) {
+      const ans = document.getElementById(`answer-${index}`);
+      ans.style.display = ans.style.display === "block" ? "none" : "block";
+    }
+
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Topic Page</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #DEF2F1;
+      padding: 20px;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      padding: 15px;
+      border: 1px solid black;
+      border-radius: 15px;
+      font-size: 26px;
+      font-weight: bold;
+      background: #78E7E0 ;
+      color: #17252a;
+      margin-bottom: 30px;
+    }
+
+    /* Query Box */
+    .query-box {
+      background: #DEF2F1;
+      border: 0px solid black;
+      border-radius: 15px;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+
+    .query-title {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    button {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 15px;
+      background: #78E7E0 ;
+      color: black;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #2B7A78;
+    }
+
+    /* Answer Section */
+    .answer {
+      display: none;
+      margin-top: 15px;
+      border-top: 2px solid black;
+      padding-top: 10px;
+    }
+
+    .answer-container {
+      display: flex;
+      gap: 20px;
+    }
+
+    .query-code {
+      width: 50%;
+      background: #DEF2F1;
+      padding: 10px;
+      border: 1px solid black;
+      border-radius: 5px;
+      font-family: monospace;
+    }
+
+    .output {
+      width: 50%;
+      background: #DEF2F1;
+      padding: 10px;
+      border: 1px solid black;
+      border-radius: 5px;
+      font-family: monospace;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      border-radius: 5px;
+    }
+
+    th, td {
+      border: 1px solid black;
+      border-radius: 5px;
+      padding: 6px;
+      text-align: center;
+    }
+
+    /* Responsive */
+    @media (max-width: 700px) {
+      .answer-container {
+        flex-direction: column;
+      }
+
+      .query-code, .output {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Topic Title -->
+  <div class="header" id="EXP">
+    EXCEPTION HANDLING"
+  </div>
+
+  <!-- Query List -->
+  <div id="queryList"></div>
+
+  <script>
+    // SAMPLE DATA (EDIT THIS)
+    const topicData = {
+      title: "EXCEPTION HANDLING",
+      queries: [
+        {
+question : "Write a PL/SQL block to handle NO_DATA_FOUND exception while fetching employee details. (Exception Basics)",
+sql:`DECLARE
+    REC SCOTT.EMP%ROWTYPE;
+
+BEGIN
+    SELECT * INTO REC FROM SCOTT.EMP WHERE EMPNO = 7580;
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        DBMS_OUTPUT.PUT_LINE('DATA IS NOT AVAILABLE FOR GIVE CONDITION');
+END; `,
+output:`AN ERROR OCCURRED
+ERROR CODE: -1476
+ERROR MESSAGE :ORA-01476: divisor is equal to zero
+
+
+PL/SQL procedure successfully completed.
+ `
+},
+{
+question : "Write a PL/SQL block to handle TOO_MANY_ROWS exception. (Exception Basics)",
+sql:`DECLARE
+    REC SCOTT.EMP%ROWTYPE;
+
+BEGIN
+    SELECT * INTO REC FROM SCOTT.EMP ;
+EXCEPTION
+    WHEN TOO_MANY_ROWS THEN
+        DBMS_OUTPUT.PUT_LINE('%ROWTYPE CAN ONLY HOLD ONE ROW AT A TIME');
+END; `,
+output:` %ROWTYPE CAN ONLY HOLD ONE ROW AT A TIME
+
+
+PL/SQL procedure successfully completed.`
+},
+{
+question : "Write a PL/SQL block to handle ZERO_DIVIDE exception. (Exception Basics)",
+sql:`DECLARE
+    SALARY SCOTT.EMP.SAL%TYPE;
+    N NUMBER := 0;
+
+BEGIN
+    SELECT SAL INTO SALARY FROM SCOTT.EMP WHERE EMPNO = 7566;
+    SALARY := SALARY/N;
+EXCEPTION
+    WHEN ZERO_DIVIDE THEN
+        DBMS_OUTPUT.PUT_LINE('VARIBALE IS DIVIDED BY ZERO WHICH IS INVALID');
+END; `,
+output:`VARIBALE IS DIVIDED BY ZERO WHICH IS INVALID
+
+
+PL/SQL procedure successfully completed. `
+},
+{
+question : "Write a PL/SQL block to handle VALUE_ERROR exception. (Exception Basics)",
+sql:`DECLARe
+    N varchar2(4);
+
+BEGIN
+    n := &enter_name;
+    dbms_output.put_line(n);
+EXCEPTION
+    WHEN  VALUE_ERROR THEN
+        DBMS_OUTPUT.PUT_LINE('THERE IS VALUE ERROR IN YOUR QUERY');
+END;
+ `,
+output:` THERE IS VALUE ERROR IN YOUR QUERY
+
+
+PL/SQL procedure successfully completed.`
+},
+{
+question : "Write a PL/SQL block with a generic WHEN OTHERS exception handler. (Exception Basics)",
+sql:` DECLARE
+    N1 NUMBER := 10;
+    N2 NUMBER := 0;
+    RESULT NUMBER;
+BEGIN
+    RESULT := N1/N2;
+    dbms_output.put_line('RESULT :' || RESULT);
+EXCEPTION
+    WHEN  OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('AN ERROR OCCURRED');
+END;`,
+output:`AN ERROR OCCURRED
+
+
+PL/SQL procedure successfully completed.
+ `
+},
+{
+question : "Write a PL/SQL block to display error code and message using SQLCODE and SQLERRM. (Exception Variables)",
+sql:` DECLARE
+    N1 NUMBER := 10;
+    N2 NUMBER := 0;
+    RESULT NUMBER;
+BEGIN
+    RESULT := N1/N2;
+    dbms_output.put_line('RESULT :' || RESULT);
+EXCEPTION
+    WHEN  OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('AN ERROR OCCURRED');
+        DBMS_OUTPUT.PUT_LINE('ERROR CODE: ' || SQLCODE);
+        DBMS_OUTPUT.PUT_LINE('ERROR MESSAGE :' || SQLERRM);
+END;`,
+output:`AN ERROR OCCURRED
+ERROR CODE: -1476
+ERROR MESSAGE :ORA-01476: divisor is equal to zero
+
+
+PL/SQL procedure successfully completed. `
+},
+{
+question : "Write a PL/SQL block to capture and display error details when division by zero occurs. (SQLCODE, SQLERRM)",
+sql:`DECLARE
+    N1 NUMBER := 10;
+    N2 NUMBER := 0;
+    RESULT NUMBER;
+BEGIN
+    RESULT := N1/N2;
+    dbms_output.put_line('RESULT :' || RESULT);
+EXCEPTION
+    WHEN  OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('AN ERROR OCCURRED');
+        DBMS_OUTPUT.PUT_LINE('ERROR CODE: ' || SQLCODE);
+        DBMS_OUTPUT.PUT_LINE('ERROR MESSAGE :' || SQLERRM);
+END; `,
+output:`AN ERROR OCCURRED
+ERROR CODE: -1476
+ERROR MESSAGE :ORA-01476: divisor is equal to zero
+
+
+PL/SQL procedure successfully completed. `
+},
+{
+question : "Write a PL/SQL block to log exception message into a variable and display it. (Exception Variables)",
+sql:`DECLARE
+    NUM NUMBER := -5;
+    ERR_MSG VARCHAR2(200);
+    ERROR EXCEPTION;
+    RESULT NUMBER;
+BEGIN
+    IF NUM <0 THEN
+        RAISE ERROR;
+    END IF;
+    dbms_output.put_line('NUMBER IS POSITIVE');
+EXCEPTION
+    WHEN  ERROR THEN
+    ERR_MSG := 'NEGATIVE NUMBER ENTERED';
+    DBMS_OUTPUT.PUT_LINE('ERROR MESSAGE :' || ERR_MSG);
+END; `,
+output:`ERROR MESSAGE :NEGATIVE NUMBER ENTERED
+
+
+PL/SQL procedure successfully completed. `
+},
+{
+question : "Write a PL/SQL block to raise an error if salary is less than 2000 using RAISE_APPLICATION_ERROR. (RAISE_APPLICATION_ERROR)",
+sql:`DECLARE
+    salary NUMBER := 1500;
+BEGIN
+    IF salary < 2000 THEN
+        RAISE_APPLICATION_ERROR(-20001, 'Salary cannot be less than 2000');
+    END IF;
+
+    DBMS_OUTPUT.PUT_LINE('Salary is valid: ' || salary);
+END; `,
+output:`
+
+ORA-20001: Salary cannot be less than 2000
+ORA-06512: at line 5
+ `
+},
+{
+question : "Write a PL/SQL block to validate employee age and raise custom error if age < 18. (RAISE_APPLICATION_ERROR)",
+sql:`DECLARE
+    AGE NUMBER;
+    ERROR EXCEPTION;
+BEGIN 
+    AGE := &AGE;
+    IF AGE<18 THEN
+        RAISE_APPLICATION_ERROR(-20002,'THE AGE REQUIREMENT IS NOT FULLFILLED');
+    ELSE 
+        DBMS_OUTPUT.PUT_LINE('WELCOME');
+    END IF;
+END; `,
+output:`ORA-20002: THE AGE REQUIREMENT IS NOT FULLFILLED
+ORA-06512: at line 7 `
+},
+{
+question : "Write a PL/SQL block to restrict update operation using RAISE_APPLICATION_ERROR. (Business Rule Validation)",
+sql:`DECLARE
+    v_salary NUMBER := 1800;
+BEGIN
+    -- Restrict update if salary is less than 2000
+    IF v_salary < 2000 THEN
+        RAISE_APPLICATION_ERROR(-20002, 'Update not allowed for salary less than 2000');
+    ELSE
+        -- Update statement
+        UPDATE EMP
+        SET SAL = SAL + 500
+        WHERE SAL = v_salary;
+
+        DBMS_OUTPUT.PUT_LINE('Update successful');
+    END IF;
+END; `,
+output:`ORA-20002: Update not allowed for salary less than 2000
+ORA-06512: at line 6 `
+},
+{
+question : "Write a PL/SQL block to raise an error when invalid department number is entered. (Validation Logic)",
+sql:` DECLARE
+    DEPT SCOTT.EMP.DEPTNO%TYPE;
+    X NUMBER := 0;
+BEGIN
+    DEPT := &DEPTNO;
+
+    SELECT COUNT(*) 
+    INTO X 
+    FROM SCOTT.EMP 
+    WHERE DEPTNO = DEPT;
+
+    IF X = 0 THEN
+        RAISE_APPLICATION_ERROR(-20003, 'DEPTNO DOES NOT EXIST');
+    ELSE
+        DBMS_OUTPUT.PUT_LINE('DEPTNO EXISTS');
+    END IF;
+
+END;`,
+output:` ORA-20003: DEPTNO DOES NOT EXIST
+ORA-06512: at line 13`
+},
+{
+question : "Write a PL/SQL block to declare and handle a user-defined exception. (User Defined Exception)",
+sql:` `,
+output:` `
+},
+{
+question : "Write a PL/SQL block to raise a custom exception when salary exceeds limit. (User Defined Exception)",
+sql:`DECLARE
+    S NUMBER;
+BEGIN
+    s := &salary;
+    IF s>5000 THEN
+        RAISE_APPLICATION_ERROR(-20003,'salary exceeds limit');
+    ELSE
+        UPDATE EMP SET SAL = S WHERE DEPTNO = 10;
+    END IF;
+END; `,
+output:`ORA-20003: salary exceeds limit
+ORA-06512: at line 6 `
+},
+{
+question : "Write a PL/SQL block to validate input and raise user-defined exception for invalid data. (Custom Validation)",
+sql:`DECLARE
+    S NUMBER;
+BEGIN
+    s := &ENTER_VALUE_OF_DEPTNO;
+    IF s>100 THEN
+        RAISE_APPLICATION_ERROR(-20003,'DEPTNO DOES NOT EXI');
+    ELSE
+        DBMS_OUTPUT.PUT_LINE('DEPTNO EXIST');
+    END IF;
+END; `,
+output:`ORA-20003: DEPTNO DOES NOT EXI
+ORA-06512: at line 6 `
+},
+{
+question : "Write a PL/SQL block to handle multiple user-defined exceptions. (Multiple Exceptions)",
+sql:`DECLARE
+NEG_VAL EXCEPTION;
+EXCE_VAL EXCEPTION;
+
+N NUMBER := -5;
+L NUMBER := 100;
+BEGIN
+    IF N<0 THEN
+        RAISE NEG_VAL;
+    ELSIF N>L THEN 
+        RAISE EXCE_VAL;
+    END IF;
+    DBMS_OUTPUT.PUT_LINE('VALUE ACCEPTED' || N);
+EXCEPTION
+    WHEN NEG_VAL THEN
+        DBMS_OUTPUT.PUT_LINE('ERROR: INPUT CANNOT BE NEGATIVE');
+    WHEN EXCE_VAL THEN
+        DBMS_OUTPUT.PUT_LINE('ERROR: VALUE EXCEEDS THE MAX LIMIT');
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('ERROR OCCURED');
+END; `,
+output:` ERROR: INPUT CANNOT BE NEGATIVE
+
+
+PL/SQL procedure successfully completed.`
+},
+{
+question : "Write a PL/SQL block to catch an exception and re-raise it using RAISE. (Re-raise Exception)",
+sql:`DECLARE
+    v_dividend NUMBER := 10;
+    v_divisor  NUMBER := 0;
+    v_result   NUMBER;
+BEGIN
+    BEGIN
+        v_result := v_dividend / v_divisor;
+        
+    EXCEPTION
+        WHEN ZERO_DIVIDE THEN
+            -- 1. Perform local handling (e.g., logging)
+            DBMS_OUTPUT.PUT_LINE('Internal Error: Attempted to divide by zero.');
+            
+            -- 2. Re-raise the current exception to the outer block or caller
+            RAISE; 
+    END;
+
+EXCEPTION
+    WHEN OTHERS THEN
+        -- The re-raised exception is caught here (or by the host environment)
+        DBMS_OUTPUT.PUT_LINE('Outer Block caught the re-raised error: ' || SQLERRM);
+END;`,
+output:` 
+Internal Error: Attempted to divide by zero.
+Outer Block caught the re-raised error: ORA-01476: divisor is equal to zero
+
+
+PL/SQL procedure successfully completed.`
+}
+
+
+      ]
+    };
+
+    // Set Title
+    document.getElementById("EXP").innerText = topicData.title;
+
+    const container = document.getElementById("queryList");
+
+    // Create Queries
+    topicData.queries.forEach((q, index) => {
+      const div = document.createElement("div");
+      div.className = "query-box";
+
+      div.innerHTML = `
+        <div class="query-title">
+          (${index + 1}) ${q.question}
+        </div>
+
+        <button onclick="toggleAnswer(${index})">
+          Show Answer
+        </button>
+
+        <div class="answer" id="answer-${index}">
+          <div class="answer-container">
+            
+            <div class="query-code">
+              <PRE>${q.sql}</PRE>
+            </div>
+
+            <div class="output">
+              <PRE>${q.output}</PRE>
+            </div>
+
+          </div>
+        </div>
+      `;
+
+      container.appendChild(div);
+    });
+
+    // Toggle Answer
+    function toggleAnswer(index) {
+      const ans = document.getElementById(`answer-${index}`);
+      ans.style.display = ans.style.display === "block" ? "none" : "block";
+    }
+
+  </script>
+
+</body>
+</html>

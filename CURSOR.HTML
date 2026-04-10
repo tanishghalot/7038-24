@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Topic Page</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #DEF2F1;
+      padding: 20px;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      padding: 15px;
+      border: 1px solid black;
+      border-radius: 15px;
+      font-size: 26px;
+      font-weight: bold;
+      background: #78E7E0 ;
+      color: #17252a;
+      margin-bottom: 30px;
+    }
+
+    /* Query Box */
+    .query-box {
+      background: #DEF2F1;
+      border: 0px solid black;
+      border-radius: 15px;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+
+    .query-title {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    button {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 15px;
+      background: #78E7E0 ;
+      color: black;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #2B7A78;
+    }
+
+    /* Answer Section */
+    .answer {
+      display: none;
+      margin-top: 15px;
+      border-top: 2px solid black;
+      padding-top: 10px;
+    }
+
+    .answer-container {
+      display: flex;
+      gap: 20px;
+    }
+
+    .query-code {
+      width: 50%;
+      background: #DEF2F1;
+      padding: 10px;
+      border: 1px solid black;
+      border-radius: 5px;
+      font-family: monospace;
+    }
+
+    .output {
+      width: 50%;
+      background: #DEF2F1;
+      padding: 10px;
+      border: 1px solid black;
+      border-radius: 5px;
+      font-family: monospace;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      border-radius: 5px;
+    }
+
+    th, td {
+      border: 1px solid black;
+      border-radius: 5px;
+      padding: 6px;
+      text-align: center;
+    }
+
+    /* Responsive */
+    @media (max-width: 700px) {
+      .answer-container {
+        flex-direction: column;
+      }
+
+      .query-code, .output {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Topic Title -->
+  <div class="header" id="CUR">
+    PL CURSORS
+  </div>
+
+  <!-- Query List -->
+  <div id="queryList"></div>
+
+  <script>
+    // SAMPLE DATA (EDIT THIS)
+    const topicData = {
+      title: "PL CURSOR",
+      queries: [
+        {
+question : "Write a PL/SQL block to declare a cursor to fetch all employees from EMP table and display their names. (Explicit Cursor)",
+sql:`DECLARE
+    CURSOR C1 IS SELECT * FROM SCOTT.EMP;
+    X SCOTT.EMP%ROWTYPE;
+
+BEGIN
+    OPEN C1;
+    FOR i IN 1..14 LOOP
+        FETCH C1 INTO X;
+        DBMS_OUTPUT.PUT_LINE(X.ENAME);
+    END LOOP;
+END; `,
+output:`KING
+BLAKE
+CLARK
+JONES
+SCOTT
+FORDOU
+SMITH
+ALLEN
+WARD
+MARTIN
+TURNER
+ADAMS
+JAMES
+MILLER`
+},
+{
+question : "Write a PL/SQL block to fetch employee name and salary using cursor and display them. (Explicit Cursor)",
+sql:`DECLARE
+    CURSOR C1 IS SELECT * FROM SCOTT.EMP;
+    X SCOTT.EMP%ROWTYPE;
+
+BEGIN
+    OPEN C1;
+    FOR i IN 1..14 LOOP
+        FETCH C1 INTO X;
+        DBMS_OUTPUT.PUT_LINE(X.ENAME || ' ' || X.SAL);
+    END LOOP;
+END; `,
+output: ` KING 5000
+BLAKE 2850
+CLARK 2450
+JONES 2975
+SCOTT 3000
+FORD 3000
+SMITH 800
+ALLEN 1600
+WARD 1250
+MARTIN 1250
+TURNER 1500
+ADAMS 1100
+JAMES 950
+MILLER 1300
+
+
+PL/SQL procedure successfully completed.` 
+},
+{
+question : "Write a PL/SQL block to display employees whose salary is greater than 3000 using cursor. (Explicit Cursor + Condition)",
+sql:` DECLARE
+    CURSOR C1 IS SELECT * FROM SCOTT.EMP WHERE SAL>3000;
+    X SCOTT.EMP%ROWTYPE;
+
+BEGIN
+    OPEN C1;
+    FOR i IN 1..10 LOOP
+        FETCH C1 INTO X;
+        DBMS_OUTPUT.PUT_LINE(X.ENAME);
+        EXIT WHEN C1%NOTFOUND;
+    END LOOP;
+END;`,
+output: `KING
+
+
+PL/SQL procedure successfully completed. `
+},
+{
+question : "Write a PL/SQL block to count number of employees using cursor. (Explicit Cursor)",
+sql:`DECLARE
+    CURSOR C1 IS SELECT * FROM SCOTT.EMP WHERE SAL>3000;
+    X SCOTT.EMP%ROWTYPE;
+    C NUMBER := 0;
+
+BEGIN
+    OPEN C1;
+    LOOP
+        FETCH C1 INTO X;
+        EXIT WHEN C1%NOTFOUND; 
+        C := C + 1;
+    END LOOP;
+    CLOSE C1;
+    DBMS_OUTPUT.PUT_LINE(C);
+END; `,
+output: `1
+PL/SQL procedure successfully completed.`
+},
+{
+question : "Write a PL/SQL block to calculate total salary of all employees using cursor. (Explicit Cursor + Aggregate)",
+sql:`DECLARE
+    CURSOR C1 IS SELECT * FROM SCOTT.EMP;
+    X SCOTT.EMP%ROWTYPE;
+    SUM NUMBER := 0 ;
+
+BEGIN
+    OPEN C1;
+    LOOP
+        FETCH C1 INTO X;
+        SUM := SUM + X.SAL;
+        EXIT WHEN C1%NOTFOUND;
+    END LOOP;
+    DBMS_OUTPUT.PUT_LINE(SUM);
+    CLOSE C1;
+END; `,
+output: `
+30325
+
+
+PL/SQL procedure successfully completed.
+ `
+},
+{
+question : "Write a PL/SQL block to fetch records one by one using OPEN, FETCH, and CLOSE. (Cursor Lifecycle)",
+sql:` DECLARE
+    CURSOR C1 IS SELECT * FROM SCOTT.EMP;
+    X SCOTT.EMP%ROWTYPE;
+    
+
+BEGIN
+    OPEN C1;
+    LOOP
+        FETCH C1 INTO X;
+        EXIT WHEN C1%NOTFOUND;
+        DBMS_OUTPUT.PUT_LINE(X.ENAME);
+        
+    END LOOP;
+    CLOSE C1;
+END;
+`,
+output: `KING
+BLAKE
+CLARK
+JONES
+SCOTT
+FORD
+SMITH
+ALLEN
+WARD
+MARTIN
+TURNER
+ADAMS
+JAMES
+MILLER
+
+
+PL/SQL procedure successfully completed `
+},
+{
+question : "Write a PL/SQL block to display all employee records using cursor FOR LOOP. (Cursor FOR LOOP)",
+sql:`DECLARE
+    CURSOR C1 IS SELECT * FROM SCOTT.EMP;
+    X SCOTT.EMP%ROWTYPE;
+    
+
+BEGIN
+    OPEN C1;
+    FOR i IN 1..14 LOOP
+        FETCH C1 INTO X;
+        EXIT WHEN C1%NOTFOUND;
+        DBMS_OUTPUT.PUT_LINE(X.ENAME);
+        
+    END LOOP;
+    CLOSE C1;
+END; `,
+output: `KING
+BLAKE
+CLARK
+JONES
+SCOTT
+FORD
+SMITH
+ALLEN
+WARD
+MARTIN
+TURNER
+ADAMS
+JAMES
+MILLER
+
+
+PL/SQL procedure successfully completed `
+},
+{
+question : "Write a PL/SQL block to display employee names and jobs using cursor FOR LOOP. (Cursor FOR LOOP)",
+sql:`DECLARE
+    CURSOR C1 IS SELECT * FROM SCOTT.EMP;
+    X SCOTT.EMP%ROWTYPE;
+    
+
+BEGIN
+    OPEN C1;
+    FOR i IN 1..14 LOOP
+        FETCH C1 INTO X;
+        EXIT WHEN C1%NOTFOUND;
+        DBMS_OUTPUT.PUT_LINE(X.ENAME || ' ' || X.JOB);
+        
+    END LOOP;
+    CLOSE C1;
+END; `,
+output: ` KING PRESIDENT
+BLAKE MANAGER
+CLARK MANAGER
+JONES MANAGER
+SCOTT ANALYST
+FORD ANALYST
+SMITH CLERK
+ALLEN SALESMAN
+WARD SALESMAN
+MARTIN SALESMAN
+TURNER SALESMAN
+ADAMS CLERK
+JAMES CLERK
+MILLER CLERK
+
+
+PL/SQL procedure successfully completed.`
+},
+{
+question : "Write a PL/SQL block to display employees from department 10 using cursor FOR LOOP. (Cursor FOR LOOP + Condition)",
+sql:`DECLARE
+    CURSOR C1 IS SELECT * FROM SCOTT.EMP WHERE DEPTNO = 10;
+    X SCOTT.EMP%ROWTYPE;
+    
+
+BEGIN
+    OPEN C1;
+    FOR i IN 1..14 LOOP
+        FETCH C1 INTO X;
+        EXIT WHEN C1%NOTFOUND;
+        DBMS_OUTPUT.PUT_LINE(X.ENAME);
+        
+    END LOOP;
+    CLOSE C1;
+END; `,
+output: `KING
+CLARK
+MILLER
+
+
+PL/SQL procedure successfully completed. `
+},
+{
+question : "Write a PL/SQL block to calculate total salary using cursor FOR LOOP. (Cursor FOR LOOP)",
+sql:`DECLARE
+    CURSOR C1 IS SELECT * FROM SCOTT.EMP;
+    X SCOTT.EMP%ROWTYPE;
+    i NUMBER ;
+    SUM NUMBER := 0;
+
+BEGIN
+    OPEN C1;
+    FOR i IN 1..14 LOOP
+        FETCH C1 INTO X;
+        SUM := SUM + X.SAL;
+    END LOOP;
+    DBMS_OUTPUT.PUT_LINE(SUM);
+    CLOSE C1;
+END; `,
+output: `
+29025
+
+
+PL/SQL procedure successfully completed. `
+},
+{
+question : "Write a PL/SQL block to display employees with salary greater than average using cursor FOR LOOP. (Cursor FOR LOOP + Subquery)",
+sql:`DECLARE
+    CURSOR C1 IS SELECT * FROM SCOTT.EMP WHERE SAL > (SELECT AVG(SAL) FROM SCOTT.EMP);
+    X SCOTT.EMP%ROWTYPE;
+    i NUMBER ;
+    SUM NUMBER := 0;
+
+BEGIN
+    OPEN C1;
+    FOR i IN 1..14 LOOP
+        FETCH C1 INTO X;
+        EXIT WHEN C1%NOTFOUND;
+        DBMS_OUTPUT.PUT_LINE(X.ENAME);
+        
+    END LOOP;
+    CLOSE C1;
+END; `,
+output: `KING
+BLAKE
+CLARK
+JONES
+SCOTT
+FORD
+
+
+PL/SQL procedure successfully completed. `
+},
+{
+question : "Write a PL/SQL block to declare a parameterized cursor that takes department number and displays employees of that department. (Parameterized Cursor)",
+sql:` DECLARE
+    CURSOR C1 (DEPT NUMBER) IS SELECT * FROM SCOTT.EMP WHERE DEPTNO = DEPT;
+    X SCOTT.EMP%ROWTYPE;
+    i NUMBER ;
+    N NUMBER;
+    SUM NUMBER := 0;
+
+BEGIN
+    N :=&ENTER_DEPARTMENT; 
+    OPEN C1(N);
+    FOR i IN 1..14 LOOP
+        FETCH C1 INTO X;
+        EXIT WHEN C1%NOTFOUND;
+        DBMS_OUTPUT.PUT_LINE(X.ENAME);
+        
+    END LOOP;
+    CLOSE C1;
+END;`,
+output: `KING
+CLARK
+MILLER
+
+
+PL/SQL procedure successfully completed. `
+},
+{
+question : "Write a PL/SQL block to fetch employees whose salary is greater than a given value using parameterized cursor. (Parameterized Cursor)",
+sql:`DECLARE
+    CURSOR C1 (SALARY NUMBER) IS SELECT * FROM SCOTT.EMP WHERE SAL > SALARY;
+    X SCOTT.EMP%ROWTYPE;
+    i NUMBER ;
+    N NUMBER;
+    SUM NUMBER := 0;
+
+BEGIN
+    N :=&SALARY; 
+    OPEN C1(N);
+    FOR i IN 1..14 LOOP
+        FETCH C1 INTO X;
+        EXIT WHEN C1%NOTFOUND;
+        DBMS_OUTPUT.PUT_LINE(X.ENAME);
+        
+    END LOOP;
+    CLOSE C1;
+END; `,
+output: ` KING
+BLAKE
+JONES
+SCOTT
+FORD
+
+
+PL/SQL procedure successfully completed.`
+},
+{
+question : "Write a PL/SQL block to display employees based on job role using parameterized cursor. (Parameterized Cursor)",
+sql:` DECLARE
+    CURSOR C1 (J SCOTT.EMP.JOB%TYPE) IS SELECT * FROM SCOTT.EMP WHERE JOB = J;
+    X SCOTT.EMP%ROWTYPE;
+    i NUMBER ;
+    N VARCHAR2(20);
+    SUM NUMBER := 0;
+
+BEGIN
+    N :=&JOB; 
+    OPEN C1(N);
+    FOR i IN 1..14 LOOP
+        FETCH C1 INTO X;
+        EXIT WHEN C1%NOTFOUND;
+        DBMS_OUTPUT.PUT_LINE(X.ENAME);
+        
+    END LOOP;
+    CLOSE C1;
+END;`,
+output: `SMITH
+ADAMS
+JAMES
+MILLER
+
+
+PL/SQL procedure successfully completed. `
+},
+{
+question : "Write a PL/SQL block to calculate total salary of a given department using parameterized cursor. (Parameterized Cursor + Aggregate)",
+sql:` DECLARE
+    CURSOR C1 (DEPT NUMBER) IS SELECT * FROM SCOTT.EMP WHERE DEPTNO = DEPT;
+    X SCOTT.EMP%ROWTYPE;
+    i NUMBER ;
+    N NUMBER;
+    SUM NUMBER := 0;
+
+BEGIN
+    N :=&DEPTNO; 
+    OPEN C1(N);
+    FOR i IN 1..14 LOOP
+        FETCH C1 INTO X;
+        EXIT WHEN C1%NOTFOUND;
+        SUM := SUM + X.SAL;  
+    END LOOP;
+    DBMS_OUTPUT.PUT_LINE(SUM);
+    CLOSE C1;
+END;`,
+output: `
+10875
+
+
+PL/SQL procedure successfully completed. `
+},
+{
+question : "Write a PL/SQL block to pass multiple parameters (deptno, job) to cursor and display matching records. (Parameterized Cursor)",
+sql:`
+DECLARE
+    CURSOR C1 (E NUMBER,J SCOTT.EMP.JOB%TYPE ) IS SELECT * FROM SCOTT.EMP WHERE EMPNO = E AND JOB = J;
+    X SCOTT.EMP%ROWTYPE;
+    D NUMBER;
+    E NUMBER;
+    J SCOTT.EMP.JOB%TYPE;
+
+BEGIN
+    E :=&EMPNO; 
+    J := &JOB;
+    OPEN C1(E,J);
+        FETCH C1 INTO X;
+    DBMS_OUTPUT.PUT_LINE(X.EMPNO || ' ' || X.ENAME || ' ' || X.JOB);
+    CLOSE C1;
+END; `,
+output: `7839 KING PRESIDENT
+
+
+PL/SQL procedure successfully completed. `
+},
+{
+question : "Write a PL/SQL block to increase salary by 10% for employees using WHERE CURRENT OF. (Updatable Cursor)",
+sql:`DECLARE
+    CURSOR emp_cursor IS
+        SELECT SAL 
+        FROM EMP
+        FOR UPDATE;
+
+BEGIN
+    FOR rec IN emp_cursor LOOP
+        UPDATE EMP
+        SET SAL = SAL + (SAL * 0.10)
+        WHERE CURRENT OF emp_cursor;
+    END LOOP;
+
+    COMMIT;
+
+    DBMS_OUTPUT.PUT_LINE('Salary updated successfully!');
+END; `,
+output: `Salary updated successfully!
+
+
+PL/SQL procedure successfully completed. `
+},
+{
+question : "Write a PL/SQL block to delete employees with salary less than 2000 using cursor. (Updatable Cursor + DELETE)",
+sql:`DECLARE
+    CURSOR C1  IS SELECT * FROM SCOTT.EMP ;
+    X SCOTT.EMP%ROWTYPE;
+    i NUMBER ;
+    N NUMBER;
+BEGIN
+    OPEN C1;
+    FOR i IN 1..14 LOOP
+        FETCH C1 INTO X;
+        EXIT WHEN C1%NOTFOUND;
+        IF X.SAL <2000 THEN
+            DELETE FROM EMP WHERE X.SAL<2000;
+            IF SQL%FOUND THEN
+                DBMS_OUTPUT.PUT_LINE('DELETED SUCCESSFULLY');  
+            END IF;
+        END IF;
+    END LOOP;
+    CLOSE C1;
+END; `,
+output: `DELETED SUCCESSFULLY
+
+
+PL/SQL procedure successfully completed. `
+},
+{
+question : "Write a PL/SQL block to update job of employees using updatable cursor. (Updatable Cursor)",
+sql:`DECLARE
+    CURSOR c1 IS
+        SELECT JOB FROM EMP WHERE JOB = 'CLERK'
+        FOR UPDATE;
+BEGIN
+    FOR rec IN c1 LOOP
+        UPDATE EMP
+        SET JOB = 'LAWYER'
+        WHERE CURRENT OF c1;
+    END LOOP;
+    DBMS_OUTPUT.PUT_LINE('THE DATA IS UPDATED SUCCESSFULLY');
+END; `,
+output: ` 
+THE DATA IS UPDATED SUCCESSFULLY
+
+
+PL/SQL procedure successfully completed.
+`
+},
+{
+question : "Write a PL/SQL block to fetch records using cursor and modify values row-by-row. (Updatable Cursor)",
+sql:`DECLARE
+    CURSOR c1 IS
+        SELECT JOB FROM EMP 
+        FOR UPDATE;
+BEGIN
+    FOR rec IN c1 LOOP
+        UPDATE EMP
+        SET JOB = 'LAWYER'
+        WHERE CURRENT OF c1;
+    END LOOP;
+    DBMS_OUTPUT.PUT_LINE('THE DATA IS UPDATED SUCCESSFULLY');
+END;
+ `,
+output: `
+THE DATA IS UPDATED SUCCESSFULLY
+
+
+PL/SQL procedure successfully completed. `
+},
+{
+question : "Write a PL/SQL block using explicit cursor and IF condition to display high salary employees. (Cursor + IF)",
+sql:`
+DECLARE
+    CURSOR c1 IS SELECT * FROM EMP;
+    M NUMBER;
+    X EMP%ROWTYPE;
+BEGIN
+    SELECT MAX(SAL) INTO M FROM EMP;
+
+    OPEN c1;
+    LOOP
+        FETCH c1 INTO X;
+        EXIT WHEN c1%NOTFOUND;
+
+        IF X.SAL = M THEN
+            DBMS_OUTPUT.PUT_LINE(X.ENAME);
+        END IF;
+    END LOOP;
+    CLOSE c1;
+END;
+ `,
+output: `
+KING
+
+
+PL/SQL procedure successfully completed.
+ `
+},
+
+      ]
+    };
+
+    // Set Title
+    document.getElementById("CUR").innerText = topicData.title;
+
+    const container = document.getElementById("queryList");
+
+    // Create Queries
+    topicData.queries.forEach((q, index) => {
+      const div = document.createElement("div");
+      div.className = "query-box";
+
+      div.innerHTML = `
+        <div class="query-title">
+          (${index + 1}) ${q.question}
+        </div>
+
+        <button onclick="toggleAnswer(${index})">
+          Show Answer
+        </button>
+
+        <div class="answer" id="answer-${index}">
+          <div class="answer-container">
+            
+            <div class="query-code">
+              <PRE>${q.sql}</PRE>
+            </div>
+
+            <div class="output">
+              <PRE>${q.output}</PRE>
+            </div>
+
+          </div>
+        </div>
+      `;
+
+      container.appendChild(div);
+    });
+
+    // Toggle Answer
+    function toggleAnswer(index) {
+      const ans = document.getElementById(`answer-${index}`);
+      ans.style.display = ans.style.display === "block" ? "none" : "block";
+    }
+
+  </script>
+
+</body>
+</html>

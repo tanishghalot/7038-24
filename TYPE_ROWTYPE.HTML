@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Topic Page</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #DEF2F1;
+      padding: 20px;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      padding: 15px;
+      border: 1px solid black;
+      border-radius: 15px;
+      font-size: 26px;
+      font-weight: bold;
+      background: #78E7E0 ;
+      color: #17252a;
+      margin-bottom: 30px;
+    }
+
+    /* Query Box */
+    .query-box {
+      background: #DEF2F1;
+      border: 0px solid black;
+      border-radius: 15px;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+
+    .query-title {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    button {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 15px;
+      background: #78E7E0 ;
+      color: black;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #2B7A78;
+    }
+
+    /* Answer Section */
+    .answer {
+      display: none;
+      margin-top: 15px;
+      border-top: 2px solid black;
+      padding-top: 10px;
+    }
+
+    .answer-container {
+      display: flex;
+      gap: 20px;
+    }
+
+    .query-code {
+      width: 50%;
+      background: #DEF2F1;
+      padding: 10px;
+      border: 1px solid black;
+      border-radius: 5px;
+      font-family: monospace;
+    }
+
+    .output {
+      width: 50%;
+      background: #DEF2F1;
+      padding: 10px;
+      border: 1px solid black;
+      border-radius: 5px;
+      font-family: monospace;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      border-radius: 5px;
+    }
+
+    th, td {
+      border: 1px solid black;
+      border-radius: 5px;
+      padding: 6px;
+      text-align: center;
+    }
+
+    /* Responsive */
+    @media (max-width: 700px) {
+      .answer-container {
+        flex-direction: column;
+      }
+
+      .query-code, .output {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Topic Title -->
+  <div class="header" id="PLTY">
+    PL:%TYPE AND %ROWTYPE
+  </div>
+
+  <!-- Query List -->
+  <div id="queryList"></div>
+
+  <script>
+    // SAMPLE DATA (EDIT THIS)
+    const topicData = {
+      title: "PL :%TYPE AND %ROWTYPE",
+      queries: [
+        {
+question : "Write a PL/SQL block to fetch employee name from EMP table for empno = 7369 and display it. (SELECT INTO Statement)",
+sql:` DECLARE
+ ENAMEE SCOTT.EMP.ENAME%TYPE;
+
+BEGIN
+    SELECT ENAME INTO ENAMEE FROM SCOTT.EMP WHERE EMPNO = 7369;
+    DBMS_OUTPUT.PUT_LINE(ENAMEE);
+END;`,
+output:`SMITH
+
+
+PL/SQL procedure successfully completed.
+ `
+},
+{
+question : "Write a PL/SQL block to retrieve salary of an employee and print it. (SELECT INTO Statement)",
+sql:` DECLARE
+ SALARY SCOTT.EMP.SAL%TYPE;
+
+BEGIN
+    SELECT SAL INTO SALARY FROM SCOTT.EMP WHERE EMPNO = 7369;
+    DBMS_OUTPUT.PUT_LINE(SALARY);
+END;`,
+output:`800
+
+
+PL/SQL procedure successfully completed. `
+},
+{
+question : "Write a PL/SQL block to fetch employee name and job using a single SELECT statement. (SELECT INTO Statement)",
+sql:`DECLARE
+ ENAMEE SCOTT.EMP.ENAME%TYPE;
+ J SCOTT.EMP.JOB%TYPE;
+
+BEGIN
+    SELECT ENAME,JOB INTO ENAMEE,J FROM SCOTT.EMP WHERE EMPNO = 7369;
+    DBMS_OUTPUT.PUT_LINE(ENAMEE|| ' ' || J);
+END; `,
+output:` SMITH CLERK
+
+
+PL/SQL procedure successfully completed.`
+},
+{
+question : "Write a PL/SQL block to display department number of an employee using SELECT INTO. (SELECT INTO Statement)",
+sql:`DECLARE
+ DNO SCOTT.EMP.DEPTNO%TYPE;
+
+BEGIN
+    SELECT DEPTNO INTO DNO FROM SCOTT.EMP WHERE EMPNO = 7369;
+    DBMS_OUTPUT.PUT_LINE(DNO);
+END; `,
+output:`20
+
+
+PL/SQL procedure successfully completed.
+`
+},
+{
+question : "Write a PL/SQL block to fetch hiredate of an employee and display it. (SELECT INTO Statement)",
+sql:`DECLARE
+ hd SCOTT.EMP.hiredate%TYPE;
+
+BEGIN
+    SELECT hiredate INTO hd FROM SCOTT.EMP WHERE EMPNO = 7369;
+    DBMS_OUTPUT.PUT_LINE(hd);
+END; `,
+output:`17-DEC-80
+
+
+PL/SQL procedure successfully completed. `
+},
+{
+question : "Write a PL/SQL block to count total number of employees using SELECT INTO. (Aggregate Function + SELECT)",
+sql:`DECLARE
+ empno number;
+
+BEGIN
+    SELECT count(empno) INTO empno FROM SCOTT.EMP;
+    DBMS_OUTPUT.PUT_LINE('TOTAL NUMBER OF EMPLOYEES ' ||empno);
+END; `,
+output:`TOTAL NUMBER OF EMPLOYEES 14
+
+
+PL/SQL procedure successfully completed.
+ `
+},
+{
+question : "Write a PL/SQL block to declare a variable using %TYPE based on EMP.SAL and display salary. (%TYPE)",
+sql:` DECLARE
+ SALARY SCOTT.EMP.SAL%TYPE;
+
+BEGIN
+    SELECT SAL INTO SALARY FROM SCOTT.EMP WHERE EMPNO = 7369;
+    DBMS_OUTPUT.PUT_LINE(SALARY);
+END;`,
+output:`800
+
+
+PL/SQL procedure successfully completed.
+ `
+},
+{
+question : "Write a PL/SQL block to declare variables for employee name and job using %TYPE. (%TYPE)",
+sql:` DECLARE
+ ENAMEE SCOTT.EMP.ENAME%TYPE;
+ J SCOTT.EMP.JOB%TYPE;
+
+BEGIN
+    SELECT ENAME,JOB INTO ENAMEE,J FROM SCOTT.EMP WHERE EMPNO = 7566;
+    DBMS_OUTPUT.PUT_LINE(ENAMEE|| ' ' || J);
+END;`,
+output:` JONES MANAGER
+
+
+PL/SQL procedure successfully completed.`
+},
+{
+question : "Write a PL/SQL block to fetch salary using %TYPE variable and display it. (%TYPE + SELECT INTO)",
+sql:` DECLARE
+ SALARY SCOTT.EMP.SAL%TYPE;
+--  J SCOTT.EMP.JOB%TYPE;
+
+BEGIN
+    SELECT SAL INTO SALARY FROM SCOTT.EMP WHERE EMPNO = 7566;
+    DBMS_OUTPUT.PUT_LINE(SALARY);
+END;`,
+output:`2975
+
+
+PL/SQL procedure successfully completed. `
+},
+{
+question : "Write a PL/SQL block to calculate annual salary using %TYPE variable. (%TYPE + Calculation)",
+sql:`
+DECLARE
+ SALARY SCOTT.EMP.SAL%TYPE;
+
+BEGIN
+    SELECT SAL INTO SALARY FROM SCOTT.EMP WHERE EMPNO = 7369;
+    DBMS_OUTPUT.PUT_LINE('THE ANNUAL SALARY IS ' || SALARY*12);
+END; `,
+output:`THE ANNUAL SALARY IS 9600
+
+
+PL/SQL procedure successfully completed. `
+},
+{
+question : "Write a PL/SQL block to update salary using %TYPE variable. (%TYPE + UPDATE)",
+sql:`
+DECLARE
+ SALARY EMP.SAL%TYPE;
+
+BEGIN
+    SALARY := &SALARY;
+    UPDATE EMP SET SAL = SALARY WHERE EMPNO = 7369;
+    DBMS_OUTPUT.PUT_LINE('DATA UPDATED');
+END; `,
+output:` DATA UPDATED
+
+
+PL/SQL procedure successfully completed.
+`
+},
+{
+question : "Write a PL/SQL block to declare a variable using %TYPE from DEPT table. (%TYPE)",
+sql:`DECLARE
+ DN SCOTT.DEPT.DNAME%TYPE;
+
+BEGIN
+    SELECT DNAME INTO DN FROM SCOTT.DEPT WHERE DEPTNO = 10;
+    DBMS_OUTPUT.PUT_LINE(DN);
+END; `,
+output:`ACCOUNTING
+
+
+PL/SQL procedure successfully completed. `
+},
+{
+question : "Write a PL/SQL block to declare a record using %ROWTYPE for EMP table. (%ROWTYPE)",
+sql:`DECLARE
+ REC SCOTT.EMP%ROWTYPE;
+
+BEGIN
+    SELECT * INTO REC FROM SCOTT.EMP WHERE EMPNO = 7369;
+    DBMS_OUTPUT.PUT_LINE(REC.EMPNO || ' ' || REC.ENAME || ' ' || REC.JOB || ' ' ||REC.SAL);
+END; `,
+output:`7369 SMITH CLERK 800
+
+
+PL/SQL procedure successfully completed. `
+},
+{
+question : "Write a PL/SQL block to fetch complete employee record using %ROWTYPE and display fields. (%ROWTYPE + SELECT INTO)",
+sql:`DECLARE
+ REC SCOTT.EMP%ROWTYPE;
+
+BEGIN
+    SELECT * INTO REC FROM SCOTT.EMP WHERE EMPNO = 7369;
+    DBMS_OUTPUT.PUT_LINE(REC.EMPNO || ' ' || REC.ENAME || ' ' || REC.JOB || ' ' ||REC.SAL);
+END; `,
+output:`7369 SMITH CLERK 800
+
+
+PL/SQL procedure successfully completed. `
+},
+{
+question : "Write a PL/SQL block to display employee name, salary, and job using %ROWTYPE. (%ROWTYPE)",
+sql:`DECLARE
+ REC SCOTT.EMP%ROWTYPE;
+
+BEGIN
+    SELECT * INTO REC FROM SCOTT.EMP WHERE EMPNO = 7369;
+    DBMS_OUTPUT.PUT_LINE( REC.ENAME || ' ' || REC.JOB || ' ' ||REC.SAL);
+END; `,
+output:`SMITH CLERK 800
+
+
+PL/SQL procedure successfully completed.
+ `
+},
+{
+question : "Write a PL/SQL block to update salary using %ROWTYPE variable. (%ROWTYPE + UPDATE)",
+sql:`
+DECLARE
+ REC SCOTT.EMP%ROWTYPE;
+ S NUMBER;
+
+BEGIN
+    S := &SALARY;
+    UPDATE EMP SET SAL = S WHERE EMPNO = 7566;
+    SELECT * INTO REC FROM SCOTT.EMP WHERE EMPNO = 7566;
+    DBMS_OUTPUT.PUT_LINE(REC.ENAME || ' ' || REC.JOB || ' ' ||REC.SAL);
+END;`,
+output:`JONES MANAGER 2975
+
+
+PL/SQL procedure successfully completed.`
+},
+{
+question : "Write a PL/SQL block to insert a record using %ROWTYPE. (%ROWTYPE + INSERT)",
+sql:` DECLARE
+ REC SCOTT.EMP.ENAME%TYPE;
+
+BEGIN
+   INSERT INTO EMP (EMPNO,ENAME,SAL) VALUES(1001,'HELLO',2300);  
+    SELECT ENAME INTO REC FROM SCOTT.EMP WHERE EMPNO = 1001;
+    DBMS_OUTPUT.PUT_LINE( REC.ENAME || ' ' || REC.JOB || ' ' ||REC.SAL);
+ END;`,
+output:`HELLO NULL 2300 `
+},
+
+      ]
+    };
+
+    // Set Title
+    document.getElementById("PLTY").innerText = topicData.title;
+
+    const container = document.getElementById("queryList");
+
+    // Create Queries
+    topicData.queries.forEach((q, index) => {
+      const div = document.createElement("div");
+      div.className = "query-box";
+
+      div.innerHTML = `
+        <div class="query-title">
+          (${index + 1}) ${q.question}
+        </div>
+
+        <button onclick="toggleAnswer(${index})">
+          Show Answer
+        </button>
+
+        <div class="answer" id="answer-${index}">
+          <div class="answer-container">
+            
+            <div class="query-code">
+              <PRE>${q.sql}</PRE>
+            </div>
+
+            <div class="output">
+              ${q.output}
+            </div>
+
+          </div>
+        </div>
+      `;
+
+      container.appendChild(div);
+    });
+
+    // Toggle Answer
+    function toggleAnswer(index) {
+      const ans = document.getElementById(`answer-${index}`);
+      ans.style.display = ans.style.display === "block" ? "none" : "block";
+    }
+
+  </script>
+
+</body>
+</html>

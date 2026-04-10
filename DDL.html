@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Topic Page</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #DEF2F1;
+      padding: 20px;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      padding: 15px;
+      border: 1px solid black;
+      border-radius: 15px;
+      font-size: 26px;
+      font-weight: bold;
+      background: #78E7E0 ;
+      color: #17252a;
+      margin-bottom: 30px;
+    }
+
+    /* Query Box */
+    .query-box {
+      background: #DEF2F1;
+      border: 0px solid black;
+      border-radius: 15px;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+
+    .query-title {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    button {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 15px;
+      background: #78E7E0 ;
+      color: black;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #2B7A78;
+    }
+
+    /* Answer Section */
+    .answer {
+      display: none;
+      margin-top: 15px;
+      border-top: 2px solid black;
+      padding-top: 10px;
+    }
+
+    .answer-container {
+      display: flex;
+      gap: 20px;
+    }
+
+    .query-code {
+      width: 50%;
+      background: #DEF2F1;
+      padding: 10px;
+      border: 1px solid black;
+      border-radius: 5px;
+      font-family: monospace;
+    }
+
+    .output {
+      width: 50%;
+      background: #DEF2F1;
+      padding: 10px;
+      border: 1px solid black;
+      border-radius: 5px;
+      font-family: monospace;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      border-radius: 5px;
+    }
+
+    th, td {
+      border: 1px solid black;
+      border-radius: 5px;
+      padding: 6px;
+      text-align: center;
+    }
+
+    /* Responsive */
+    @media (max-width: 700px) {
+      .answer-container {
+        flex-direction: column;
+      }
+
+      .query-code, .output {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Topic Title -->
+  <div class="header" id="DDL">
+    DATA DEFINITION LANGAUGE
+  </div>
+
+  <!-- Query List -->
+  <div id="queryList"></div>
+
+  <script>
+    // SAMPLE DATA (EDIT THIS)
+    const topicData = {
+      title: "DATA DEFINITION Language",
+      queries: [
+        {
+  question : "Create a table called STUDENT with columns: SID (NUMBER) , SNAME (VARCHAR2(30)) , AGE (NUMBER) , COURSE (VARCHAR2(20))",
+  sql : "CREATE TABLE STUDENT ( SID NUMBER(3) PRIMARY KEY, SNAME VARCHAR2(30) DEFAULT 'UNKNOWN', AGE NUMBER(2), COURSE VARCHAR2(20) );",
+output : "Table STUDENT created"
+},
+{
+  question : "Create a table EMPLOYEE with columns: EID NUMBER , ENAME VARCHAR2(40) , SALARY NUMBER(8,2) , DEPTNO NUMBER",
+sql : "CREATE TABLE EMPLOYEEE ( EID NUMBER(2) PRIMARY KEY, ENAME VARCHAR2(40), SALARY NUMBER(8,2), DEPTNO NUMBER(2) );",
+output : "Table EMPLOYEEE created"
+},
+{
+  question : "Create a table DEPARTMENT with columns: DEPTNO NUMBER , DNAME VARCHAR2(30) , LOCATION VARCHAR2(30)",
+sql : "CREATE TABLE DEPARTMENT ( DEPTNO NUMBER(2) PRIMARY KEY, DNAME VARCHAR2(30), LOCATION VARCHAR2(30) );",
+output : "Table DEPARTMENT created"
+},
+{
+  question : "Create a table BOOK with columns: BOOK_ID NUMBER , TITLE VARCHAR2(50) , AUTHOR VARCHAR2(40) , PRICE NUMBER",
+sql : "CREATE TABLE BOOK ( BOOK_ID NUMBER(2) PRIMARY KEY, TITLE VARCHAR2(50), AUTHOR VARCHAR2(40), PRICE NUMBER(3) );",
+output : "Table BOOK created"
+},
+{
+  question : "Create a table COURSE with columns: CID NUMBER , CNAME VARCHAR2(40) , DURATION NUMBER",
+sql : "CREATE TABLE COURSE ( CID NUMBER(2) PRIMARY KEY, CNAME VARCHAR2(40), DURATION NUMBER(2) );",
+output : "Table COURSE created"
+},
+{
+  question : "Create a table PROJECT with columns: PID NUMBER , PNAME VARCHAR2(50) , START_DATE DATE , END_DATE DATE",
+sql : "CREATE TABLE PROJECT ( PID NUMBER(2) PRIMARY KEY, PNAME VARCHAR2(50), START_DATE DATE, END_DATE DATE );",
+output : "Table PROJECT created"
+},
+{
+  question : "Create a table CUSTOMER with columns: CID NUMBER , CNAME VARCHAR2(40) , CITY VARCHAR2(30) , PHONE NUMBER",
+sql : "CREATE TABLE CUSTOMER ( CID NUMBER(2) PRIMARY KEY, CNAME VARCHAR2(40), CITY VARCHAR2(30), PHONE NUMBER(10) );",
+output : "Table CUSTOMER created"
+},
+{
+  question : "Create a table SALES with columns: SALE_ID NUMBER , PRODUCT_NAME VARCHAR2(50) , QUANTITY NUMBER , PRICE NUMBER",
+sql : "CREATE TABLE SALES ( SALE_ID NUMBER(3) PRIMARY KEY, PRODUCT_NAME VARCHAR2(50), QUANTITY NUMBER(3), PRICE NUMBER(3) );",
+output : "Table SALES created"
+},
+{
+  question : "Create a table EMP_COPY from the existing EMP table (structure only)",
+sql : "CREATE TABLE EMP_COPY AS SELECT * FROM EMPLOYEEE WHERE 1 = 0;",
+output : "Table EMP_COPY created"
+},
+
+{
+    question : "Add a column EMAIL VARCHAR2(50) to the STUDENT table",
+sql : "ALTER TABLE STUDENT ADD(EMAIL VARCHAR2(50));",
+output : "Table STUDENT altered"
+},
+{
+    question : "Add a column PHONE NUMBER to the EMPLOYEE table",
+sql : "ALTER TABLE EMPLOYEEE ADD(PHONE NUMBER(10));",
+output : "Table EMPLOYEEE altered"
+},
+{
+    question : "Modify the column SNAME in STUDENT table to VARCHAR2(50)",
+sql : "ALTER TABLE STUDENT MODIFY(SNAME VARCHAR2(50));",
+output : "Table STUDENT altered"
+},
+{
+   question : "Modify the column SALARY in EMPLOYEE table to NUMBER(10,2)",
+sql : "ALTER TABLE EMPLOYEEE MODIFY (SALARY NUMBER(10,2));",
+output : "Table EMPLOYEEE altered" 
+},
+{
+    question : "Add two columns CITY VARCHAR2(30) and PINCODE NUMBER to CUSTOMER table",
+sql : "ALTER TABLE CUSTOMER ADD (CITY VARCHAR2(30) , PINCODE NUMBER(5));",
+output : "table CUSTOMER altered"
+},
+{
+    question : "Rename the column SNAME to STUDENT_NAME in STUDENT table",
+sql : "ALTER TABLE STUDENT RENAME COLUMN SNAME TO STUDENT_NAME;",
+output : "Table STUDENT altered"
+},
+{
+    question : "Drop the column AGE from STUDENT table",
+sql : "ALTER TABLE STUDENT DROP COLUMN AGE;",
+output : "Table STUDENT altered"
+},
+{
+    question : "Set the column SALARY in EMPLOYEE table to NOT NULL",
+sql : "ALTER TABLE EMPLOYEEE MODIFY(SALARY NOT NULL);",
+output : "Table EMPLOYEEE altered"
+},
+{
+    question : "Increase the size of column TITLE in BOOK table to VARCHAR2(100)",
+sql : "ALTER TABLE BOOK MODIFY (TITLE VARCHAR2(100));",
+output : "Table BOOK altered"
+},
+{
+    question : "Add a column MANAGER_ID NUMBER to EMPLOYEE table",
+sql : "ALTER TABLE EMPLOYEEE ADD(MANAGER_ID NUMBER(3));",
+output : "Table EMPLOYEEE altered"
+},
+{
+    question : "Drop the table STUDENT",
+sql : "DROP TABLE STUDENT;",
+output : "Table STUDENT dropped"
+},
+{
+    question : "Drop the table CUSTOMER from the database",
+sql : "DROP TABLE CUSTOMER;",
+output : "Table CUSTOMER dropped"
+},
+{
+    question : "Drop the table PROJECT permanently",
+sql : "DROP TABLE PROJECT;",
+output : "Table PROJECT dropped"
+},
+{
+    question : "Remove the table SALES",
+sql : "DROP TABLE SALES;",
+output : "Table SALES dropped"
+},
+{
+    question : "Drop the table COURSE",
+sql : "DROP TABLE COURSE;",
+output : "Table COURSE dropped"
+},
+{
+    question : "Rename table STUDENT TO STUDENTS",
+sql : "RENAME TABLE STUDENT TO STUDENTS;",
+output : "Table STUDENT renamed"
+},
+{
+    question : "Rename table EMPLOYEEE TO EMP_MASTER",
+sql : "RENAME TABLE EMPLOYEEE TO EMP_MASTER;",
+output : "Table EMPLOYEEE renamed"
+},
+{
+    question : "Rename table BOOK TO BOOK_DETAILS",
+sql : "RENAME TABLE BOOK TO BOOK_DETAILS;",
+output : "Table BOOK renamed"
+},
+{
+    question : "Delete all records from STUDENT table",
+sql : "DELETE FROM STUDENT;",
+output : "5 rows deleted"
+},
+{
+    question : "Truncate table EMPLOYEEE",
+sql : "TRUNCATE TABLE EMPLOYEEE;",
+output : "Table EMPLOYEEE truncated"
+},
+{
+    question : "Truncate table CUSTOMER",
+sql : "TRUNCATE TABLE CUSTOMER;",
+output : "Table CUSTOMER truncated"
+},
+{
+    question : "Truncate table SALES",
+sql : "TRUNCATE TABLE SALES;",
+output : "Table SALES truncated"
+},
+{
+    question : "Delete all records from PROJECT table",
+sql : "DELETE FROM PROJECT;",
+output : "Table EMPLOYEEE DELETED"
+},
+{
+    question : "Create table TRAINING",
+sql : "CREATE TABLE TRAINING ( TID NUMBER(2) PRIMARY KEY, TNAME VARCHAR2(30), DURATION NUMBER );",
+output : "Table TRAINING created"
+},
+{
+    question : "Add column TRAINER_NAME to TRAINING",
+sql : "ALTER TABLE TRAINING ADD(TRAINER_NAME VARCHAR2(40));",
+output : "Table TRAINING altered"
+},
+{
+    question : "Modify column TNAME in TRAINING",
+sql : "ALTER TABLE TRAINING MODIFY(TNAME VARCHAR2(60));",
+output : "Table TRAINING altered"
+},
+{
+    question : "Rename table TRAINING TO TRAINING_PROGRAM",
+sql : "RENAME TABLE TRAINING TO TRAINING_PROGRAM;",
+output : "Table TRAINING renamed"
+},
+{
+    question : "Truncate table TRAINING_PROGRAM",
+sql : "TRUNCATE TABLE TRAINING_PROGRAM;",
+output : "Table TRAINING_PROGRAM truncated"
+},
+{
+    question : "Drop table TRAINING_PROGRAM",
+sql : "DROP TABLE TRAINING_PROGRAM;",
+output : "Table TRAINING_PROGRAM dropped"
+},
+{
+    question : "Create and alter EMP_PROJECT table",
+sql : "CREATE TABLE EMP_PROJECT ( EMP_ID NUMBER PRIMARY KEY, PROJECT_ID NUMBER, START_DATE DATE, END_DATE DATE, ROLE VARCHAR2(30) ); ALTER TABLE EMP_PROJECT MODIFY(ROLE VARCHAR2(60)) ADD(STATUS VARCHAR2(20));",
+output : "Table EMP_PROJECT created and altered"
+},
+{
+    question : "Create and alter ORDER table",
+sql : "CREATE TABLE ORDER ( ORDER_ID NUMBER, CUSTOMER_ID NUMBER, ORDER_DATE DATE, TOTAL_AMOUNT NUMBER ); ALTER TABLE ORDER ADD(STATUS VARCHAR2(20)) DROP COLUMN TOTAL_AMOUNT ADD(TOTAL_AMOUNT NUMBER(10,2));",
+output : "Error: invalid table name / syntax error"
+},
+{
+    question : "Create, rename, truncate and drop EMP_HIGH_SALARY table",
+sql : "CREATE TABLE EMP_TEMP AS SELECT * FROM SCOTT.EMP WHERE SAL > 2000; RENAME EMP_TEMP TO EMP_HIGH_SALARY; TRUNCATE TABLE EMP_HIGH_SALARY; DROP TABLE EMP_HIGH_SALARY;",
+output : "Table created, renamed, truncated and dropped successfully"
+},
+{
+    question : "Create and alter STUDENT_RECORD table",
+sql : "CREATE TABLE STUDENT_RECORD ( SID NUMBER, SNAME VARCHAR2(40), COURSE VARCHAR2(30), MARKS NUMBER ); ALTER TABLE STUDENT_RECORD ADD GRADE CHAR(1); ALTER TABLE STUDENT_RECORD MODIFY MARKS NUMBER(5,2); ALTER TABLE STUDENT_RECORD RENAME COLUMN COURSE TO COURSE_NAME;",
+output : "Table STUDENT_RECORD created and altered"
+},
+{
+    question : "Create and alter EMP_HISTORY table",
+sql : "CREATE TABLE EMP_ARCHIVE AS SELECT * FROM SCOTT.EMP WHERE 1 = 0; ALTER TABLE EMP_ARCHIVE ADD ARCHIVE_DATE DATE; RENAME EMP_ARCHIVE TO EMP_HISTORY;",
+output : "Table EMP_HISTORY created and altered"
+}
+
+      ]
+    };
+
+    // Set Title
+    document.getElementById("DDL").innerText = topicData.title;
+
+    const container = document.getElementById("queryList");
+
+    // Create Queries
+    topicData.queries.forEach((q, index) => {
+      const div = document.createElement("div");
+      div.className = "query-box";
+
+      div.innerHTML = `
+        <div class="query-title">
+          (${index + 1}) ${q.question}
+        </div>
+
+        <button onclick="toggleAnswer(${index})">
+          Show Answer
+        </button>
+
+        <div class="answer" id="answer-${index}">
+          <div class="answer-container">
+            
+            <div class="query-code">
+              ${q.sql}
+            </div>
+
+            <div class="output">
+              ${q.output}
+            </div>
+
+          </div>
+        </div>
+      `;
+
+      container.appendChild(div);
+    });
+
+    // Toggle Answer
+    function toggleAnswer(index) {
+      const ans = document.getElementById(`answer-${index}`);
+      ans.style.display = ans.style.display === "block" ? "none" : "block";
+    }
+
+  </script>
+
+</body>
+</html>

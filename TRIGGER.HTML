@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Topic Page</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #DEF2F1;
+      padding: 20px;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      padding: 15px;
+      border: 1px solid black;
+      border-radius: 15px;
+      font-size: 26px;
+      font-weight: bold;
+      background: #78E7E0 ;
+      color: #17252a;
+      margin-bottom: 30px;
+    }
+
+    /* Query Box */
+    .query-box {
+      background: #DEF2F1;
+      border: 0px solid black;
+      border-radius: 15px;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+
+    .query-title {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    button {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 15px;
+      background: #78E7E0 ;
+      color: black;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #2B7A78;
+    }
+
+    /* Answer Section */
+    .answer {
+      display: none;
+      margin-top: 15px;
+      border-top: 2px solid black;
+      padding-top: 10px;
+    }
+
+    .answer-container {
+      display: flex;
+      gap: 20px;
+    }
+
+    .query-code {
+      width: 50%;
+      background: #DEF2F1;
+      padding: 10px;
+      border: 1px solid black;
+      border-radius: 5px;
+      font-family: monospace;
+    }
+
+    .output {
+      width: 50%;
+      background: #DEF2F1;
+      padding: 10px;
+      border: 1px solid black;
+      border-radius: 5px;
+      font-family: monospace;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      border-radius: 5px;
+    }
+
+    th, td {
+      border: 1px solid black;
+      border-radius: 5px;
+      padding: 6px;
+      text-align: center;
+    }
+
+    /* Responsive */
+    @media (max-width: 700px) {
+      .answer-container {
+        flex-direction: column;
+      }
+
+      .query-code, .output {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Topic Title -->
+  <div class="header" id="EXP">
+    EXCEPTION HANDLING"
+  </div>
+
+  <!-- Query List -->
+  <div id="queryList"></div>
+
+  <script>
+    // SAMPLE DATA (EDIT THIS)
+    const topicData = {
+      title: "EXCEPTION HANDLING",
+      queries: [
+        {
+question : "Write a trigger to display a message whenever a record is inserted into EMP table. (Trigger Basics)",
+sql:`CREATE OR REPLACE TRIGGER TRIG
+AFTER INSERT ON EMP
+DISABLE
+BEGIN
+    DBMS_OUTPUT.PUT_LINE('THE DATA IS INSERTED SUCCESSFULLY');
+END; `,
+output:`THE DATA IS INSERTED SUCCESSFULLY
+
+
+1 row inserted. `
+},
+{
+question : "Write a trigger that fires before inserting data into EMP table. (BEFORE INSERT Trigger)",
+sql:` CREATE TRIGGER BEF_TRIG 
+BEFORE INSERT ON EMP
+
+BEGIN
+    DBMS_OUTPUT.PUT_LINE('THE DATA IS INSERTED SUCCESSFULLY');
+END;`,
+output:`THE DATA IS INSERTED SUCCESSFULLY
+
+
+1 row inserted. `
+},
+{
+question : "Write a trigger that fires after deleting a record from EMP table. (AFTER DELETE Trigger)",
+sql:` CREATE TRIGGER AFTER_TRIG_DEL 
+AFTER DELETE ON EMP
+
+BEGIN
+    DBMS_OUTPUT.PUT_LINE('THE DATA IS DELETED SUCCESSFULLY');
+END;`,
+output:`THE DATA IS DELETED SUCCESSFULLY
+
+
+1 row deleted. `
+},
+{
+question : "Write a trigger to prevent deletion from EMP table. (BEFORE DELETE Trigger)",
+sql:`CREATE TRIGGER BEFORE_TRIG_DEL 
+BEFORE DELETE ON EMP
+BEGIN
+    RAISE_APPLICATION_ERROR(-20001, 'YOU CANNOT DELETE');
+END; `,
+output:`SQL> DELETE FROM EMP WHERE EMPNO= 1002
+
+ORA-20001: YOU CANNOT DELETE
+ORA-06512: at "TANISHKUMARBPG_SCHEMA_UMPAO.BEFORE_TRIG_DEL", line 2
+ORA-04088: error during execution of trigger 'TANISHKUMARBPG_SCHEMA_UMPAO.BEFORE_TRIG_DEL' `
+},
+{
+question : "Write a trigger to display a message when employee salary is updated. (AFTER UPDATE Trigger)",
+sql:`CREATE TRIGGER AFTER_TRIG_UP 
+AFTER UPDATE ON EMP
+BEGIN
+    DBMS_OUTPUT.PUT_LINE('THE DATA IS UPDATED SUCCESSFULLY');
+END; `,
+output:`THE DATA IS UPDATED SUCCESSFULLY
+
+
+0 rows updated. `
+},
+{
+question : "Write a row-level trigger to display old and new salary when salary is updated. (:OLD and :NEW)",
+sql:` CREATE OR REPLACE TRIGGER AFTER_TRIGEDEL 
+AFTER DELETE ON EMP
+
+BEGIN
+    DBMS_OUTPUT.PUT_LINE('THE DATA IS DELETED SUCCESSFULLY');
+END;`,
+output:`THE DATA IS DELETED SUCCESSFULLY
+
+
+1 row deleted. `
+},
+{
+question : "Write a trigger to restrict salary update if new salary is less than old salary. (Row-Level Trigger + Validation)",
+sql:` CREATE OR REPLACE TRIGGER check_salary_update
+BEFORE UPDATE OF SAL ON EMP
+FOR EACH ROW
+WHEN (NEW.SAL < OLD.SAL)
+BEGIN
+    RAISE_APPLICATION_ERROR(-20001, 'Salary cannot be decreased');
+END;`,
+output:`ORA-20001: Salary cannot be decreased
+ORA-06512: at "TANISHKUMARBPG_SCHEMA_UMPAO.CHECK_SALARY_UPDATE", line 2 `
+},
+{
+question : "Write a trigger to automatically set hiredate while inserting employee record. (BEFORE INSERT + :NEW)",
+sql:`CREATE OR REPLACE TRIGGER BEF_INSERT_SET_HD
+BEFORE INSERT ON EMP
+FOR EACH ROW
+
+BEGIN
+    :NEW.HIREDATE := SYSDATE;
+END; `,
+output:` `
+},
+{
+question : "Write a trigger to increase salary by 5% before updating. (BEFORE UPDATE Trigger)",
+sql:` CREATE OR REPLACE TRIGGER BEF_UP_INC_SAL
+BEFORE UPDATE ON EMP
+FOR EACH ROW
+BEGIN
+    :NEW.SAL := :OLD.SAL + :OLD.SAL*0.05;
+END;`,
+output:`SQL> UPDATE EMP SET SAL = 2000 WHERE EMPNO = 1001
+
+
+
+3 rows updated. `
+},
+{
+question : "Write a trigger to copy deleted records into another table (audit table). (AFTER DELETE + Logging)",
+sql:`CREATE OR REPLACE TRIGGER AUDIT_TRIGG
+BEFORE DELETE ON EMP
+FOR EACH ROW
+BEGIN
+    INSERT INTO employee_audit (
+        EMPNO, 
+        ename   
+    )
+    VALUES (
+        :OLD.EMPNO, 
+        :OLD.ename
+    );
+END; `,
+output:` THE DATA IS DELETED SUCCESSFULLY
+
+
+3 rows deleted.`
+},
+{
+question : "Write a statement-level trigger to display message when any insert occurs on EMP table. (Statement-Level Trigger)",
+sql:` CREATE OR REPLACE TRIGGER DIS_INST
+BEFORE DELETE ON EMP
+FOR EACH ROW
+BEGIN
+    DBMS_OUTPUT.PUT_LINE('DELETED SUCCESSFULLY');
+END;`,
+output:`THE DATA IS DELETED SUCCESSFULLY
+
+
+1 row deleted.`
+},
+{
+question : "Write a statement-level trigger to log update operations on EMP table. (Logging Trigger)",
+sql:`CREATE OR REPLACE TRIGGER trg_log_emp_update
+AFTER UPDATE ON EMP
+BEGIN
+    INSERT INTO emp_audit_log (action_type, user_name)
+    VALUES ('UPDATE OPERATION', USER);
+    
+    DBMS_OUTPUT.PUT_LINE('Audit: Update operation logged at statement level.');
+EXCEPTION
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Logging failed: ' || SQLERRM);
+        RAISE;
+END; `,
+output:`Audit: Update operation logged at statement level.
+
+
+1 row updated. `
+},
+{
+question : "Write a trigger that fires once for DELETE statement regardless of number of rows. (Statement-Level Trigger)",
+sql:`CREATE OR REPLACE TRIGGER DIS_INST_ONCE
+BEFORE DELETE ON EMP
+BEGIN
+    DBMS_OUTPUT.PUT_LINE('INSERTED SUCCESSFULLY');
+END; `,
+output:`DELETED SUCCESSFULLY
+
+
+0 rows deleted. `
+},
+{
+question : "Write a BEFORE trigger to validate salary before inserting. (BEFORE Trigger)",
+sql:`CREATE OR REPLACE TRIGGER BEF_INSERT
+BEFORE INSERT ON EMP
+FOR EACH ROW
+WHEN (NEW.SAL<10000) 
+BEGIN
+    RAISE_APPLICATION_ERROR('-20004','NEW SALARY SHOULD BE LESS THAN 10000');
+END; `,
+output:`ORA-20004: NEW SALARY SHOULD BE LESS THAN 10000
+ORA-06512: at "TANISHKUMARBPG_SCHEMA_UMPAO.BEF_INSERT", line 2 `
+},
+{
+question : "Write an AFTER trigger to log inserted employee records. (AFTER Trigger)",
+sql:`CREATE OR REPLACE TRIGGER log_emp_insert
+AFTER INSERT ON EMP
+FOR EACH ROW
+BEGIN
+    INSERT INTO EMP_LOG (EMPNO, ENAME, ACTION_DATE)
+    VALUES (:NEW.EMPNO, :NEW.ENAME, SYSDATE);
+END; `,
+output:` SQL> INSERT INTO EMP (EMPNO,ENAME,SAL) VALUES(1002,'MAYANK',4500)
+
+
+
+1 row inserted.`
+},
+
+{
+question : "Write a trigger that fires only when salary > 5000. (Conditional Trigger)",
+sql:`CREATE OR REPLACE TRIGGER CON_TRIG
+BEFORE INSERT ON EMP
+FOR EACH ROW
+WHEN (NEW.SAL>5000)
+BEGIN
+    DBMS_OUTPUT.PUT_LINE('FIRED');
+END; `,
+output:`SQL> INSERT INTO EMP (EMPNO,ENAME,SAL) VALUES(1003,'GURAV',3400)
+
+
+
+1 row inserted. `
+},
+{
+question : "Write a trigger to allow insert only during working hours.",
+sql:`CREATE OR REPLACE TRIGGER CON_TRIG
+BEFORE INSERT ON EMP
+FOR EACH ROW
+WHEN (TO_CHAR(SYSDATE, 'HH24') BETWEEN 9 AND 17)
+BEGIN
+    RAISE_APPLICATION_ERROR('-20005','NOT ALLOWES');
+END; `,
+output:`ORA-20005: NOT ALLOWES
+ORA-06512: at "TANISHKUMARBPG_SCHEMA_UMPAO.CON_TRIG", line 2 `
+},
+{
+question : "Write a trigger to prevent update on weekends. (Conditional Logic)",
+sql:`CREATE OR REPLACE TRIGGER WEEKND_TRIG
+BEFORE INSERT ON EMP
+FOR EACH ROW
+WHEN (TO_CHAR(SYSDATE, 'DD') = NEXT_DAY(SYSDATE,'SATURDAY') AND TO_CHAR(SYSDATE, 'DD') = NEXT_DAY(SYSDATE,'SUNDAY'))
+BEGIN
+    RAISE_APPLICATION_ERROR('-20005','NOT ALLOWED');
+END; `,
+output:` `
+},
+{
+question : "Write a trigger to generate automatic employee ID. (Auto Increment Logic)",
+sql:`CREATE OR REPLACE TRIGGER trg_emp_manual_id
+BEFORE INSERT ON EMP
+FOR EACH ROW
+DECLARE
+    maxid NUMBER;
+BEGIN
+    SELECT MAX(empno) INTO maxid FROM EMP;
+    :NEW.empno := maxid + 1;
+END; `,
+output:`"DEPTNO","DNAME" `
+}
+
+
+      ]
+    };
+
+    // Set Title
+    document.getElementById("EXP").innerText = topicData.title;
+
+    const container = document.getElementById("queryList");
+
+    // Create Queries
+    topicData.queries.forEach((q, index) => {
+      const div = document.createElement("div");
+      div.className = "query-box";
+
+      div.innerHTML = `
+        <div class="query-title">
+          (${index + 1}) ${q.question}
+        </div>
+
+        <button onclick="toggleAnswer(${index})">
+          Show Answer
+        </button>
+
+        <div class="answer" id="answer-${index}">
+          <div class="answer-container">
+            
+            <div class="query-code">
+              <PRE>${q.sql}</PRE>
+            </div>
+
+            <div class="output">
+              <PRE>${q.output}</PRE>
+            </div>
+
+          </div>
+        </div>
+      `;
+
+      container.appendChild(div);
+    });
+
+    // Toggle Answer
+    function toggleAnswer(index) {
+      const ans = document.getElementById(`answer-${index}`);
+      ans.style.display = ans.style.display === "block" ? "none" : "block";
+    }
+
+  </script>
+
+</body>
+</html>

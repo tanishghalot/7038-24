@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Topic Page</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #DEF2F1;
+      padding: 20px;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      padding: 15px;
+      border: 1px solid black;
+      border-radius: 15px;
+      font-size: 26px;
+      font-weight: bold;
+      background: #78E7E0 ;
+      color: #17252a;
+      margin-bottom: 30px;
+    }
+
+    /* Query Box */
+    .query-box {
+      background: #DEF2F1;
+      border: 0px solid black;
+      border-radius: 15px;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+
+    .query-title {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    button {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 15px;
+      background: #78E7E0 ;
+      color: black;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #2B7A78;
+    }
+
+    /* Answer Section */
+    .answer {
+      display: none;
+      margin-top: 15px;
+      border-top: 2px solid black;
+      padding-top: 10px;
+    }
+
+    .answer-container {
+      display: flex;
+      gap: 20px;
+    }
+
+    .query-code {
+      width: 50%;
+      background: #DEF2F1;
+      padding: 10px;
+      border: 1px solid black;
+      border-radius: 5px;
+      font-family: monospace;
+    }
+
+    .output {
+      width: 50%;
+      background: #DEF2F1;
+      padding: 10px;
+      border: 1px solid black;
+      border-radius: 5px;
+      font-family: monospace;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      border-radius: 5px;
+    }
+
+    th, td {
+      border: 1px solid black;
+      border-radius: 5px;
+      padding: 6px;
+      text-align: center;
+    }
+
+    /* Responsive */
+    @media (max-width: 700px) {
+      .answer-container {
+        flex-direction: column;
+      }
+
+      .query-code, .output {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Topic Title -->
+  <div class="header" id="STO">
+    STORED PROCEDURES
+  </div>
+
+  <!-- Query List -->
+  <div id="queryList"></div>
+
+  <script>
+    // SAMPLE DATA (EDIT THIS)
+    const topicData = {
+      title: "STORED PROCEDURES",
+      queries: [
+        {
+question : "Write a stored procedure to display 'Hello Oracle' using DBMS_OUTPUT. (Stored Procedure – Basic)",
+sql:`CREATE OR REPLACE PROCEDURE P1 IS 
+BEGIN 
+    DBMS_OUTPUT.PUT_LINE('HELLO ORACLE');
+END; `,
+output:`
+Procedure P1 compiled `
+},
+{
+question : "Write a stored procedure to display employee name for a given empno. (Procedure + SELECT INTO)",
+sql:`CREATE OR REPLACE PROCEDURE P2(E NUMBER) IS
+N EMP.ENAME%TYPE;
+BEGIN
+    SELECT ENAME INTO N FROM EMP WHERE EMPNO = E;
+    DBMS_OUTPUT.PUT_LINE(N);
+END;
+BEGIN
+    P2(1001);
+END; `,
+output:` Procedure P2 compiled`
+},
+{
+question : "Write a stored procedure to print salary of an employee. (Procedure + SELECT)",
+sql:`CREATE OR REPLACE PROCEDURE P3(E NUMBER) IS
+S EMP.SAL%TYPE;
+BEGIN
+    SELECT SAL INTO S FROM EMP WHERE EMPNO = E;
+    DBMS_OUTPUT.PUT_LINE(S);
+END; `,
+output:`Procedure P3 compiled `
+},
+{
+question : "Write a stored procedure to display all employees using cursor. (Procedure + Cursor)",
+sql:` 
+CREATE OR REPLACE PROCEDURE P4 IS 
+CURSOR C1 IS SELECT * FROM EMP;
+X EMP%ROWTYPE;
+i NUMBER;
+BEGIN
+    FOR i IN 1..14 LOOP
+        FETCH C1 INTO X;
+        DBMS_OUTPUT.PUT_LINE(X.ENAME);
+    END LOOP;
+END;`,
+output:`Procedure P4 compiled`
+},
+{
+question : "Write a stored procedure to display department details. (Procedure – Basic)",
+sql:` CREATE OR REPLACE PROCEDURE P5(D NUMBER) IS 
+CURSOR C1 IS SELECT * FROM EMP WHERE DEPTNO = D;
+X EMP%ROWTYPE;
+i NUMBER;
+BEGIN
+    FOR i IN 1..14 LOOP
+        FETCH C1 INTO X;
+        DBMS_OUTPUT.PUT_LINE(X.ENAME);
+    END LOOP;
+END;`,
+output:`Procedure P5 compiled `
+},
+{
+question : "Write a stored procedure that takes empno as input and displays employee details. (IN Parameter)",
+sql:` 
+CREATE OR REPLACE PROCEDURE P6(E NUMBER) IS 
+CURSOR C1 IS SELECT * FROM EMP WHERE EMPNO = E;
+X EMP%ROWTYPE;
+i NUMBER;
+BEGIN
+    FOR i IN 1..14 LOOP
+        FETCH C1 INTO X;
+        DBMS_OUTPUT.PUT_LINE(X.ENAME);
+    END LOOP;
+END;
+`,
+output:`Procedure P6 compiled `
+},
+{
+question : "Write a stored procedure that takes department number and displays employees of that department. (IN Parameter)",
+sql:` CREATE OR REPLACE PROCEDURE P4(D NUMBER) IS 
+CURSOR C1 IS SELECT * FROM EMP WHERE DEPTNO = D;
+X EMP%ROWTYPE;
+i NUMBER;
+BEGIN
+    FOR i IN 1..14 LOOP
+        FETCH C1 INTO X;
+        DBMS_OUTPUT.PUT_LINE(X.ENAME);
+    END LOOP;
+END;`,
+output:`Procedure P7 compiled `
+},
+{
+question : "Write a stored procedure that takes salary as input and displays employees earning more than that. (IN Parameter)",
+sql:`CREATE OR REPLACE PROCEDURE P4(S NUMBER) IS 
+CURSOR C1 IS SELECT * FROM EMP WHERE SAL > S;
+X EMP%ROWTYPE;
+i NUMBER;
+BEGIN
+    FOR i IN 1..14 LOOP
+        FETCH C1 INTO X;
+        DBMS_OUTPUT.PUT_LINE(X.ENAME);
+    END LOOP;
+END; `,
+output:`Procedure P8 compiled `
+},
+{
+question : "Write a stored procedure with OUT parameter to return employee salary. (OUT Parameter)",
+sql:` CREATE OR REPLACE PROCEDURE P9( S OUT NUMBER) IS 
+CURSOR C1 IS SELECT * FROM EMP;
+X EMP%ROWTYPE;
+i NUMBER;
+BEGIN
+    FOR i IN 1..14 LOOP
+        FETCH C1 INTO X;
+        DBMS_OUTPUT.PUT_LINE(X.ENAME);
+    END LOOP;
+END;`,
+output:`Procedure P9 compiled `
+},
+
+
+
+      ]
+    };
+
+    // Set Title
+    document.getElementById("STO").innerText = topicData.title;
+
+    const container = document.getElementById("queryList");
+
+    // Create Queries
+    topicData.queries.forEach((q, index) => {
+      const div = document.createElement("div");
+      div.className = "query-box";
+
+      div.innerHTML = `
+        <div class="query-title">
+          (${index + 1}) ${q.question}
+        </div>
+
+        <button onclick="toggleAnswer(${index})">
+          Show Answer
+        </button>
+
+        <div class="answer" id="answer-${index}">
+          <div class="answer-container">
+            
+            <div class="query-code">
+              <PRE>${q.sql}</PRE>
+            </div>
+
+            <div class="output">
+              <PRE>${q.output}</PRE>
+            </div>
+
+          </div>
+        </div>
+      `;
+
+      container.appendChild(div);
+    });
+
+    // Toggle Answer
+    function toggleAnswer(index) {
+      const ans = document.getElementById(`answer-${index}`);
+      ans.style.display = ans.style.display === "block" ? "none" : "block";
+    }
+
+  </script>
+
+</body>
+</html>

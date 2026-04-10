@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Topic Page</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #DEF2F1;
+      padding: 20px;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      padding: 15px;
+      border: 1px solid black;
+      border-radius: 15px;
+      font-size: 26px;
+      font-weight: bold;
+      background: #78E7E0 ;
+      color: #17252a;
+      margin-bottom: 30px;
+    }
+
+    /* Query Box */
+    .query-box {
+      background: #DEF2F1;
+      border: 0px solid black;
+      border-radius: 15px;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+
+    .query-title {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    button {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 15px;
+      background: #78E7E0 ;
+      color: black;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #2B7A78;
+    }
+
+    /* Answer Section */
+    .answer {
+      display: none;
+      margin-top: 15px;
+      border-top: 2px solid black;
+      padding-top: 10px;
+    }
+
+    .answer-container {
+      display: flex;
+      gap: 20px;
+    }
+
+    .query-code {
+      width: 50%;
+      background: #DEF2F1;
+      padding: 10px;
+      border: 1px solid black;
+      border-radius: 5px;
+      font-family: monospace;
+    }
+
+    .output {
+      width: 50%;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      border-radius: 5px;
+    }
+
+    th, td {
+      border: 1px solid black;
+      border-radius: 5px;
+      padding: 6px;
+      text-align: center;
+    }
+
+    /* Responsive */
+    @media (max-width: 700px) {
+      .answer-container {
+        flex-direction: column;
+      }
+
+      .query-code, .output {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Topic Title -->
+  <div class="header" id="WOC">
+    WHERE CLAUSE AND ORDER BY
+  </div>
+
+  <!-- Query List -->
+  <div id="queryList"></div>
+
+  <script>
+    // SAMPLE DATA (EDIT THIS)
+    const topicData = {
+      title: "WHERE AND ORDER BY CLAUSE",
+      queries: [
+        {
+  question: "Display employees whose salary is greater than 3000.",
+  sql: "SELECT * FROM SCOTT.EMP WHERE SAL > 3000;",
+  output: [
+    ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+    [7839,"KING","PRESIDENT",null,"1981-11-17",5000,null,10]
+  ]
+},
+{
+  question: "Display employees working in department 10.",
+  sql: "SELECT * FROM SCOTT.EMP WHERE DEPTNO = 10;",
+  output: [
+    ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+    [7782,"CLARK","MANAGER",7839,"1981-06-09",2450,null,10],
+    [7839,"KING","PRESIDENT",null,"1981-11-17",5000,null,10],
+    [7934,"MILLER","CLERK",7782,"1982-01-23",1300,null,10]
+  ]
+},
+{
+  question: "Display employees whose job is 'CLERK'.",
+  sql: "SELECT * FROM SCOTT.EMP WHERE JOB = 'CLERK';",
+  output: [
+    ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+    [7369,"SMITH","CLERK",7902,"1980-12-17",800,null,20],
+    [7876,"ADAMS","CLERK",7788,"1987-07-13",1100,null,20],
+    [7900,"JAMES","CLERK",7698,"1981-12-03",950,null,30],
+    [7934,"MILLER","CLERK",7782,"1982-01-23",1300,null,10]
+  ]
+},
+{
+  question: "Display employees hired after 01-JAN-81.",
+  sql: "SELECT * FROM SCOTT.EMP WHERE HIREDATE > TO_DATE('01-JAN-81','DD-MON-YY');",
+  output: [
+    ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+    [7499,"ALLEN","SALESMAN",7698,"1981-02-20",1600,300,30],
+    [7521,"WARD","SALESMAN",7698,"1981-02-22",1250,500,30],
+    [7566,"JONES","MANAGER",7839,"1981-04-02",2975,null,20],
+    [7654,"MARTIN","SALESMAN",7698,"1981-09-28",1250,1400,30],
+    [7698,"BLAKE","MANAGER",7839,"1981-05-01",2850,null,30],
+    [7782,"CLARK","MANAGER",7839,"1981-06-09",2450,null,10],
+    [7839,"KING","PRESIDENT",null,"1981-11-17",5000,null,10],
+    [7844,"TURNER","SALESMAN",7698,"1981-09-08",1500,0,30],
+    [7900,"JAMES","CLERK",7698,"1981-12-03",950,null,30],
+    [7902,"FORD","ANALYST",7566,"1981-12-03",3000,null,20],
+    [7934,"MILLER","CLERK",7782,"1982-01-23",1300,null,10]
+  ]
+},
+{
+  question: "Display employees whose salary is less than 1500.",
+  sql: "SELECT * FROM SCOTT.EMP WHERE SAL < 1500;",
+  output: [
+    ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+    [7369,"SMITH","CLERK",7902,"1980-12-17",800,null,20],
+    [7521,"WARD","SALESMAN",7698,"1981-02-22",1250,500,30],
+    [7654,"MARTIN","SALESMAN",7698,"1981-09-28",1250,1400,30],
+    [7876,"ADAMS","CLERK",7788,"1987-07-13",1100,null,20],
+    [7900,"JAMES","CLERK",7698,"1981-12-03",950,null,30],
+    [7934,"MILLER","CLERK",7782,"1982-01-23",1300,null,10]
+  ]
+},
+{
+  question: "Display employees whose salary is > 2000 and job is 'MANAGER'.",
+  sql: "SELECT * FROM SCOTT.EMP WHERE SAL >= 2000 AND JOB = 'MANAGER';",
+  output: [
+    ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+    [7566,"JONES","MANAGER",7839,"1981-04-02",2975,null,20],
+    [7698,"BLAKE","MANAGER",7839,"1981-05-01",2850,null,30],
+    [7782,"CLARK","MANAGER",7839,"1981-06-09",2450,null,10]
+  ]
+},
+{
+  question: "Display employees working in department 10 or 20.",
+  sql: "SELECT * FROM SCOTT.EMP WHERE DEPTNO IN (10,20);",
+  output: [
+    ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+    [7369,"SMITH","CLERK",7902,"1980-12-17",800,null,20],
+    [7566,"JONES","MANAGER",7839,"1981-04-02",2975,null,20],
+    [7782,"CLARK","MANAGER",7839,"1981-06-09",2450,null,10],
+    [7788,"SCOTT","ANALYST",7566,"1987-07-13",3000,null,20],
+    [7839,"KING","PRESIDENT",null,"1981-11-17",5000,null,10],
+    [7876,"ADAMS","CLERK",7788,"1987-07-13",1100,null,20],
+    [7902,"FORD","ANALYST",7566,"1981-12-03",3000,null,20],
+    [7934,"MILLER","CLERK",7782,"1982-01-23",1300,null,10]
+  ]
+},
+{
+  question: "Display employees whose job is 'SALESMAN' and salary > 1500.",
+  sql: "SELECT * FROM SCOTT.EMP WHERE JOB = 'SALESMAN' AND SAL > 1500;",
+  output: [
+    ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+    [7499,"ALLEN","SALESMAN",7698,"1981-02-20",1600,300,30]
+  ]
+},
+{
+  question: "Display employees who are either CLERK or ANALYST.",
+  sql: "SELECT * FROM SCOTT.EMP WHERE JOB IN ('CLERK','ANALYST');",
+  output: [
+    ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+    [7369,"SMITH","CLERK",7902,"1980-12-17",800,null,20],
+    [7788,"SCOTT","ANALYST",7566,"1987-07-13",3000,null,20],
+    [7876,"ADAMS","CLERK",7788,"1987-07-13",1100,null,20],
+    [7900,"JAMES","CLERK",7698,"1981-12-03",950,null,30],
+    [7902,"FORD","ANALYST",7566,"1981-12-03",3000,null,20],
+    [7934,"MILLER","CLERK",7782,"1982-01-23",1300,null,10]
+  ]
+},
+{
+  question: "Display employees hired before 1982 and working in department 30.",
+  sql: "SELECT * FROM SCOTT.EMP WHERE DEPTNO = 30 AND HIREDATE < '01-JAN-1982';",
+  output: [
+    ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+    [7499,"ALLEN","SALESMAN",7698,"1981-02-20",1600,300,30],
+    [7521,"WARD","SALESMAN",7698,"1981-02-22",1250,500,30],
+    [7654,"MARTIN","SALESMAN",7698,"1981-09-28",1250,1400,30],
+    [7698,"BLAKE","MANAGER",7839,"1981-05-01",2850,null,30],
+    [7844,"TURNER","SALESMAN",7698,"1981-09-08",1500,0,30],
+    [7900,"JAMES","CLERK",7698,"1981-12-03",950,null,30]
+  ]
+},
+{
+    question: "Display employees working in departments 10, 20, or 30.",
+  sql: "SELECT * FROM SCOTT.EMP WHERE DEPTNO IN (10,20,30);",
+  output: [
+    ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+    [7369,"SMITH","CLERK",7902,"1980-12-17",800,null,20],
+    [7499,"ALLEN","SALESMAN",7698,"1981-02-20",1600,300,30],
+    [7521,"WARD","SALESMAN",7698,"1981-02-22",1250,500,30],
+    [7566,"JONES","MANAGER",7839,"1981-04-02",2975,null,20],
+    [7654,"MARTIN","SALESMAN",7698,"1981-09-28",1250,1400,30],
+    [7698,"BLAKE","MANAGER",7839,"1981-05-01",2850,null,30],
+    [7782,"CLARK","MANAGER",7839,"1981-06-09",2450,null,10],
+    [7788,"SCOTT","ANALYST",7566,"1987-07-13",3000,null,20],
+    [7839,"KING","PRESIDENT",null,"1981-11-17",5000,null,10],
+    [7844,"TURNER","SALESMAN",7698,"1981-09-08",1500,0,30],
+    [7876,"ADAMS","CLERK",7788,"1987-07-13",1100,null,20],
+    [7900,"JAMES","CLERK",7698,"1981-12-03",950,null,30],
+    [7902,"FORD","ANALYST",7566,"1981-12-03",3000,null,20],
+    [7934,"MILLER","CLERK",7782,"1982-01-23",1300,null,10]
+  ]
+},
+{
+    question: "Display employees whose job is not MANAGER or CLERK.",
+  sql: "SELECT * FROM SCOTT.EMP WHERE JOB NOT IN ('MANAGER','CLERK');",
+  output: [
+    ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+    [7499,"ALLEN","SALESMAN",7698,"1981-02-20",1600,300,30],
+    [7521,"WARD","SALESMAN",7698,"1981-02-22",1250,500,30],
+    [7654,"MARTIN","SALESMAN",7698,"1981-09-28",1250,1400,30],
+    [7788,"SCOTT","ANALYST",7566,"1987-07-13",3000,null,20],
+    [7839,"KING","PRESIDENT",null,"1981-11-17",5000,null,10],
+    [7844,"TURNER","SALESMAN",7698,"1981-09-08",1500,0,30],
+    [7902,"FORD","ANALYST",7566,"1981-12-03",3000,null,20]
+  ]
+},
+{
+    question: "Display employees whose department is not 10.",
+  sql: "SELECT * FROM SCOTT.EMP WHERE DEPTNO <> 10;",
+  output: [
+    ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+    [7369,"SMITH","CLERK",7902,"1980-12-17",800,null,20],
+    [7499,"ALLEN","SALESMAN",7698,"1981-02-20",1600,300,30],
+    [7521,"WARD","SALESMAN",7698,"1981-02-22",1250,500,30],
+    [7566,"JONES","MANAGER",7839,"1981-04-02",2975,null,20],
+    [7654,"MARTIN","SALESMAN",7698,"1981-09-28",1250,1400,30],
+    [7698,"BLAKE","MANAGER",7839,"1981-05-01",2850,null,30],
+    [7788,"SCOTT","ANALYST",7566,"1987-07-13",3000,null,20],
+    [7844,"TURNER","SALESMAN",7698,"1981-09-08",1500,0,30],
+    [7876,"ADAMS","CLERK",7788,"1987-07-13",1100,null,20],
+    [7900,"JAMES","CLERK",7698,"1981-12-03",950,null,30],
+    [7902,"FORD","ANALYST",7566,"1981-12-03",3000,null,20]
+  ]
+},
+{
+    question: "Display employees whose salary is between 1000 and 3000.",
+  sql: "SELECT * FROM SCOTT.EMP WHERE SAL BETWEEN 1000 AND 3000;",
+  output: [
+    ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+    [7499,"ALLEN","SALESMAN",7698,"1981-02-20",1600,300,30],
+    [7521,"WARD","SALESMAN",7698,"1981-02-22",1250,500,30],
+    [7566,"JONES","MANAGER",7839,"1981-04-02",2975,null,20],
+    [7654,"MARTIN","SALESMAN",7698,"1981-09-28",1250,1400,30],
+    [7698,"BLAKE","MANAGER",7839,"1981-05-01",2850,null,30],
+    [7782,"CLARK","MANAGER",7839,"1981-06-09",2450,null,10],
+    [7788,"SCOTT","ANALYST",7566,"1987-07-13",3000,null,20],
+    [7844,"TURNER","SALESMAN",7698,"1981-09-08",1500,0,30],
+    [7876,"ADAMS","CLERK",7788,"1987-07-13",1100,null,20],
+    [7902,"FORD","ANALYST",7566,"1981-12-03",3000,null,20],
+    [7934,"MILLER","CLERK",7782,"1982-01-23",1300,null,10]
+  ]
+},
+{
+ question: "Display employees hired between 01-JAN-81 and 31-DEC-81.",
+  sql: "SELECT * FROM SCOTT.EMP WHERE HIREDATE BETWEEN '01-JAN-1981' AND '31-DEC-1981';",
+  output: [
+    ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+    [7499,"ALLEN","SALESMAN",7698,"1981-02-20",1600,300,30],
+    [7521,"WARD","SALESMAN",7698,"1981-02-22",1250,500,30],
+    [7566,"JONES","MANAGER",7839,"1981-04-02",2975,null,20],
+    [7654,"MARTIN","SALESMAN",7698,"1981-09-28",1250,1400,30],
+    [7698,"BLAKE","MANAGER",7839,"1981-05-01",2850,null,30],
+    [7782,"CLARK","MANAGER",7839,"1981-06-09",2450,null,10],
+    [7839,"KING","PRESIDENT",null,"1981-11-17",5000,null,10],
+    [7844,"TURNER","SALESMAN",7698,"1981-09-08",1500,0,30],
+    [7900,"JAMES","CLERK",7698,"1981-12-03",950,null,30],
+    [7902,"FORD","ANALYST",7566,"1981-12-03",3000,null,20]
+  ]
+},
+{
+   question: "Display all employees ordered by salary in ascending order.",
+  sql: "SELECT * FROM SCOTT.EMP ORDER BY SAL;",
+  output: [
+    ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+    [7369,"SMITH","CLERK",7902,"1980-12-17",800,null,20],
+    [7900,"JAMES","CLERK",7698,"1981-12-03",950,null,30],
+    [7876,"ADAMS","CLERK",7788,"1987-07-13",1100,null,20],
+    [7521,"WARD","SALESMAN",7698,"1981-02-22",1250,500,30],
+    [7654,"MARTIN","SALESMAN",7698,"1981-09-28",1250,1400,30],
+    [7934,"MILLER","CLERK",7782,"1982-01-23",1300,null,10],
+    [7844,"TURNER","SALESMAN",7698,"1981-09-08",1500,0,30],
+    [7499,"ALLEN","SALESMAN",7698,"1981-02-20",1600,300,30],
+    [7782,"CLARK","MANAGER",7839,"1981-06-09",2450,null,10],
+    [7698,"BLAKE","MANAGER",7839,"1981-05-01",2850,null,30],
+    [7566,"JONES","MANAGER",7839,"1981-04-02",2975,null,20],
+    [7788,"SCOTT","ANALYST",7566,"1987-07-13",3000,null,20],
+    [7902,"FORD","ANALYST",7566,"1981-12-03",3000,null,20],
+    [7839,"KING","PRESIDENT",null,"1981-11-17",5000,null,10]
+  ]
+},
+{
+    question: "Display all employees ordered by salary in descending order.",
+  sql: "SELECT * FROM SCOTT.EMP ORDER BY SAL DESC;",
+  output: [
+    ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+    [7839,"KING","PRESIDENT",null,"1981-11-17",5000,null,10],
+    [7788,"SCOTT","ANALYST",7566,"1987-07-13",3000,null,20],
+    [7902,"FORD","ANALYST",7566,"1981-12-03",3000,null,20],
+    [7566,"JONES","MANAGER",7839,"1981-04-02",2975,null,20],
+    [7698,"BLAKE","MANAGER",7839,"1981-05-01",2850,null,30],
+    [7782,"CLARK","MANAGER",7839,"1981-06-09",2450,null,10],
+    [7499,"ALLEN","SALESMAN",7698,"1981-02-20",1600,300,30],
+    [7844,"TURNER","SALESMAN",7698,"1981-09-08",1500,0,30],
+    [7521,"WARD","SALESMAN",7698,"1981-02-22",1250,500,30],
+    [7654,"MARTIN","SALESMAN",7698,"1981-09-28",1250,1400,30],
+    [7934,"MILLER","CLERK",7782,"1982-01-23",1300,null,10],
+    [7876,"ADAMS","CLERK",7788,"1987-07-13",1100,null,20],
+    [7900,"JAMES","CLERK",7698,"1981-12-03",950,null,30],
+    [7369,"SMITH","CLERK",7902,"1980-12-17",800,null,20]
+  ]
+},
+{
+    question: "Display employees ordered by hire date.",
+  sql: "SELECT * FROM SCOTT.EMP ORDER BY HIREDATE;",
+  output: [
+    ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+    [7369,"SMITH","CLERK",7902,"1980-12-17",800,null,20],
+    [7499,"ALLEN","SALESMAN",7698,"1981-02-20",1600,300,30],
+    [7521,"WARD","SALESMAN",7698,"1981-02-22",1250,500,30],
+    [7566,"JONES","MANAGER",7839,"1981-04-02",2975,null,20],
+    [7698,"BLAKE","MANAGER",7839,"1981-05-01",2850,null,30],
+    [7782,"CLARK","MANAGER",7839,"1981-06-09",2450,null,10],
+    [7844,"TURNER","SALESMAN",7698,"1981-09-08",1500,0,30],
+    [7654,"MARTIN","SALESMAN",7698,"1981-09-28",1250,1400,30],
+    [7839,"KING","PRESIDENT",null,"1981-11-17",5000,null,10],
+    [7900,"JAMES","CLERK",7698,"1981-12-03",950,null,30],
+    [7902,"FORD","ANALYST",7566,"1981-12-03",3000,null,20],
+    [7934,"MILLER","CLERK",7782,"1982-01-23",1300,null,10],
+    [7788,"SCOTT","ANALYST",7566,"1987-07-13",3000,null,20],
+    [7876,"ADAMS","CLERK",7788,"1987-07-13",1100,null,20]
+  ]
+},
+{
+    question: "Display employees ordered by department number and salary.",
+  sql: "SELECT * FROM SCOTT.EMP ORDER BY DEPTNO, SAL;",
+  output: [
+    ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+    [7934,"MILLER","CLERK",7782,"1982-01-23",1300,null,10],
+    [7782,"CLARK","MANAGER",7839,"1981-06-09",2450,null,10],
+    [7839,"KING","PRESIDENT",null,"1981-11-17",5000,null,10],
+    [7369,"SMITH","CLERK",7902,"1980-12-17",800,null,20],
+    [7876,"ADAMS","CLERK",7788,"1987-07-13",1100,null,20],
+    [7566,"JONES","MANAGER",7839,"1981-04-02",2975,null,20],
+    [7788,"SCOTT","ANALYST",7566,"1987-07-13",3000,null,20],
+    [7902,"FORD","ANALYST",7566,"1981-12-03",3000,null,20],
+    [7900,"JAMES","CLERK",7698,"1981-12-03",950,null,30],
+    [7521,"WARD","SALESMAN",7698,"1981-02-22",1250,500,30],
+    [7654,"MARTIN","SALESMAN",7698,"1981-09-28",1250,1400,30],
+    [7844,"TURNER","SALESMAN",7698,"1981-09-08",1500,0,30],
+    [7499,"ALLEN","SALESMAN",7698,"1981-02-20",1600,300,30],
+    [7698,"BLAKE","MANAGER",7839,"1981-05-01",2850,null,30]
+  ]
+},
+{
+     question: "Display employees ordered by job (ascending) and salary (descending).",
+  sql: "SELECT * FROM SCOTT.EMP ORDER BY JOB, SAL DESC;",
+  output: [
+    ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+    [7788,"SCOTT","ANALYST",7566,"1987-07-13",3000,null,20],
+    [7902,"FORD","ANALYST",7566,"1981-12-03",3000,null,20],
+    [7934,"MILLER","CLERK",7782,"1982-01-23",1300,null,10],
+    [7876,"ADAMS","CLERK",7788,"1987-07-13",1100,null,20],
+    [7900,"JAMES","CLERK",7698,"1981-12-03",950,null,30],
+    [7369,"SMITH","CLERK",7902,"1980-12-17",800,null,20],
+    [7566,"JONES","MANAGER",7839,"1981-04-02",2975,null,20],
+    [7698,"BLAKE","MANAGER",7839,"1981-05-01",2850,null,30],
+    [7782,"CLARK","MANAGER",7839,"1981-06-09",2450,null,10],
+    [7839,"KING","PRESIDENT",null,"1981-11-17",5000,null,10],
+    [7499,"ALLEN","SALESMAN",7698,"1981-02-20",1600,300,30],
+    [7844,"TURNER","SALESMAN",7698,"1981-09-08",1500,0,30],
+    [7521,"WARD","SALESMAN",7698,"1981-02-22",1250,500,30],
+    [7654,"MARTIN","SALESMAN",7698,"1981-09-28",1250,1400,30]
+  ]
+},
+{
+    question: "Display employee names ordered alphabetically.",
+  sql: "SELECT * FROM SCOTT.EMP ORDER BY ENAME;",
+  output: [
+    ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+    [7876,"ADAMS","CLERK",7788,"1987-07-13",1100,null,20],
+    [7499,"ALLEN","SALESMAN",7698,"1981-02-20",1600,300,30],
+    [7698,"BLAKE","MANAGER",7839,"1981-05-01",2850,null,30],
+    [7782,"CLARK","MANAGER",7839,"1981-06-09",2450,null,10],
+    [7902,"FORD","ANALYST",7566,"1981-12-03",3000,null,20],
+    [7900,"JAMES","CLERK",7698,"1981-12-03",950,null,30],
+    [7566,"JONES","MANAGER",7839,"1981-04-02",2975,null,20],
+    [7839,"KING","PRESIDENT",null,"1981-11-17",5000,null,10],
+    [7654,"MARTIN","SALESMAN",7698,"1981-09-28",1250,1400,30],
+    [7934,"MILLER","CLERK",7782,"1982-01-23",1300,null,10],
+    [7788,"SCOTT","ANALYST",7566,"1987-07-13",3000,null,20],
+    [7369,"SMITH","CLERK",7902,"1980-12-17",800,null,20],
+    [7844,"TURNER","SALESMAN",7698,"1981-09-08",1500,0,30],
+    [7521,"WARD","SALESMAN",7698,"1981-02-22",1250,500,30]
+  ]
+},
+{
+    question: "Display employees of department 30 ordered by salary.",
+  sql: "SELECT * FROM SCOTT.EMP WHERE DEPTNO = 30 ORDER BY SAL;",
+  output: [
+    ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+    [7900,"JAMES","CLERK",7698,"1981-12-03",950,null,30],
+    [7521,"WARD","SALESMAN",7698,"1981-02-22",1250,500,30],
+    [7654,"MARTIN","SALESMAN",7698,"1981-09-28",1250,1400,30],
+    [7844,"TURNER","SALESMAN",7698,"1981-09-08",1500,0,30],
+    [7499,"ALLEN","SALESMAN",7698,"1981-02-20",1600,300,30],
+    [7698,"BLAKE","MANAGER",7839,"1981-05-01",2850,null,30]
+  ]
+},
+{
+    question: "Display employees ordered by annual salary.",
+  sql: "SELECT ENAME, 12*SAL AS ANNUAL_SALARY FROM SCOTT.EMP ORDER BY ANNUAL_SALARY;",
+  output: [
+    ["ENAME","ANNUAL_SALARY"],
+    ["SMITH",9600],
+    ["JAMES",11400],
+    ["ADAMS",13200],
+    ["WARD",15000],
+    ["MARTIN",15000],
+    ["MILLER",15600],
+    ["TURNER",18000],
+    ["ALLEN",19200],
+    ["CLARK",29400],
+    ["BLAKE",34200],
+    ["JONES",35700],
+    ["SCOTT",36000],
+    ["FORD",36000],
+    ["KING",60000]
+  ]
+},
+{
+    question: "Display employees ordered by commission.",
+  sql: "SELECT * FROM SCOTT.EMP ORDER BY COMM;",
+  output: [
+    ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+    [7369,"SMITH","CLERK",7902,"1980-12-17",800,null,20],
+    [7566,"JONES","MANAGER",7839,"1981-04-02",2975,null,20],
+    [7698,"BLAKE","MANAGER",7839,"1981-05-01",2850,null,30],
+    [7782,"CLARK","MANAGER",7839,"1981-06-09",2450,null,10],
+    [7788,"SCOTT","ANALYST",7566,"1987-07-13",3000,null,20],
+    [7839,"KING","PRESIDENT",null,"1981-11-17",5000,null,10],
+    [7876,"ADAMS","CLERK",7788,"1987-07-13",1100,null,20],
+    [7900,"JAMES","CLERK",7698,"1981-12-03",950,null,30],
+    [7902,"FORD","ANALYST",7566,"1981-12-03",3000,null,20],
+    [7934,"MILLER","CLERK",7782,"1982-01-23",1300,null,10],
+    [7844,"TURNER","SALESMAN",7698,"1981-09-08",1500,0,30],
+    [7499,"ALLEN","SALESMAN",7698,"1981-02-20",1600,300,30],
+    [7521,"WARD","SALESMAN",7698,"1981-02-22",1250,500,30],
+    [7654,"MARTIN","SALESMAN",7698,"1981-09-28",1250,1400,30]
+  ]
+},
+{
+    question: "Display employees ordered by job and name.",
+  sql: "SELECT * FROM SCOTT.EMP ORDER BY JOB, ENAME;",
+  output: [
+    ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+    [7902,"FORD","ANALYST",7566,"1981-12-03",3000,null,20],
+    [7788,"SCOTT","ANALYST",7566,"1987-07-13",3000,null,20],
+    [7876,"ADAMS","CLERK",7788,"1987-07-13",1100,null,20],
+    [7900,"JAMES","CLERK",7698,"1981-12-03",950,null,30],
+    [7934,"MILLER","CLERK",7782,"1982-01-23",1300,null,10],
+    [7369,"SMITH","CLERK",7902,"1980-12-17",800,null,20],
+    [7698,"BLAKE","MANAGER",7839,"1981-05-01",2850,null,30],
+    [7782,"CLARK","MANAGER",7839,"1981-06-09",2450,null,10],
+    [7566,"JONES","MANAGER",7839,"1981-04-02",2975,null,20],
+    [7839,"KING","PRESIDENT",null,"1981-11-17",5000,null,10],
+    [7499,"ALLEN","SALESMAN",7698,"1981-02-20",1600,300,30],
+    [7654,"MARTIN","SALESMAN",7698,"1981-09-28",1250,1400,30],
+    [7844,"TURNER","SALESMAN",7698,"1981-09-08",1500,0,30],
+    [7521,"WARD","SALESMAN",7698,"1981-02-22",1250,500,30]
+  ]
+},
+{
+    question: "Display employee name as Employee_Name.",
+  sql: "SELECT ENAME AS Employee_Name FROM SCOTT.EMP;",
+  output: [
+    ["EMPLOYEE_NAME"],
+    ["SMITH"],["ALLEN"],["WARD"],["JONES"],["MARTIN"],["BLAKE"],["CLARK"],["SCOTT"],["KING"],["TURNER"],["ADAMS"],["JAMES"],["FORD"],["MILLER"]
+  ]
+},
+{
+    question: "Display salary as Monthly_Salary.",
+  sql: "SELECT SAL AS Monthly_Salary FROM SCOTT.EMP;",
+  output: [
+    ["MONTHLY_SALARY"],
+    [800],[1600],[1250],[2975],[1250],[2850],[2450],[3000],[5000],[1500],[1100],[950],[3000],[1300]
+  ]
+},
+{
+    question: "Display employee name and job with aliases.",
+  sql: "SELECT ENAME AS Employee_Name, JOB AS Employee_Job FROM SCOTT.EMP;",
+  output: [
+    ["EMPLOYEE_NAME","EMPLOYEE_JOB"],
+    ["SMITH","CLERK"],
+    ["ALLEN","SALESMAN"],
+    ["WARD","SALESMAN"],
+    ["JONES","MANAGER"],
+    ["MARTIN","SALESMAN"],
+    ["BLAKE","MANAGER"],
+    ["CLARK","MANAGER"],
+    ["SCOTT","ANALYST"],
+    ["KING","PRESIDENT"],
+    ["TURNER","SALESMAN"],
+    ["ADAMS","CLERK"],
+    ["JAMES","CLERK"],
+    ["FORD","ANALYST"],
+    ["MILLER","CLERK"]
+  ]
+},
+{
+    question: "Display department number as Dept_No.",
+  sql: "SELECT DEPTNO AS Dept_No FROM SCOTT.EMP;",
+  output: [
+    ["DEPT_NO"],
+    [20],[30],[30],[20],[30],[30],[10],[20],[10],[30],[20],[30],[20],[10]
+  ]
+},
+{
+    question: "Display employee name and salary with meaningful aliases.",
+  sql: "SELECT ENAME AS Employee_Name, SAL AS Employee_Salary FROM SCOTT.EMP;",
+  output: [
+    ["EMPLOYEE_NAME","EMPLOYEE_SALARY"],
+    ["SMITH",800],
+    ["ALLEN",1600],
+    ["WARD",1250],
+    ["JONES",2975],
+    ["MARTIN",1250],
+    ["BLAKE",2850],
+    ["CLARK",2450],
+    ["SCOTT",3000],
+    ["KING",5000],
+    ["TURNER",1500],
+    ["ADAMS",1100],
+    ["JAMES",950],
+    ["FORD",3000],
+    ["MILLER",1300]
+  ]
+},
+{
+    question: "Display commission as Incentive.",
+  sql: "SELECT ENAME, JOB, COMM AS Incentive FROM SCOTT.EMP;",
+  output: [
+    ["ENAME","JOB","INCENTIVE"],
+    ["SMITH","CLERK",null],
+    ["ALLEN","SALESMAN",300],
+    ["WARD","SALESMAN",500],
+    ["JONES","MANAGER",null],
+    ["MARTIN","SALESMAN",1400],
+    ["BLAKE","MANAGER",null],
+    ["CLARK","MANAGER",null],
+    ["SCOTT","ANALYST",null],
+    ["KING","PRESIDENT",null],
+    ["TURNER","SALESMAN",0],
+    ["ADAMS","CLERK",null],
+    ["JAMES","CLERK",null],
+    ["FORD","ANALYST",null],
+    ["MILLER","CLERK",null]
+  ]
+},
+{
+    question: "Display employee name, job, and salary with aliases, ordered by job.",
+  sql: "SELECT ENAME AS Name, JOB AS Employee_Job, SAL AS Salary FROM SCOTT.EMP ORDER BY JOB;",
+  output: [
+    ["NAME","EMPLOYEE_JOB","SALARY"],
+    ["SCOTT","ANALYST",3000],
+    ["FORD","ANALYST",3000],
+    ["SMITH","CLERK",800],
+    ["ADAMS","CLERK",1100],
+    ["JAMES","CLERK",950],
+    ["MILLER","CLERK",1300],
+    ["JONES","MANAGER",2975],
+    ["BLAKE","MANAGER",2850],
+    ["CLARK","MANAGER",2450],
+    ["KING","PRESIDENT",5000],
+    ["ALLEN","SALESMAN",1600],
+    ["WARD","SALESMAN",1250],
+    ["MARTIN","SALESMAN",1250],
+    ["TURNER","SALESMAN",1500]
+  ]
+},
+{
+    question: "Display employees of department 30 whose salary > 1500, ordered by salary.",
+  sql: "SELECT * FROM SCOTT.EMP WHERE DEPTNO = 30 AND SAL > 1500 ORDER BY SAL;",
+  output: [
+    ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+    [7499,"ALLEN","SALESMAN",7698,"1981-02-20",1600,300,30],
+    [7698,"BLAKE","MANAGER",7839,"1981-05-01",2850,null,30]
+  ]
+},
+{
+    question: "Display employees whose commission is NOT NULL, ordered by commission.",
+  sql: "SELECT * FROM SCOTT.EMP WHERE COMM IS NOT NULL ORDER BY COMM;",
+  output: [
+    ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+    [7844,"TURNER","SALESMAN",7698,"1981-09-08",1500,0,30],
+    [7499,"ALLEN","SALESMAN",7698,"1981-02-20",1600,300,30],
+    [7521,"WARD","SALESMAN",7698,"1981-02-22",1250,500,30],
+    [7654,"MARTIN","SALESMAN",7698,"1981-09-28",1250,1400,30]
+  ]
+},
+{
+    question: "Display employees whose salary is between 1500 and 3000, ordered by salary.",
+  sql: "SELECT * FROM SCOTT.EMP WHERE SAL BETWEEN 1500 AND 3000 ORDER BY SAL;",
+  output: [
+    ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+    [7844,"TURNER","SALESMAN",7698,"1981-09-08",1500,0,30],
+    [7499,"ALLEN","SALESMAN",7698,"1981-02-20",1600,300,30],
+    [7782,"CLARK","MANAGER",7839,"1981-06-09",2450,null,10],
+    [7698,"BLAKE","MANAGER",7839,"1981-05-01",2850,null,30],
+    [7566,"JONES","MANAGER",7839,"1981-04-02",2975,null,20],
+    [7788,"SCOTT","ANALYST",7566,"1987-07-13",3000,null,20],
+    [7902,"FORD","ANALYST",7566,"1981-12-03",3000,null,20]
+  ]
+},
+{
+    question: "Display employee name and department, ordered by department and name.",
+  sql: "SELECT ENAME, DEPTNO FROM SCOTT.EMP ORDER BY DEPTNO, ENAME;",
+  output: [
+    ["ENAME","DEPTNO"],
+    ["CLARK",10],["KING",10],["MILLER",10],
+    ["ADAMS",20],["FORD",20],["JONES",20],["SCOTT",20],["SMITH",20],
+    ["ALLEN",30],["BLAKE",30],["JAMES",30],["MARTIN",30],["TURNER",30],["WARD",30]
+  ]
+},
+{
+    question: "Display employees whose name starts with 'S', ordered by salary.",
+  sql: "SELECT * FROM SCOTT.EMP WHERE ENAME LIKE 'S%' ORDER BY SAL;",
+  output: [
+    ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+    [7369,"SMITH","CLERK",7902,"1980-12-17",800,null,20],
+    [7788,"SCOTT","ANALYST",7566,"1987-07-13",3000,null,20]
+  ]
+},
+{
+    question: "Display employees hired before 1982 with aliases, ordered by hire date.",
+  sql: "SELECT ENAME AS Name, HIREDATE FROM SCOTT.EMP WHERE HIREDATE < TO_DATE('01-JAN-1982','DD-MON-YYYY') ORDER BY HIREDATE;",
+  output: [
+    ["NAME","HIREDATE"],
+    ["SMITH","1980-12-17"],
+    ["ALLEN","1981-02-20"],
+    ["WARD","1981-02-22"],
+    ["JONES","1981-04-02"],
+    ["BLAKE","1981-05-01"],
+    ["CLARK","1981-06-09"],
+    ["TURNER","1981-09-08"],
+    ["MARTIN","1981-09-28"],
+    ["KING","1981-11-17"],
+    ["JAMES","1981-12-03"],
+    ["FORD","1981-12-03"]
+  ]
+},
+{
+    question: "Display employee name as Name and salary as Pay for department 10.",
+  sql: "SELECT ENAME AS Name, SAL AS Pay FROM SCOTT.EMP WHERE DEPTNO = 10;",
+  output: [
+    ["NAME","PAY"],
+    ["CLARK",2450],
+    ["KING",5000],
+    ["MILLER",1300]
+  ]
+},
+{
+    question: "Display employees whose commission is NULL, ordered by salary descending.",
+  sql: "SELECT * FROM SCOTT.EMP WHERE COMM IS NULL ORDER BY SAL DESC;",
+  output: [
+    ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+    [7839,"KING","PRESIDENT",null,"1981-11-17",5000,null,10],
+    [7788,"SCOTT","ANALYST",7566,"1987-07-13",3000,null,20],
+    [7902,"FORD","ANALYST",7566,"1981-12-03",3000,null,20],
+    [7566,"JONES","MANAGER",7839,"1981-04-02",2975,null,20],
+    [7698,"BLAKE","MANAGER",7839,"1981-05-01",2850,null,30],
+    [7782,"CLARK","MANAGER",7839,"1981-06-09",2450,null,10],
+    [7934,"MILLER","CLERK",7782,"1982-01-23",1300,null,10],
+    [7876,"ADAMS","CLERK",7788,"1987-07-13",1100,null,20],
+    [7900,"JAMES","CLERK",7698,"1981-12-03",950,null,30],
+    [7369,"SMITH","CLERK",7902,"1980-12-17",800,null,20]
+  ]
+},
+{
+    question: "Display employee name and annual salary, ordered by annual salary.",
+  sql: "SELECT ENAME, SAL*12 AS ANNUAL_SALARY FROM SCOTT.EMP ORDER BY ANNUAL_SALARY;",
+  output: [
+    ["ENAME","ANNUAL_SALARY"],
+    ["SMITH",9600],
+    ["JAMES",11400],
+    ["ADAMS",13200],
+    ["WARD",15000],
+    ["MARTIN",15000],
+    ["MILLER",15600],
+    ["TURNER",18000],
+    ["ALLEN",19200],
+    ["CLARK",29400],
+    ["BLAKE",34200],
+    ["JONES",35700],
+    ["SCOTT",36000],
+    ["FORD",36000],
+    ["KING",60000]
+  ]
+},
+{
+    question: "Display employees whose commission is NULL but job is SALESMAN.",
+  sql: "SELECT * FROM SCOTT.EMP WHERE COMM IS NULL AND JOB = 'SALESMAN';",
+  output: [
+    ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"]
+  ]
+},
+{
+    question: "Display employees whose manager is NULL and salary > 4000.",
+  sql: "SELECT * FROM SCOTT.EMP WHERE MGR IS NULL AND SAL > 4000;",
+  output: [
+    ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+    [7839,"KING","PRESIDENT",null,"1981-11-17",5000,null,10]
+  ]
+},
+{
+    question: "Display employees who do not earn commission and work in department 20.",
+  sql: "SELECT * FROM SCOTT.EMP WHERE COMM = 0 AND DEPTNO = 20;",
+  output: [
+    ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"]
+  ]
+},
+{
+    question: "Display employees whose commission is NOT NULL and department is 30.",
+  sql: "SELECT * FROM SCOTT.EMP WHERE COMM IS NOT NULL AND DEPTNO = 30;",
+  output: [
+    ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+    [7499,"ALLEN","SALESMAN",7698,"1981-02-20",1600,300,30],
+    [7521,"WARD","SALESMAN",7698,"1981-02-22",1250,500,30],
+    [7654,"MARTIN","SALESMAN",7698,"1981-09-28",1250,1400,30],
+    [7844,"TURNER","SALESMAN",7698,"1981-09-08",1500,0,30]
+  ]
+},
+{
+    question: "Display employees whose commission is NULL or salary > 3000.",
+  sql: "SELECT * FROM SCOTT.EMP WHERE COMM IS NULL OR SAL > 3000;",
+  output: [
+    ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+    [7369,"SMITH","CLERK",7902,"1980-12-17",800,null,20],
+    [7566,"JONES","MANAGER",7839,"1981-04-02",2975,null,20],
+    [7698,"BLAKE","MANAGER",7839,"1981-05-01",2850,null,30],
+    [7782,"CLARK","MANAGER",7839,"1981-06-09",2450,null,10],
+    [7788,"SCOTT","ANALYST",7566,"1987-07-13",3000,null,20],
+    [7839,"KING","PRESIDENT",null,"1981-11-17",5000,null,10],
+    [7876,"ADAMS","CLERK",7788,"1987-07-13",1100,null,20],
+    [7900,"JAMES","CLERK",7698,"1981-12-03",950,null,30],
+    [7902,"FORD","ANALYST",7566,"1981-12-03",3000,null,20],
+    [7934,"MILLER","CLERK",7782,"1982-01-23",1300,null,10]
+  ]
+},
+{
+    question: "Display employees whose commission is NULL and salary > 2000.",
+  sql: "SELECT * FROM SCOTT.EMP WHERE COMM IS NULL AND SAL > 2000;",
+  output: [
+    ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+    [7566,"JONES","MANAGER",7839,"1981-04-02",2975,null,20],
+    [7698,"BLAKE","MANAGER",7839,"1981-05-01",2850,null,30],
+    [7782,"CLARK","MANAGER",7839,"1981-06-09",2450,null,10],
+    [7788,"SCOTT","ANALYST",7566,"1987-07-13",3000,null,20],
+    [7839,"KING","PRESIDENT",null,"1981-11-17",5000,null,10],
+    [7902,"FORD","ANALYST",7566,"1981-12-03",3000,null,20]
+  ]
+},
+{
+    question: "Display employees whose manager is not NULL.",
+  sql: "SELECT * FROM SCOTT.EMP WHERE MGR IS NOT NULL;",
+  output: [
+    ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+    [7369,"SMITH","CLERK",7902,"1980-12-17",800,null,20],
+    [7499,"ALLEN","SALESMAN",7698,"1981-02-20",1600,300,30],
+    [7521,"WARD","SALESMAN",7698,"1981-02-22",1250,500,30],
+    [7566,"JONES","MANAGER",7839,"1981-04-02",2975,null,20],
+    [7654,"MARTIN","SALESMAN",7698,"1981-09-28",1250,1400,30],
+    [7698,"BLAKE","MANAGER",7839,"1981-05-01",2850,null,30],
+    [7782,"CLARK","MANAGER",7839,"1981-06-09",2450,null,10],
+    [7788,"SCOTT","ANALYST",7566,"1987-07-13",3000,null,20],
+    [7844,"TURNER","SALESMAN",7698,"1981-09-08",1500,0,30],
+    [7876,"ADAMS","CLERK",7788,"1987-07-13",1100,null,20],
+    [7900,"JAMES","CLERK",7698,"1981-12-03",950,null,30],
+    [7902,"FORD","ANALYST",7566,"1981-12-03",3000,null,20],
+    [7934,"MILLER","CLERK",7782,"1982-01-23",1300,null,10]
+  ]
+},
+{
+    question: "Display employees who do not have a manager.",
+  sql: "SELECT * FROM SCOTT.EMP WHERE MGR IS NULL;",
+  output: [
+    ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+    [7839,"KING","PRESIDENT",null,"1981-11-17",5000,null,10]
+  ]
+},
+{
+    question: "Display employees who are getting commission.",
+  sql: "SELECT * FROM SCOTT.EMP WHERE COMM IS NOT NULL;",
+  output: [
+    ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+    [7499,"ALLEN","SALESMAN",7698,"1981-02-20",1600,300,30],
+    [7521,"WARD","SALESMAN",7698,"1981-02-22",1250,500,30],
+    [7654,"MARTIN","SALESMAN",7698,"1981-09-28",1250,1400,30],
+    [7844,"TURNER","SALESMAN",7698,"1981-09-08",1500,0,30]
+  ]
+},
+{
+    question: "Display employees whose commission is NULL.",
+  sql: "SELECT * FROM SCOTT.EMP WHERE COMM IS NULL;",
+  output: [
+    ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+    [7369,"SMITH","CLERK",7902,"1980-12-17",800,null,20],
+    [7566,"JONES","MANAGER",7839,"1981-04-02",2975,null,20],
+    [7698,"BLAKE","MANAGER",7839,"1981-05-01",2850,null,30],
+    [7782,"CLARK","MANAGER",7839,"1981-06-09",2450,null,10],
+    [7788,"SCOTT","ANALYST",7566,"1987-07-13",3000,null,20],
+    [7839,"KING","PRESIDENT",null,"1981-11-17",5000,null,10],
+    [7876,"ADAMS","CLERK",7788,"1987-07-13",1100,null,20],
+    [7900,"JAMES","CLERK",7698,"1981-12-03",950,null,30],
+    [7902,"FORD","ANALYST",7566,"1981-12-03",3000,null,20],
+    [7934,"MILLER","CLERK",7782,"1982-01-23",1300,null,10]
+  ]
+},
+{
+    question: "Display job and salary using aliases.",
+  sql: "SELECT JOB AS Employee_Job, SAL AS Employee_Salary FROM SCOTT.EMP;",
+  output: [
+    ["EMPLOYEE_JOB","EMPLOYEE_SALARY"],
+    ["CLERK",800],
+    ["SALESMAN",1600],
+    ["SALESMAN",1250],
+    ["MANAGER",2975],
+    ["SALESMAN",1250],
+    ["MANAGER",2850],
+    ["MANAGER",2450],
+    ["ANALYST",3000],
+    ["PRESIDENT",5000],
+    ["SALESMAN",1500],
+    ["CLERK",1100],
+    ["CLERK",950],
+    ["ANALYST",3000],
+    ["CLERK",1300]
+  ]
+},
+{
+    question: "Display employee name and department number with aliases.",
+  sql: "SELECT ENAME AS Employee_Name, DEPTNO AS Department_Number FROM SCOTT.EMP;",
+  output: [
+    ["EMPLOYEE_NAME","DEPARTMENT_NUMBER"],
+    ["SMITH",20],
+    ["ALLEN",30],
+    ["WARD",30],
+    ["JONES",20],
+    ["MARTIN",30],
+    ["BLAKE",30],
+    ["CLARK",10],
+    ["SCOTT",20],
+    ["KING",10],
+    ["TURNER",30],
+    ["ADAMS",20],
+    ["JAMES",30],
+    ["FORD",20],
+    ["MILLER",10]
+  ]
+},
+{
+    question: "Display hire date as Joining_Date.",
+  sql: "SELECT ENAME, HIREDATE AS Joining_Date FROM SCOTT.EMP;",
+  output: [
+    ["ENAME","JOINING_DATE"],
+    ["SMITH","1980-12-17"],
+    ["ALLEN","1981-02-20"],
+    ["WARD","1981-02-22"],
+    ["JONES","1981-04-02"],
+    ["MARTIN","1981-09-28"],
+    ["BLAKE","1981-05-01"],
+    ["CLARK","1981-06-09"],
+    ["SCOTT","1987-07-13"],
+    ["KING","1981-11-17"],
+    ["TURNER","1981-09-08"],
+    ["ADAMS","1987-07-13"],
+    ["JAMES","1981-12-03"],
+    ["FORD","1981-12-03"],
+    ["MILLER","1982-01-23"]
+  ]
+}
+  ]
+    };
+
+    // Set Title
+    document.getElementById("WOC").innerText = topicData.title;
+
+    const container = document.getElementById("queryList");
+
+    // Create Queries
+    topicData.queries.forEach((q, index) => {
+      const div = document.createElement("div");
+      div.className = "query-box";
+
+      div.innerHTML = `
+        <div class="query-title">
+          (${index + 1}) ${q.question}
+        </div>
+
+        <button onclick="toggleAnswer(${index})">
+          Show Answer
+        </button>
+
+        <div class="answer" id="answer-${index}">
+          <div class="answer-container">
+            
+            <div class="query-code">
+              ${q.sql}
+            </div>
+
+            <div class=output>
+              ${createTable(q.output)}
+            </div>
+
+          </div>
+        </div>
+      `;
+
+      container.appendChild(div);
+    });
+
+    // Toggle Answer
+    function toggleAnswer(index) {
+      const ans = document.getElementById(`answer-${index}`);
+      ans.style.display = ans.style.display === "block" ? "none" : "block";
+    }
+
+    // Create Table
+    function createTable(data) {
+      let html = "<table>";
+
+      data.forEach((row, i) => {
+        html += "<tr>";
+        row.forEach(cell => {
+          html += i === 0 ? `<th>${cell}</th>` : `<td>${cell}</td>`;
+        });
+        html += "</tr>";
+      });
+
+      html += "</table>";
+      return html;
+    }
+  </script>
+
+</body>
+</html>

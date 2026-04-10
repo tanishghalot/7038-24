@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Topic Page</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #DEF2F1;
+      padding: 20px;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      padding: 15px;
+      border: 1px solid black;
+      border-radius: 15px;
+      font-size: 26px;
+      font-weight: bold;
+      background: #78E7E0 ;
+      color: #17252a;
+      margin-bottom: 30px;
+    }
+
+    /* Query Box */
+    .query-box {
+      background: #DEF2F1;
+      border: 0px solid black;
+      border-radius: 15px;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+
+    .query-title {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    button {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 15px;
+      background: #78E7E0 ;
+      color: black;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #2B7A78;
+    }
+
+    /* Answer Section */
+    .answer {
+      display: none;
+      margin-top: 15px;
+      border-top: 2px solid black;
+      padding-top: 10px;
+    }
+
+    .answer-container {
+      display: flex;
+      gap: 20px;
+    }
+
+    .query-code {
+      width: 50%;
+      background: #DEF2F1;
+      padding: 10px;
+      border: 1px solid black;
+      border-radius: 5px;
+      font-family: monospace;
+    }
+
+    .output {
+      width: 50%;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      border-radius: 5px;
+    }
+
+    th, td {
+      border: 1px solid black;
+      border-radius: 5px;
+      padding: 6px;
+      text-align: center;
+    }
+
+    /* Responsive */
+    @media (max-width: 700px) {
+      .answer-container {
+        flex-direction: column;
+      }
+
+      .query-code, .output {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Topic Title -->
+  <div class="header" id="SUB">
+    SUBQUERIES
+  </div>
+
+  <!-- Query List -->
+  <div id="queryList"></div>
+
+  <script>
+    // SAMPLE DATA (EDIT THIS)
+    const topicData = {
+      title: "SUBQUERIES",
+      queries: [
+        {
+  "question": "Display employees whose salary is greater than JONES.",
+  "sql": "SELECT * FROM SCOTT.EMP WHERE SAL >(SELECT SAL FROM SCOTT.EMP WHERE ENAME = 'JONES');",
+  "output": [
+    ["ENAME","SAL"],
+    ["KING",5000],
+    ["FORD",3000],
+    ["SCOTT",3000]
+  ]
+},
+{
+  "question": "Display employees earning the same salary as SCOTT.",
+  "sql": "SELECT * FROM SCOTT.EMP WHERE SAL = (SELECT SAL FROM SCOTT.EMP WHERE ENAME = 'SCOTT');",
+  "output": [
+    ["ENAME","SAL"],
+    ["SCOTT",3000],
+    ["FORD",3000]
+  ]
+},
+{
+  "question": "Display employees hired after ALLEN.",
+  "sql": "SELECT * FROM SCOTT.EMP WHERE HIREDATE >( SELECT HIREDATE FROM SCOTT.EMP WHERE ENAME = 'ALLEN');",
+  "output": [
+  ["EMPNO","ENAME","HIREDATE"],
+  [7839,"KING","1981-11-17"],
+  [7698,"BLAKE","1981-05-01"],
+  [7782,"CLARK","1981-06-09"],
+  [7566,"JONES","1981-04-02"],
+  [7788,"SCOTT","1987-04-19"],
+  [7902,"FORD","1981-12-03"],
+  [7521,"WARD","1981-02-22"],
+  [7654,"MARTIN","1981-09-28"],
+  [7844,"TURNER","1981-09-08"],
+  [7876,"ADAMS","1987-05-23"],
+  [7900,"JAMES","1981-12-03"],
+  [7934,"MILLER","1982-01-23"]
+]
+ },
+{
+  "question": "Display employees working in the same department as BLAKE.",
+  "sql": "SELECT * FROM SCOTT.EMP WHERE DEPTNO = ( SELECT DEPTNO FROM SCOTT.EMP WHERE ENAME = 'BLAKE');",
+  "output": [
+    ["ENAME","DEPTNO"],
+    ["ALLEN",30],
+    ["WARD",30],
+    ["MARTIN",30],
+    ["TURNER",30],
+    ["JAMES",30],
+    ["BLAKE",30]
+  ]
+},
+{
+  "question": "Display employees having the same job as MILLER.",
+  "sql": "SELECT * FROM SCOTT.EMP WHERE JOB = (SELECT JOB FROM SCOTT.EMP WHERE ENAME = 'MILLER');",
+  "output": [
+    ["ENAME","JOB"],
+    ["SMITH","CLERK"],
+    ["ADAMS","CLERK"],
+    ["JAMES","CLERK"],
+    ["MILLER","CLERK"]
+  ]
+},
+{
+  "question": "Display employees earning less than the average salary.",
+  "sql": "SELECT * FROM SCOTT.EMP WHERE SAL<(SELECT AVG(SAL) FROM SCOTT.EMP);",
+  "output": [
+    ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+    [7369,"SMITH","CLERK",7902,"1980-12-17T00:00:00Z",800,null,20],
+    [7499,"ALLEN","SALESMAN",7698,"1981-02-20T00:00:00Z",1600,300,30],
+    [7521,"WARD","SALESMAN",7698,"1981-02-22T00:00:00Z",1250,500,30],
+    [7654,"MARTIN","SALESMAN",7698,"1981-09-28T00:00:00Z",1250,1400,30],
+    [7844,"TURNER","SALESMAN",7698,"1981-09-08T00:00:00Z",1500,0,30],
+    [7876,"ADAMS","CLERK",7788,"1987-05-23T00:00:00Z",1100,null,20],
+    [7900,"JAMES","CLERK",7698,"1981-12-03T00:00:00Z",950,null,30],
+    [7934,"MILLER","CLERK",7782,"1982-01-23T00:00:00Z",1300,null,10]
+  ]
+},
+{
+  "question": "Display employees earning more than the maximum salary of CLERKs.",
+  "sql": "SELECT * FROM SCOTT.EMP WHERE SAL>(SELECT MAX(SAL) FROM SCOTT.EMP WHERE JOB = 'CLERK');",
+  "output": [
+    ["ENAME","SAL"],
+    ["KING",5000],
+    ["FORD",3000],
+    ["SCOTT",3000],
+    ["JONES",2975]
+  ]
+},
+{
+  "question": "Display employee(s) with the minimum salary.",
+  "sql": "SELECT * FROM SCOTT.EMP WHERE SAL = (SELECT MIN(SAL) FROM SCOTT.EMP);",
+  "output": [
+    ["ENAME","SAL"],
+    ["SMITH",800]
+  ]
+},
+{
+  "question": "Display employee(s) with the maximum salary.",
+  "sql": "SELECT * FROM SCOTT.EMP WHERE SAL = (SELECT MAX(SAL) FROM SCOTT.EMP);",
+  "output": [
+    ["ENAME","SAL"],
+    ["KING",5000]
+  ]
+},
+{
+  "question": "Display employees working in departments located in NEW YORK.",
+  "sql": "SELECT * FROM SCOTT.EMP WHERE DEPTNO = (SELECT DEPTNO FROM SCOTT.DEPT WHERE LOC = 'NEW YORK');",
+  "output": [
+    ["ENAME","LOC"],
+    ["SMITH","NEW YORK"],
+    ["JONES","NEW YORK"],
+    ["SCOTT","NEW YORK"],
+    ["ADAMS","NEW YORK"],
+    ["FORD","NEW YORK"]
+  ]
+},
+{
+  "question": "Display employees whose salary matches any salary in department 30.",
+  "sql": "SELECT * FROM SCOTT.EMP WHERE SAL IN (SELECT SAL FROM SCOTT.EMP WHERE DEPTNO = 30);",
+  "output": [
+    ["ENAME","SAL"],
+    ["ALLEN",1600],
+    ["WARD",1250],
+    ["MARTIN",1250],
+    ["TURNER",1500],
+    ["JAMES",950]
+  ]
+},
+{
+  "question": "Display employees earning more than all CLERKs.",
+  "sql": "SELECT * FROM SCOTT.EMP WHERE SAL >(SELECT MAX(SAL) FROM SCOTT.EMP WHERE  JOB = 'CLERK');",
+  "output": [
+    ["ENAME","SAL"],
+    ["KING",5000],
+    ["FORD",3000],
+    ["SCOTT",3000],
+    ["JONES",2975]
+  ]
+},
+{
+  "question": "Display employees earning less than any MANAGER.",
+  "sql": "SELECT * FROM SCOTT.EMP WHERE SAL <(SELECT MIN(SAL) FROM SCOTT.EMP WHERE JOB = 'MANAGER'); ",
+  "output": [
+    ["ENAME","SAL"],
+    ["SMITH",800],
+    ["JAMES",950],
+    ["ADAMS",1100]
+  ]
+},
+{
+  "question": "Display employees whose job appears in department 20.",
+  "sql": "SELECT * FROM SCOTT.EMP WHERE JOB IN (SELECT JOB FROM SCOTT.EMP WHERE DEPTNO = 20);",
+  "output": [
+    ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+    [7369,"SMITH","CLERK",7902,"1980-12-17T00:00:00Z",800,null,20],
+    [7566,"JONES","MANAGER",7839,"1981-04-02T00:00:00Z",2975,null,20],
+    [7782,"CLARK","MANAGER",7839,"1981-06-09T00:00:00Z",2450,null,10],
+    [7788,"SCOTT","ANALYST",7566,"1987-04-19T00:00:00Z",3000,null,20],
+    [7876,"ADAMS","CLERK",7788,"1987-05-23T00:00:00Z",1100,null,20],
+    [7902,"FORD","ANALYST",7566,"1981-12-03T00:00:00Z",3000,null,20],
+    [7934,"MILLER","CLERK",7782,"1982-01-23T00:00:00Z",1300,null,10]
+  ]
+},
+{
+  "question": "Display employees whose department has at least one SALESMAN.",
+  "sql": "SELECT * FROM SCOTT.EMP WHERE DEPTNO IN ( SELECT DEPTNO FROM SCOTT.EMP WHERE JOB = 'SALESMAN');",
+  "output": [
+    ["ENAME","DEPTNO"],
+    ["ALLEN",30],
+    ["WARD",30],
+    ["MARTIN",30],
+    ["TURNER",30],
+    ["JAMES",30],
+    ["BLAKE",30]
+  ]
+},
+{
+  "question": "Display employees earning the same salary as any CLERK.",
+  "sql": "SELECT ENAME FROM SCOTT.EMP WHERE SAL IN ( SELECT SAL FROM SCOTT.EMP WHERE JOB='CLERK');",
+  "output": [
+    ["ENAME","SAL"],
+    ["SMITH",800],
+    ["ADAMS",1100],
+    ["JAMES",950],
+    ["MILLER",1300]
+  ]
+},
+{
+  "question": "Display employees who are not working in departments of SALESMAN.",
+  "sql": "select *  from scott.emp where deptno not in (SELECT deptno FROM scott.emp WHERE job = 'SALESMAN');",
+  "output": [
+    ["ENAME","DEPTNO"],
+    ["SMITH",20],
+    ["JONES",20],
+    ["SCOTT",20],
+    ["ADAMS",20],
+    ["FORD",20],
+    ["CLARK",10],
+    ["KING",10],
+    ["MILLER",10]
+  ]
+},
+{
+  "question": "Display employees earning more than all employees in department 10.",
+  "sql": " select ename, sal from scott.emp where sal > (select max(sal) from scott.emp where deptno = 10);",
+  "output": [
+    ["ENAME","SAL"],
+    ["KING",5000]
+  ]
+},
+{
+  "question": "Display employees whose department number is among departments with more than 3 employees.",
+  "sql": "select ename , deptno from scott.emp where deptno in ( select deptno from scott.emp group by deptno having count(*) > 3 );",
+  "output": [
+    ["ENAME","DEPTNO"],
+    ["SMITH",20],
+    ["ALLEN",30],
+    ["WARD",30],
+    ["JONES",20],
+    ["MARTIN",30],
+    ["BLAKE",30],
+    ["CLARK",10],
+    ["SCOTT",20],
+    ["KING",10],
+    ["TURNER",30],
+    ["ADAMS",20],
+    ["JAMES",30],
+    ["FORD",20],
+    ["MILLER",10]
+  ]
+},
+{
+  "question": "Display jobs where average salary is greater than overall average salary.",
+  "sql": "select JOB,AVG(SAL)  from scott.emp  GROUP BY JOB HAVING AVG(sal) > (select avg(sal) from scott.emp);",
+  "output": [
+    ["JOB","AVG(SAL)"],
+    ["ANALYST",3000],
+    ["MANAGER",2758.33],
+    ["PRESIDENT",5000]
+  ]
+},
+{
+  "question": "Display employees earning more than the department average salary.",
+  "sql": "SELECT ENAME, SAL FROM SCOTT.EMP E WHERE SAL > (SELECT AVG(SAL) FROM SCOTT.EMP WHERE DEPTNO = E.DEPTNO);",
+  "output": [
+    ["ENAME","SAL"],
+    ["ALLEN",1600],
+    ["JONES",2975],
+    ["BLAKE",2850],
+    ["CLARK",2450],
+    ["SCOTT",3000],
+    ["KING",5000],
+    ["FORD",3000]
+  ]
+},
+{
+  "question": "Display employees earning the highest salary in each department.",
+  "sql": "select ename, sal, job from scott.emp where sal  in ( select mAX(sal) from scott.emp group by DEPTNO);",
+  "output": [
+    ["ENAME","SAL","DEPTNO"],
+    ["KING",5000,10],
+    ["SCOTT",3000,20],
+    ["FORD",3000,20],
+    ["BLAKE",2850,30]
+  ]
+},
+{
+  "question": "Display employees earning the lowest salary in each job.",
+  "sql": "select ename, sal, job from scott.emp where sal  in ( select MIN(sal) from scott.emp group by JOB);",
+  "output": [
+    ["ENAME","SAL","JOB"],
+    ["SMITH",800,"CLERK"],
+    ["ALLEN",1600,"SALESMAN"],
+    ["JONES",2975,"MANAGER"],
+    ["SCOTT",3000,"ANALYST"],
+    ["KING",5000,"PRESIDENT"]
+  ]
+},
+{
+  "question": "Display departments having total salary greater than department 20.",
+  "sql": "select deptno, SUM(sal) from scott.emp group by deptno having SUM(sal) > ( select sum(sal) from scott.emp where deptno=20);",
+  "output": [
+    ["DEPTNO","SUM(SAL)"],
+    ["10",8750]
+  ]
+},
+{
+  "question": "Display employees whose salary equals the maximum salary of their job.",
+  "sql": "select ename, sal, job from scott.emp e where sal = ( select max(sal) from scott.emp where job = e.job);",
+  "output": [
+    ["ENAME","SAL","JOB"],
+    ["KING",5000,"PRESIDENT"],
+    ["SCOTT",3000,"ANALYST"],
+    ["FORD",3000,"ANALYST"],
+    ["BLAKE",2850,"MANAGER"]
+  ]
+},
+{
+  "question": "Display employees earning more than the overall average salary.",
+  "sql": "select ename, sal from scott.emp where sal > (select avg(sal) from scott.emp );",
+  "output": [
+    ["ENAME","SAL"],
+    ["KING",5000],
+    ["SCOTT",3000],
+    ["FORD",3000],
+    ["JONES",2975]
+  ]
+},
+{
+  "question": "Display department(s) having the maximum number of employees.",
+  "sql": "select deptno,count(eMPNO)  from scott.emp group by deptno having count(ename) = (select max(count(ename)) from scott.emp group by deptno);",
+  "output": [
+    ["DEPTNO","COUNT"],
+    ["30",6]
+  ]
+},
+{
+  "question": "Display jobs having minimum average salary.",
+  "sql": "select job, avg(sal) from scott.emp group by job having avg(sal) = ( select min(avg(sal)) from scott.emp group by job);",
+  "output": [
+    ["JOB","AVG(SAL)"],
+    ["CLERK",1037.5]
+  ]
+},
+{
+  "question": "Display employees earning more than the average salary of CLERKs.",
+  "sql": "select ename, sal from scott.emp where sal > ( select avg(sal) from scott.emp where job='CLERK');",
+  "output": [
+    ["ENAME","SAL"],
+    ["ALLEN",1600],
+    ["WARD",1250],
+    ["MARTIN",1250],
+    ["TURNER",1500],
+    ["JONES",2975],
+    ["BLAKE",2850],
+    ["CLARK",2450],
+    ["SCOTT",3000],
+    ["KING",5000],
+    ["FORD",3000]
+  ]
+},
+{
+  "question": "Display department(s) where average salary is highest.",
+  "sql": "SELECT DEPTNO FROM SCOTT.EMP GROUP BY DEPTNO HAVING AVG(SAL) = (SELECT MAX(AVG(SAL)) FROM SCOTT.EMP GROUP BY DEPTNO);",
+  "output": [
+    ["DEPTNO"],
+    [10]
+  ]
+},
+{
+  "question": "Display employees earning more than the average salary of their own department.",
+  "sql": "SELECT E1.ENAME FROM SCOTT.EMP E1 WHERE SAL>(SELECT AVG(E2.SAL) FROM SCOTT.EMP E2 WHERE E1.DEPTNO=E2.DEPTNO);",
+  "output": [
+    ["ENAME"],
+    ["ALLEN"],
+    ["JONES"],
+    ["BLAKE"],
+    ["CLARK"],
+    ["SCOTT"],
+    ["KING"],
+    ["FORD"]
+  ]
+},
+{
+  "question": "Display employees earning the maximum salary in their department.",
+  "sql": "SELECT E1.ENAME FROM SCOTT.EMP E1 WHERE SAL=(SELECT MAX(E2.SAL) FROM SCOTT.EMP E2 WHERE E1.DEPTNO=E2.DEPTNO);",
+  "output": [
+    ["ENAME"],
+    ["KING"],
+    ["BLAKE"],
+    ["SCOTT"]
+  ]
+},
+{
+  "question": "Display employees earning the minimum salary in their department.",
+  "sql": "SELECT E1.ENAME FROM SCOTT.EMP E1 WHERE SAL=(SELECT MIN(E2.SAL) FROM SCOTT.EMP E2 WHERE E1.DEPTNO=E2.DEPTNO);",
+  "output": [
+    ["ENAME"],
+    ["MILLER"],
+    ["SMITH"],
+    ["JAMES"]
+  ]
+},
+{
+  "question": "Display employees whose salary is greater than the average salary of their job.",
+  "sql": "SELECT E1.ENAME FROM SCOTT.EMP E1 WHERE SAL>(SELECT AVG(SAL) FROM SCOTT.EMP E2 WHERE E1.JOB=E2.JOB);",
+  "output": [
+    ["ENAME"],
+    ["ALLEN"],
+    ["BLAKE"],
+    ["JONES"],
+    ["SCOTT"],
+    ["FORD"]
+  ]
+},
+{
+  "question": "Display employees who are the only employee in their department.",
+  "sql": "SELECT ENAME FROM SCOTT.EMP E1 WHERE E1.DEPTNO=(SELECT E2.DEPTNO FROM SCOTT.EMP E2 WHERE E1.DEPTNO=E2.DEPTNO GROUP BY E2.DEPTNO HAVING COUNT(*)=1);",
+  "output": [
+    ["ENAME"]
+  ]
+},
+{
+  "question": "Display departments having employees earning more than 5000.",
+  "sql": "SELECT DNAME FROM SCOTT.DEPT WHERE DEPTNO IN (SELECT DEPTNO FROM SCOTT.EMP WHERE SAL >5000);",
+  "output": [
+    ["DNAME"]
+  ]
+},
+{
+  "question": "Display employees whose department has more than 3 employees.",
+  "sql": "SELECT ENAME FROM SCOTT.EMP WHERE DEPTNO IN(SELECT DEPTNO FROM SCOTT.EMP GROUP BY DEPTNO HAVING COUNT(*)>3);",
+  "output": [
+    ["ENAME"],
+    ["SMITH"],
+    ["ALLEN"],
+    ["WARD"],
+    ["JONES"],
+    ["MARTIN"],
+    ["BLAKE"],
+    ["CLARK"],
+    ["SCOTT"],
+    ["KING"],
+    ["TURNER"],
+    ["ADAMS"],
+    ["JAMES"],
+    ["FORD"],
+    ["MILLER"]
+  ]
+},
+{
+  "question": "Display employees whose job has more than 2 employees.",
+  "sql": "SELECT ENAME FROM SCOTT.EMP WHERE JOB IN(SELECT JOB FROM SCOTT.EMP GROUP BY JOB HAVING COUNT(*)>2);",
+  "output": [
+    ["ENAME"],
+    ["SMITH"],
+    ["ALLEN"],
+    ["WARD"],
+    ["JONES"],
+    ["MARTIN"],
+    ["TURNER"],
+    ["ADAMS"],
+    ["JAMES"],
+    ["FORD"],
+    ["MILLER"]
+  ]
+},
+{
+  "question": "Display employees working in departments where no one gets commission.",
+  "sql": "SELECT ENAME FROM SCOTT.EMP WHERE DEPTNO NOT IN(SELECT DEPTNO FROM SCOTT.EMP WHERE COMM IS NOT NULL);",
+  "output": [
+    ["ENAME"],
+    ["SMITH"],
+    ["JONES"],
+    ["CLARK"],
+    ["SCOTT"],
+    ["KING"],
+    ["ADAMS"],
+    ["FORD"],
+    ["MILLER"]
+  ]
+},
+{
+  "question": "Display employees whose department has at least one manager.",
+  "sql": "SELECT ENAME FROM SCOTT.EMP WHERE DEPTNO IN (SELECT DEPTNO FROM SCOTT.EMP WHERE JOB = 'MANAGER');",
+  "output": [
+    ["ENAME"],
+    ["SMITH"],
+    ["ALLEN"],
+    ["WARD"],
+    ["JONES"],
+    ["MARTIN"],
+    ["BLAKE"],
+    ["CLARK"],
+    ["SCOTT"],
+    ["KING"],
+    ["TURNER"],
+    ["ADAMS"],
+    ["JAMES"],
+    ["FORD"],
+    ["MILLER"]
+  ]
+},
+{
+  "question": "Display departments that have employees.",
+  "sql": "SELECT DEPTNO FROM SCOTT.EMP GROUP BY DEPTNO;",
+  "output": [
+    ["DEPTNO"],
+    [10],
+    [20],
+    [30]
+  ]
+},
+{
+  "question": "Display departments that have no employees.",
+  "sql": "SELECT * FROM SCOTT.DEPT WHERE DEPTNO NOT IN(SELECT DEPTNO FROM SCOTT.EMP);",
+  "output": [
+    ["DEPTNO","DNAME","LOC"],
+    [40,"OPERATIONS","BOSTON"]
+  ]
+},
+{
+  "question": "Display employees who are managers (have subordinates).",
+  "sql": "SELECT ENAME FROM SCOTT.EMP WHERE EMPNO IN(SELECT MGR FROM SCOTT.EMP);",
+  "output": [
+    ["ENAME"],
+    ["KING"],
+    ["JONES"],
+    ["BLAKE"],
+    ["CLARK"],
+    ["SCOTT"],
+    ["FORD"]
+  ]
+},
+{
+  "question": "Display employees working in departments where SALESMAN exists.",
+  "sql": "SELECT ENAME FROM SCOTT.EMP WHERE DEPTNO IN(SELECT DEPTNO FROM SCOTT.EMP WHERE JOB='SALESMAN');",
+  "output": [
+    ["ENAME"],
+    ["ALLEN"],
+    ["WARD"],
+    ["MARTIN"],
+    ["BLAKE"],
+    ["TURNER"],
+    ["JAMES"]
+  ]
+},
+{
+  "question": "Display departments where no SALESMAN exists.",
+  "sql": "SELECT DEPTNO,DNAME FROM SCOTT.DEPT WHERE DEPTNO NOT IN(SELECT DEPTNO FROM SCOTT.EMP WHERE JOB='SALESMAN');",
+  "output": [
+    ["DEPTNO","DNAME"],
+    [10,"ACCOUNTING"],
+    [20,"RESEARCH"],
+    [40,"OPERATIONS"]
+  ]
+},
+{
+  "question": "Display employees whose department has employees with commission.",
+  "sql": "SELECT ENAME FROM SCOTT.EMP WHERE DEPTNO IN(SELECT DEPTNO FROM SCOTT.EMP WHERE COMM IS NOT NULL);",
+  "output": [
+    ["ENAME"],
+    ["ALLEN"],
+    ["WARD"],
+    ["MARTIN"],
+    ["BLAKE"],
+    ["TURNER"],
+    ["JAMES"]
+  ]
+},
+{
+  "question": "Display departments where all employees get commission.",
+  "sql": "SELECT DEPTNO FROM SCOTT.EMP WHERE DEPTNO NOT IN(SELECT DEPTNO FROM SCOTT.EMP WHERE COMM IS NULL);",
+  "output": [
+    ["DEPTNO"]
+  ]
+},
+{
+  "question": "Display employees whose department has no CLERKs.",
+  "sql": "SELECT ENAME FROM SCOTT.EMP WHERE DEPTNO NOT IN(SELECT DEPTNO FROM SCOTT.EMP WHERE JOB='CLERK');",
+  "output": [
+    ["ENAME"]
+  ]
+},
+{
+  "question": "Display employees who work in departments located in CHICAGO.",
+  "sql": "SELECT ENAME FROM SCOTT.EMP WHERE DEPTNO IN(SELECT DEPTNO FROM SCOTT.DEPT WHERE LOC='CHICAGO');",
+  "output": [
+    ["ENAME"],
+    ["SMITH"],
+    ["JONES"],
+    ["SCOTT"],
+    ["ADAMS"],
+    ["FORD"]
+  ]
+},
+{
+  "question": "Display department number and average salary of employees whose salary is greater than 2000.",
+  "sql": "SELECT DEPTNO,AVG(SAL) FROM (SELECT * FROM SCOTT.EMP WHERE SAL>2000) GROUP BY DEPTNO;",
+  "output": [
+    ["DEPTNO","AVG(SAL)"],
+    [10,3725],
+    [20,2916.67],
+    [30,2850]
+  ]
+},
+{
+  "question": "Display job and total salary of employees earning more than the department average.",
+  "sql": "SELECT JOB, SUM(SAL) FROM (SELECT * FROM SCOTT.EMP E1 WHERE SAL > (SELECT AVG(SAL) FROM SCOTT.EMP E2 WHERE E1.DEPTNO = E2.DEPTNO)) GROUP BY JOB;",
+  "output": [
+    ["JOB","SUM(SAL)"],
+    ["SALESMAN",1600],
+    ["MANAGER",8275],
+    ["ANALYST",6000],
+    ["PRESIDENT",5000]
+  ]
+},
+{
+  "question": "Display departments having average salary greater than overall average salary.",
+  "sql": "SELECT DEPTNO FROM SCOTT.EMP GROUP BY DEPTNO HAVING AVG(SAL)>(SELECT AVG(SAL) FROM SCOTT.EMP);",
+  "output": [
+    ["DEPTNO"],
+    [10],
+    [20]
+  ]
+},
+{
+  "question": "Display job-wise employee count from employees earning more than 1500.",
+  "sql": "SELECT JOB, COUNT(*) FROM (SELECT * FROM SCOTT.EMP WHERE SAL > 1500) GROUP BY JOB;",
+  "output": [
+    ["JOB","COUNT(*)"],
+    ["SALESMAN",1],
+    ["MANAGER",3],
+    ["ANALYST",2],
+    ["PRESIDENT",1]
+  ]
+},
+{
+  "question": "Display departments having more than 2 employees earning commission.",
+  "sql": "SELECT DEPTNO FROM (SELECT * FROM SCOTT.EMP WHERE COMM IS NOT NULL) GROUP BY DEPTNO HAVING COUNT(*) > 2;",
+  "output": [
+    ["DEPTNO"],
+    [30]
+  ]
+},
+{
+  "question": "Display job and maximum salary from employees hired after 1981.",
+  "sql": "SELECT JOB, MAX(SAL) FROM (SELECT * FROM SCOTT.EMP WHERE HIREDATE > TO_DATE('31-DEC-1981','DD-MON-YYYY')) GROUP BY JOB;",
+  "output": [
+    ["JOB","MAX(SAL)"],
+    ["ANALYST",3000],
+    ["CLERK",1100]
+  ]
+},
+{
+  "question": "Display department-wise total salary excluding department 30.",
+  "sql": "SELECT DEPTNO, SUM(SAL) FROM (SELECT * FROM SCOTT.EMP WHERE DEPTNO <> 30) GROUP BY DEPTNO;",
+  "output": [
+    ["DEPTNO","SUM(SAL)"],
+    [10,8750],
+    [20,10875]
+  ]
+},
+{
+  "question": "Display departments having total salary greater than overall total salary average.",
+  "sql": "SELECT DEPTNO FROM SCOTT.EMP GROUP BY DEPTNO HAVING SUM(SAL) > (SELECT AVG(TOTAL) FROM (SELECT SUM(SAL) TOTAL FROM SCOTT.EMP GROUP BY DEPTNO));",
+  "output": [
+    ["DEPTNO"],
+    [20]
+  ]
+},
+{
+  "question": "Display job-wise average salary where department has more than 3 employees.",
+  "sql": "SELECT JOB,AVG(SAL) FROM SCOTT.EMP WHERE DEPTNO IN (SELECT DEPTNO FROM SCOTT.EMP GROUP BY DEPTNO HAVING COUNT(*)>3) GROUP BY JOB;",
+  "output": [
+    ["JOB","AVG(SAL)"],
+    ["CLERK",1033.33],
+    ["SALESMAN",1400],
+    ["MANAGER",2758.33],
+    ["ANALYST",3000],
+    ["PRESIDENT",5000]
+  ]
+},
+{
+  "question": "Display department and job having maximum total salary.",
+  "sql": "SELECT DEPTNO,JOB FROM SCOTT.EMP GROUP BY JOB,DEPTNO HAVING SUM(SAL)=(SELECT MAX(SUM(SAL)) FROM SCOTT.EMP GROUP BY JOB,DEPTNO);",
+  "output": [
+    ["DEPTNO","JOB"],
+    [20,"ANALYST"]
+  ]
+},
+{
+  "question": "Display employees earning the second highest salary.",
+  "sql": "SELECT ENAME FROM SCOTT.EMP WHERE SAL = (SELECT MAX(SAL) FROM SCOTT.EMP WHERE SAL < (SELECT MAX(SAL) FROM SCOTT.EMP));",
+  "output": [
+    ["ENAME"],
+    ["SCOTT"],
+    ["FORD"]
+  ]
+},
+{
+  "question": "Display employees earning more than the average salary of departments located in DALLAS.",
+  "sql": "SELECT ENAME FROM SCOTT.EMP WHERE SAL > (SELECT AVG(SAL) FROM SCOTT.EMP WHERE DEPTNO IN (SELECT DEPTNO FROM SCOTT.DEPT WHERE LOC='DALLAS'));",
+  "output": [
+    ["ENAME"],
+    ["JONES"],
+    ["SCOTT"],
+    ["KING"],
+    ["FORD"]
+  ]
+},
+{
+  "question": "Display departments where maximum salary equals minimum salary.",
+  "sql": "SELECT DEPTNO FROM SCOTT.EMP GROUP BY DEPTNO HAVING MAX(SAL) = MIN(SAL);",
+  "output": [
+    ["DEPTNO"]
+  ]
+},
+{
+  "question": "Display employees whose salary is less than all MANAGERS but more than any CLERK.",
+  "sql": "SELECT ENAME FROM SCOTT.EMP WHERE SAL < (SELECT MIN(SAL) FROM SCOTT.EMP WHERE JOB='MANAGER') AND SAL > (SELECT MAX(SAL) FROM SCOTT.EMP WHERE JOB='CLERK');",
+  "output": [
+    ["ENAME"],
+    ["ALLEN"]
+  ]
+},
+{
+  "question": "Display employees whose salary is equal to department-wise second highest salary.",
+  "sql": "SELECT ENAME FROM SCOTT.EMP E1 WHERE SAL = (SELECT MAX(SAL) FROM SCOTT.EMP E2 WHERE E2.DEPTNO = E1.DEPTNO AND SAL < (SELECT MAX(SAL) FROM SCOTT.EMP E3 WHERE E3.DEPTNO = E1.DEPTNO));",
+  "output": [
+    ["ENAME"],
+    ["CLARK"],
+    ["FORD"]
+  ]
+},
+{
+  "question": "Display employees earning more than the median salary.",
+  "sql": "SELECT ENAME FROM SCOTT.EMP WHERE SAL>(SELECT MEDIAN(SAL) FROM SCOTT.EMP);",
+  "output": [
+    ["ENAME"],
+    ["ALLEN"],
+    ["JONES"],
+    ["BLAKE"],
+    ["CLARK"],
+    ["SCOTT"],
+    ["KING"],
+    ["FORD"]
+  ]
+},
+{
+  "question": "Display employees earning the third highest salary.",
+  "sql": "SELECT ENAME FROM SCOTT.EMP WHERE SAL =(SELECT MAX(SAL) FROM SCOTT.EMP WHERE SAL < (SELECT MAX(SAL) FROM SCOTT.EMP WHERE SAL < (SELECT MAX(SAL) FROM SCOTT.EMP)));",
+  "output": [
+    ["ENAME"],
+    ["JONES"]
+  ]
+}
+      ]
+    };
+
+    // Set Title
+    document.getElementById("SUB").innerText = topicData.title;
+
+    const container = document.getElementById("queryList");
+
+    // Create Queries
+    topicData.queries.forEach((q, index) => {
+      const div = document.createElement("div");
+      div.className = "query-box";
+
+      div.innerHTML = `
+        <div class="query-title">
+          (${index + 1}) ${q.question}
+        </div>
+
+        <button onclick="toggleAnswer(${index})">
+          Show Answer
+        </button>
+
+        <div class="answer" id="answer-${index}">
+          <div class="answer-container">
+            
+            <div class="query-code">
+              ${q.sql}
+            </div>
+
+            <div class="output">
+              ${createTable(q.output)}
+            </div>
+
+          </div>
+        </div>
+      `;
+
+      container.appendChild(div);
+    });
+
+    // Toggle Answer
+    function toggleAnswer(index) {
+      const ans = document.getElementById(`answer-${index}`);
+      ans.style.display = ans.style.display === "block" ? "none" : "block";
+    }
+
+    // Create Table
+    function createTable(data) {
+      let html = "<table>";
+
+      data.forEach((row, i) => {
+        html += "<tr>";
+        row.forEach(cell => {
+          html += i === 0 ? `<th>${cell}</th>` : `<td>${cell}</td>`;
+        });
+        html += "</tr>";
+      });
+
+      html += "</table>";
+      return html;
+    }
+  </script>
+
+</body>
+</html>

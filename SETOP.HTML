@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Topic Page</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #DEF2F1;
+      padding: 20px;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      padding: 15px;
+      border: 1px solid black;
+      border-radius: 15px;
+      font-size: 26px;
+      font-weight: bold;
+      background: #78E7E0 ;
+      color: #17252a;
+      margin-bottom: 30px;
+    }
+
+    /* Query Box */
+    .query-box {
+      background: #DEF2F1;
+      border: 0px solid black;
+      border-radius: 15px;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+
+    .query-title {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    button {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 15px;
+      background: #78E7E0 ;
+      color: black;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #2B7A78;
+    }
+
+    /* Answer Section */
+    .answer {
+      display: none;
+      margin-top: 15px;
+      border-top: 2px solid black;
+      padding-top: 10px;
+    }
+
+    .answer-container {
+      display: flex;
+      gap: 20px;
+    }
+
+    .query-code {
+      width: 50%;
+      background: #DEF2F1;
+      padding: 10px;
+      border: 1px solid black;
+      border-radius: 5px;
+      font-family: monospace;
+    }
+
+    .output {
+      width: 50%;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      border-radius: 5px;
+    }
+
+    th, td {
+      border: 1px solid black;
+      border-radius: 5px;
+      padding: 6px;
+      text-align: center;
+    }
+
+    /* Responsive */
+    @media (max-width: 700px) {
+      .answer-container {
+        flex-direction: column;
+      }
+
+      .query-code, .output {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Topic Title -->
+  <div class="header" id="SET">
+    SET OPERATOR
+  </div>
+
+  <!-- Query List -->
+  <div id="queryList"></div>
+
+  <script>
+    // SAMPLE DATA (EDIT THIS)
+    const topicData = {
+      title: "SET OPERATOR",
+      queries: [
+        {
+  "question": "Display all department numbers from both EMP and DEPT tables using UNION.",
+    "sql": "SELECT DEPTNO FROM SCOTT.EMP UNION SELECT DEPTNO FROM SCOTT.DEPT;",
+    "output": [
+      ["DEPTNO"],
+      [10],
+      [20],
+      [30],
+      [40]
+    ]
+},
+{
+  "question": "Display all department numbers from EMP and DEPT including duplicates using UNION ALL.",
+    "sql": "SELECT DEPTNO FROM SCOTT.EMP UNION ALL SELECT DEPTNO FROM SCOTT.DEPT;",
+    "output": [
+      ["DEPTNO"],
+      [20],[30],[30],[20],[30],[30],[10],[20],[10],[30],[20],[30],[20],[10],
+      [10],[20],[30],[40]
+    ]
+},
+{
+  "question": "Display department numbers that are present in both EMP and DEPT using INTERSECT.",
+    "sql": "SELECT DEPTNO FROM SCOTT.EMP INTERSECT SELECT DEPTNO FROM SCOTT.DEPT;",
+    "output": [
+      ["DEPTNO"],
+      [10],
+      [20],
+      [30]
+    ]
+},
+{
+  "question": "Display department numbers that are present in EMP but not in DEPT using MINUS.",
+    "sql": "SELECT DEPTNO FROM SCOTT.EMP MINUS SELECT DEPTNO FROM SCOTT.DEPT;",
+    "output": [
+      ["DEPTNO"]
+    ]
+},
+{
+  "question": "Display department numbers that are present in DEPT but not assigned to any employee.",
+    "sql": "SELECT DEPTNO FROM SCOTT.DEPT MINUS SELECT DEPTNO FROM SCOTT.EMP;",
+    "output": [
+      ["DEPTNO"],
+      [40]
+    ]
+},
+{
+  "question": "Display employee names and department names in a single column using UNION.",
+    "sql": "SELECT ENAME FROM SCOTT.EMP UNION SELECT DNAME FROM SCOTT.DEPT;",
+    "output": [
+      ["ENAME"],
+      ["ACCOUNTING"],["ADAMS"],["ALLEN"],["BLAKE"],["CLARK"],["FORD"],["JAMES"],["JONES"],["KING"],["MARTIN"],["MILLER"],["RESEARCH"],["SALES"],["SCOTT"],["SMITH"],["TURNER"],["WARD"],["OPERATIONS"]
+    ]
+},
+{
+  "question": "Display all employee names and department names, including duplicates.",
+    "sql": "SELECT ENAME FROM SCOTT.EMP UNION ALL SELECT DNAME FROM SCOTT.DEPT;",
+    "output": [
+      ["ENAME"],
+      ["SMITH"],["ALLEN"],["WARD"],["JONES"],["MARTIN"],["BLAKE"],["CLARK"],["SCOTT"],["KING"],["TURNER"],["ADAMS"],["JAMES"],["FORD"],["MILLER"],
+      ["ACCOUNTING"],["RESEARCH"],["SALES"],["OPERATIONS"]
+    ]
+},
+{
+  "question": "Display jobs that exist in EMP table and also exist as department names in DEPT table (use INTERSECT).",
+    "sql": "SELECT JOB FROM SCOTT.EMP INTERSECT SELECT DNAME FROM SCOTT.DEPT;",
+    "output": [
+      ["JOB"]
+    ]
+},
+{
+  "question": "Display employee names that are not department names.",
+    "sql": "SELECT ENAME FROM SCOTT.EMP MINUS SELECT DNAME FROM SCOTT.DEPT;",
+    "output": [
+      ["ENAME"],
+      ["SMITH"],["ALLEN"],["WARD"],["JONES"],["MARTIN"],["BLAKE"],["CLARK"],["SCOTT"],["KING"],["TURNER"],["ADAMS"],["JAMES"],["FORD"],["MILLER"]
+    ]
+},
+{
+  "question": "Display department locations that are not used by any employee.",
+    "sql": "SELECT LOC FROM SCOTT.DEPT MINUS (SELECT D.LOC FROM SCOTT.DEPT D , SCOTT.EMP E WHERE E.DEPTNO = D.DEPTNO);",
+    "output": [
+      ["LOC"],
+      ["BOSTON"]
+    ]
+},
+{
+    "question": "Display employee names from department 10 and department 20 using UNION.",
+    "sql": "SELECT ENAME FROM SCOTT.EMP WHERE DEPTNO = 10 UNION SELECT ENAME FROM SCOTT.EMP WHERE DEPTNO = 20;",
+    "output": [
+      ["ENAME"],
+      ["CLARK"],["KING"],["MILLER"],["SMITH"],["JONES"],["SCOTT"],["ADAMS"],["FORD"]
+    ]
+},
+{
+  "question": "Display employee names from department 10 and department 20 including duplicates.",
+    "sql": "SELECT ENAME FROM SCOTT.EMP WHERE DEPTNO = 10 UNION ALL SELECT ENAME FROM SCOTT.EMP WHERE DEPTNO = 20;",
+    "output": [
+      ["ENAME"],
+      ["CLARK"],["KING"],["MILLER"],
+      ["SMITH"],["JONES"],["SCOTT"],["ADAMS"],["FORD"]
+    ]  
+},
+{
+    "question": "Display employees who work in departments that exist in DEPT table using INTERSECT.",
+    "sql": "SELECT DEPTNO FROM SCOTT.EMP INTERSECT SELECT DEPTNO FROM SCOTT.DEPT;",
+    "output": [
+      ["DEPTNO"],
+      [10],
+      [20],
+      [30]
+    ]
+},
+{
+   "question": "Display employees whose department does not exist in DEPT table using MINUS.",
+    "sql": "SELECT DEPTNO FROM SCOTT.EMP MINUS SELECT DEPTNO FROM SCOTT.DEPT;",
+    "output": [
+      ["DEPTNO"]
+    ] 
+},
+{
+    "question": "Display department numbers that have employees and also exist in DEPT table.",
+    "sql": "SELECT DEPTNO FROM SCOTT.EMP INTERSECT SELECT DEPTNO FROM SCOTT.DEPT ORDER BY DEPTNO;",
+    "output": [
+      ["DEPTNO"],
+      [10],
+      [20],
+      [30]
+    ]
+},
+{
+    "question": "Display all unique job roles from EMP and all unique department names from DEPT in one result.",
+    "sql": "SELECT JOB FROM SCOTT.EMP UNION SELECT DNAME FROM SCOTT.DEPT;",
+    "output": [
+      ["JOB"],
+      ["ACCOUNTING"],["ANALYST"],["CLERK"],["MANAGER"],["PRESIDENT"],["RESEARCH"],["SALESMAN"],["SALES"],["OPERATIONS"]
+    ]
+},
+{
+    "question": "Display common values between employee job and department location.",
+    "sql": "SELECT JOB FROM SCOTT.EMP INTERSECT SELECT LOC FROM SCOTT.DEPT;",
+    "output": [
+      ["JOB"]
+    ]
+},
+{
+    "question": "Display employee names who are not assigned to any valid department.",
+    "sql": "SELECT ENAME FROM SCOTT.EMP WHERE DEPTNO IN (SELECT DEPTNO FROM SCOTT.EMP MINUS SELECT DEPTNO FROM SCOTT.DEPT);",
+    "output": [
+      ["ENAME"]
+    ]
+},
+{
+    "question": "Combine: * Employees earning more than 2000 * Employees from department 10 using UNION.",
+    "sql": "SELECT ENAME FROM SCOTT.EMP WHERE SAL > 2000 UNION SELECT ENAME FROM SCOTT.EMP WHERE DEPTNO = 10;",
+    "output": [
+      ["ENAME"],
+      ["BLAKE"],["CLARK"],["JONES"],["KING"],["MILLER"],["SCOTT"],["FORD"]
+    ]
+},
+{
+    "question": "Display employees who: * Work in department 10 but * Not in department 20 using MINUS.",
+    "sql": "SELECT ENAME FROM SCOTT.EMP WHERE DEPTNO = 10 MINUS SELECT ENAME FROM SCOTT.EMP WHERE DEPTNO = 20;",
+    "output": [
+      ["ENAME"],
+      ["CLARK"],["KING"],["MILLER"]
+    ]
+},
+{
+     "question": "Display department numbers that: * Exist in EMP * Exist in DEPT * But exclude department 10",
+    "sql": "SELECT DEPTNO FROM SCOTT.EMP INTERSECT SELECT DEPTNO FROM SCOTT.DEPT WHERE DEPTNO <> 10;",
+    "output": [
+      ["DEPTNO"],
+      [20],
+      [30]
+    ]
+},
+{
+    "question": "Display all employee names and department names in a single result sorted alphabetically.",
+    "sql": "SELECT ENAME FROM SCOTT.EMP UNION SELECT DNAME FROM SCOTT.DEPT ORDER BY ENAME;",
+    "output": [
+      ["ENAME"],
+      ["ACCOUNTING"],["ADAMS"],["ALLEN"],["BLAKE"],["CLARK"],["FORD"],["JAMES"],["JONES"],["KING"],["MARTIN"],["MILLER"],["OPERATIONS"],["RESEARCH"],["SALES"],["SCOTT"],["SMITH"],["TURNER"],["WARD"]
+    ]
+},
+{
+   "question": "Display department numbers that appear in EMP more than once using UNION ALL.",
+    "sql": "SELECT DEPTNO FROM SCOTT.EMP;",
+    "output": [
+      ["DEPTNO"],
+      [20],[30],[30],[20],[30],[30],[10],[20],[10],[30],[20],[30],[20],[10]
+    ] 
+},
+{
+ "question": "Display employees from departments located in NEW YORK and DALLAS using UNION.",
+    "sql": "SELECT E.ENAME FROM SCOTT.EMP E, SCOTT.DEPT D WHERE E.DEPTNO = D.DEPTNO AND D.LOC = 'NEW YORK' UNION SELECT E.ENAME FROM SCOTT.EMP E, SCOTT.DEPT D WHERE E.DEPTNO = D.DEPTNO AND D.LOC = 'DALLAS';",
+    "output": [
+      ["ENAME"],
+      ["CLARK"],["KING"],["MILLER"],
+      ["SMITH"],["JONES"],["SCOTT"],["ADAMS"],["FORD"]
+    ]
+},
+{
+    "question": "Combine results of: * Employees with salary > 3000 * Employees with job = 'MANAGER' Remove duplicates.",
+    "sql": "SELECT ENAME FROM SCOTT.EMP WHERE SAL > 3000 UNION SELECT ENAME FROM SCOTT.EMP WHERE JOB = 'MANAGER';",
+    "output": [
+      ["ENAME"],
+      ["KING"],["JONES"],["BLAKE"],["CLARK"]
+    ]
+},
+     ]
+    };
+
+    // Set Title
+    document.getElementById("SET").innerText = topicData.title;
+
+    const container = document.getElementById("queryList");
+
+    // Create Queries
+    topicData.queries.forEach((q, index) => {
+      const div = document.createElement("div");
+      div.className = "query-box";
+
+      div.innerHTML = `
+        <div class="query-title">
+          (${index + 1}) ${q.question}
+        </div>
+
+        <button onclick="toggleAnswer(${index})">
+          Show Answer
+        </button>
+
+        <div class="answer" id="answer-${index}">
+          <div class="answer-container">
+            
+            <div class="query-code">
+              ${q.sql}
+            </div>
+
+            <div class="output">
+              ${createTable(q.output)}
+            </div>
+
+          </div>
+        </div>
+      `;
+
+      container.appendChild(div);
+    });
+
+    // Toggle Answer
+    function toggleAnswer(index) {
+      const ans = document.getElementById(`answer-${index}`);
+      ans.style.display = ans.style.display === "block" ? "none" : "block";
+    }
+
+    // Create Table
+    function createTable(data) {
+      let html = "<table>";
+
+      data.forEach((row, i) => {
+        html += "<tr>";
+        row.forEach(cell => {
+          html += i === 0 ? `<th>${cell}</th>` : `<td>${cell}</td>`;
+        });
+        html += "</tr>";
+      });
+
+      html += "</table>";
+      return html;
+    }
+  </script>
+
+</body>
+</html>

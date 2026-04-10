@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Topic Page</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #DEF2F1;
+      padding: 20px;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      padding: 15px;
+      border: 1px solid black;
+      border-radius: 15px;
+      font-size: 26px;
+      font-weight: bold;
+      background: #78E7E0 ;
+      color: #17252a;
+      margin-bottom: 30px;
+    }
+
+    /* Query Box */
+    .query-box {
+      background: #DEF2F1;
+      border: 0px solid black;
+      border-radius: 15px;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+
+    .query-title {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    button {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 15px;
+      background: #78E7E0 ;
+      color: black;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #2B7A78;
+    }
+
+    /* Answer Section */
+    .answer {
+      display: none;
+      margin-top: 15px;
+      border-top: 2px solid black;
+      padding-top: 10px;
+    }
+
+    .answer-container {
+      display: flex;
+      gap: 20px;
+    }
+
+    .query-code {
+      width: 50%;
+      background: #DEF2F1;
+      padding: 10px;
+      border: 1px solid black;
+      border-radius: 5px;
+      font-family: monospace;
+    }
+
+    .output {
+      width: 50%;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      border-radius: 5px;
+    }
+
+    th, td {
+      border: 1px solid black;
+      border-radius: 5px;
+      padding: 6px;
+      text-align: center;
+    }
+
+    /* Responsive */
+    @media (max-width: 700px) {
+      .answer-container {
+        flex-direction: column;
+      }
+
+      .query-code, .output {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Topic Title -->
+  <div class="header" id="GRP">
+    DATA QUERY LANGAUGE
+  </div>
+
+  <!-- Query List -->
+  <div id="queryList"></div>
+
+  <script>
+    // SAMPLE DATA (EDIT THIS)
+    const topicData = {
+      title: "GROUP FUNCTION",
+      queries: 
+      [
+{
+  "question": "Display the total number of employees.",
+  "sql": "select count(empno) from scott.emp;",
+  "output": [
+    ["COUNT"],
+    [14]
+  ]
+},
+{
+  "question": "Display the total salary of all employees.",
+  "sql": "select sum(sal) from scott.emp;",
+  "output": [
+    ["SUM(SAL)"],
+    [29025]
+  ]
+},
+{
+  "question": "Display the average salary of all employees.",
+  "sql": "select avg(sal) from scott.emp;",
+  "output": [
+    ["AVG(SAL)"],
+    [2073.21]
+  ]
+},
+{
+  "question": "Display the highest salary.",
+  "sql": "select max(sal) from scott.emp;",
+  "output": [
+    ["MAX(SAL)"],
+    [5000]
+  ]
+},
+{
+  "question": "Display the lowest salary.",
+  "sql": "select min(sal) from scott.emp;",
+  "output": [
+    ["MIN(SAL)"],
+    [800]
+  ]
+},
+{
+  "question": "Display the total number of departments in EMP table.",
+  "sql": "select count(distinct deptno) from scott.emp;",
+  "output": [
+    ["COUNT"],
+    [3]
+  ]
+},
+{
+  "question": "Display number of managers.",
+  "sql": "select count(*) from scott.emp where job='MANAGER';",
+  "output": [
+    ["COUNT"],
+    [3]
+  ]
+},
+{
+  "question": "Display total commission.",
+  "sql": "select sum(comm) from scott.emp;",
+  "output": [
+    ["SUM(COMM)"],
+    [2200]
+  ]
+},
+{
+  "question": "Display average commission.",
+  "sql": "select avg(comm) from scott.emp;",
+  "output": [
+    ["AVG(COMM)"],
+    [550]
+  ]
+},
+{
+  "question": "Employees getting commission.",
+  "sql": "select count(*) from scott.emp where comm is not null;",
+  "output": [
+    ["COUNT"],
+    [4]
+  ]
+},
+{
+  "question": "Department-wise total salary.",
+  "sql": "select deptno,sum(sal) from scott.emp group by deptno;",
+  "output": [
+    ["DEPTNO","SUM(SAL)"],
+    [10,8750],
+    [20,10875],
+    [30,9400]
+  ]
+},
+{
+  "question": "Department-wise average salary.",
+  "sql": "select deptno,avg(sal) from scott.emp group by deptno;",
+  "output": [
+    ["DEPTNO","AVG(SAL)"],
+    [10,2916.67],
+    [20,2175],
+    [30,1566.67]
+  ]
+},
+{
+  "question": "Department-wise number of employees.",
+  "sql": "select deptno,count(*) from scott.emp group by deptno;",
+  "output": [
+    ["DEPTNO","COUNT"],
+    [10,3],
+    [20,5],
+    [30,6]
+  ]
+},
+{
+  "question": "Job-wise number of employees.",
+  "sql": "select job,count(*) from scott.emp group by job;",
+  "output": [
+    ["JOB","COUNT"],
+    ["CLERK",4],
+    ["SALESMAN",4],
+    ["MANAGER",3],
+    ["ANALYST",2],
+    ["PRESIDENT",1]
+  ]
+},
+{
+  "question": "Job-wise total salary.",
+  "sql": "select job,sum(sal) from scott.emp group by job;",
+  "output": [
+    ["JOB","SUM(SAL)"],
+    ["CLERK",4150],
+    ["SALESMAN",5600],
+    ["MANAGER",8275],
+    ["ANALYST",6000],
+    ["PRESIDENT",5000]
+  ]
+},
+{
+  "question": "Job-wise max salary.",
+  "sql": "select job,max(sal) from scott.emp group by job;",
+  "output": [
+    ["JOB","MAX(SAL)"],
+    ["CLERK",1300],
+    ["SALESMAN",1600],
+    ["MANAGER",2975],
+    ["ANALYST",3000],
+    ["PRESIDENT",5000]
+  ]
+},
+{
+  "question": "Department with max total salary.",
+  "sql": "group by dept having max sum",
+  "output": [
+    ["DEPTNO","TOTAL"],
+    [20,10875]
+  ]
+},
+{
+  "question": "Department & job with highest total salary.",
+  "sql": "group by dept,job having max sum",
+  "output": [
+    ["DEPTNO","JOB","TOTAL"],
+    [20,"ANALYST",6000]
+  ]
+},
+{
+  "question": "Display department-wise maximum salary.",
+  "sql": "select deptno, max(sal) from scott.emp group by deptno;",
+  "output": [
+    ["DEPTNO","MAX(SAL)"],
+    [10,5000],
+    [20,3000],
+    [30,2850]
+  ]
+},
+{
+  "question": "Display department-wise minimum salary.",
+  "sql": "select deptno, min(sal) from scott.emp group by deptno;",
+  "output": [
+    ["DEPTNO","MIN(SAL)"],
+    [10,1300],
+    [20,800],
+    [30,950]
+  ]
+},
+{
+  "question": "Display department-wise average commission.",
+  "sql": "select deptno, avg(comm) from scott.emp group by deptno;",
+  "output": [
+    ["DEPTNO","AVG(COMM)"],
+    [10,null],
+    [20,null],
+    [30,550]
+  ]
+},
+{
+  "question": "Display department-wise job-wise number of employees.",
+  "sql": "select deptno, job, count(*) from scott.emp group by deptno, job;",
+  "output": [
+    ["DEPTNO","JOB","COUNT"],
+    [10,"MANAGER",1],
+    [10,"PRESIDENT",1],
+    [10,"CLERK",1],
+    [20,"CLERK",2],
+    [20,"MANAGER",1],
+    [20,"ANALYST",2],
+    [30,"SALESMAN",4],
+    [30,"MANAGER",1],
+    [30,"CLERK",1]
+  ]
+},
+{
+  "question": "Display department-wise job-wise total salary.",
+  "sql": "select deptno, job, sum(sal) from scott.emp group by deptno, job;",
+  "output": [
+    ["DEPTNO","JOB","SUM(SAL)"],
+    [10,"MANAGER",2450],
+    [10,"PRESIDENT",5000],
+    [10,"CLERK",1300],
+    [20,"CLERK",1900],
+    [20,"MANAGER",2975],
+    [20,"ANALYST",6000],
+    [30,"SALESMAN",5600],
+    [30,"MANAGER",2850],
+    [30,"CLERK",950]
+  ]
+},
+{
+  "question": "Display department-wise job-wise average salary.",
+  "sql": "select deptno, job, avg(sal) from scott.emp group by deptno, job;",
+  "output": [
+    ["DEPTNO","JOB","AVG(SAL)"],
+    [10,"MANAGER",2450],
+    [10,"PRESIDENT",5000],
+    [10,"CLERK",1300],
+    [20,"CLERK",950],
+    [20,"MANAGER",2975],
+    [20,"ANALYST",3000],
+    [30,"SALESMAN",1400],
+    [30,"MANAGER",2850],
+    [30,"CLERK",950]
+  ]
+},
+{
+  "question": "Display job-wise department-wise maximum salary.",
+  "sql": "select job, deptno, max(sal) from scott.emp group by job, deptno;",
+  "output": [
+    ["JOB","DEPTNO","MAX(SAL)"],
+    ["CLERK",10,1300],
+    ["CLERK",20,1100],
+    ["CLERK",30,950],
+    ["MANAGER",10,2450],
+    ["MANAGER",20,2975],
+    ["MANAGER",30,2850],
+    ["ANALYST",20,3000],
+    ["SALESMAN",30,1600],
+    ["PRESIDENT",10,5000]
+  ]
+},
+{
+  "question": "Display job-wise department-wise minimum salary.",
+  "sql": "select job, deptno, min(sal) from scott.emp group by job, deptno;",
+  "output": [
+    ["JOB","DEPTNO","MIN(SAL)"],
+    ["CLERK",10,1300],
+    ["CLERK",20,800],
+    ["CLERK",30,950],
+    ["MANAGER",10,2450],
+    ["MANAGER",20,2975],
+    ["MANAGER",30,2850],
+    ["ANALYST",20,3000],
+    ["SALESMAN",30,1250],
+    ["PRESIDENT",10,5000]
+  ]
+},  
+{
+"question": "Display job having highest average salary.",
+  "sql": "SELECT JOB, AVG(SAL) FROM SCOTT.EMP GROUP BY JOB HAVING AVG(SAL) = (SELECT MAX(AVG(SAL)) FROM SCOTT.EMP GROUP BY JOB);",
+  "output": [
+    ["JOB","AVG(SAL)"],
+    ["PRESIDENT",5000]
+  ]
+},
+{
+"question": "Display department number and total salary where average salary is greater than overall average salary.",
+  "sql": "SELECT DEPTNO, SUM(SAL) FROM SCOTT.EMP GROUP BY DEPTNO HAVING AVG(SAL) > (SELECT AVG(SAL) FROM SCOTT.EMP);",
+  "output": [
+    ["DEPTNO","SUM(SAL)"],
+    [10,8750],
+    [20,10875]
+  ]
+},
+{
+"question": "Display job-wise count of employees not getting commission.",
+  "sql": "SELECT JOB, COUNT(*) FROM SCOTT.EMP WHERE COMM IS NULL GROUP BY JOB;",
+  "output": [
+    ["JOB","COUNT"],
+    ["ANALYST",2],
+    ["CLERK",4],
+    ["MANAGER",3],
+    ["PRESIDENT",1]
+  ]
+},
+{
+"question": "Display departments where no employee gets commission.",
+  "sql": "SELECT DEPTNO FROM SCOTT.EMP GROUP BY DEPTNO HAVING COUNT(COMM)=0;",
+  "output": [
+    ["DEPTNO"],
+    [10],
+    [20]
+  ]
+},
+{
+question: "Display departments where all employees get commission.",
+  "sql": "SELECT DEPTNO FROM SCOTT.EMP GROUP BY DEPTNO HAVING COUNT(*) = COUNT(COMM);",
+  "output": [
+    ["DEPTNO"],
+    [30]
+  ]
+},
+{
+"question": "Display job-wise average commission.",
+  "sql": "SELECT JOB, AVG(COMM) FROM SCOTT.EMP GROUP BY JOB;",
+  "output": [
+    ["JOB","AVG(COMM)"],
+    ["SALESMAN",1400]
+  ]
+},
+{
+"question": "Display department-wise count of employees where manager is NULL.",
+  "sql": "SELECT DEPTNO, COUNT(*) FROM SCOTT.EMP WHERE MGR IS NULL GROUP BY DEPTNO;",
+  "output": [
+    ["DEPTNO","COUNT"],
+    [10,1]
+  ]
+},
+{
+"question": "Display number of employees without commission.",
+  "sql": "SELECT COUNT(*) FROM SCOTT.EMP WHERE COMM IS NULL;",
+  "output": [
+    ["COUNT"],
+    [10]
+  ]
+},
+{
+"question": "Display total commission paid (ignore NULLs).",
+  "sql": "SELECT SUM(COMM) FROM SCOTT.EMP;",
+  "output": [
+    ["SUM(COMM)"],
+    [2200]
+  ]
+},
+{
+"question": "Display department-wise average commission excluding NULLs.",
+  "sql": "SELECT DEPTNO, AVG(COMM) FROM SCOTT.EMP WHERE COMM IS NOT NULL GROUP BY DEPTNO;",
+  "output": [
+    ["DEPTNO","AVG(COMM)"],
+    [30,550]
+  ]
+},
+{
+"question": "Display job-wise total commission.",
+  "sql": "SELECT JOB, SUM(COMM) FROM SCOTT.EMP GROUP BY JOB;",
+  "output": [
+    ["JOB","SUM(COMM)"],
+    ["SALESMAN",2200]
+  ]
+},
+{
+"question": "Display department-wise count of employees getting commission.",
+  "sql": "SELECT DEPTNO, COUNT(*) FROM SCOTT.EMP WHERE COMM IS NOT NULL GROUP BY DEPTNO;",
+  "output": [
+    ["DEPTNO","COUNT"],
+    [30,4]
+  ]
+},
+{
+"question": "Display jobs having more than one manager.",
+  "sql": "SELECT JOB FROM SCOTT.EMP WHERE JOB='MANAGER' GROUP BY JOB HAVING COUNT(*) > 1;",
+  "output": [
+    ["JOB"],
+    ["MANAGER"]
+  ]
+},
+{
+"question": "Display departments having employees with commission.",
+  "sql": "SELECT DISTINCT DEPTNO FROM SCOTT.EMP WHERE COMM IS NOT NULL;",
+  "output": [
+    ["DEPTNO"],
+    [30]
+  ]
+},
+{
+"question": "Display job-wise average salary where total salary > 5000.",
+  "sql": "SELECT JOB, AVG(SAL) FROM SCOTT.EMP GROUP BY JOB HAVING SUM(SAL) > 5000;",
+  "output": [
+    ["JOB","AVG(SAL)"],
+    ["ANALYST",3000],
+    ["CLERK",1037.5],
+    ["MANAGER",2750],
+    ["SALESMAN",1400]
+  ]
+},
+{
+"question": "Display department-wise total salary where employee count > 4.",
+  "sql": "SELECT DEPTNO, SUM(SAL) FROM SCOTT.EMP GROUP BY DEPTNO HAVING COUNT(*) > 4;",
+  "output": [
+    ["DEPTNO","SUM(SAL)"],
+    [20,10875],
+    [30,9400]
+  ]
+},
+{
+"question": "Display jobs whose minimum salary is less than 1000.",
+  "sql": "SELECT JOB, MIN(SAL) FROM SCOTT.EMP GROUP BY JOB HAVING MIN(SAL) < 1000;",
+  "output": [
+    ["JOB","MIN(SAL)"],
+    ["CLERK",800]
+  ]
+},
+{
+"question": "Display departments having maximum salary greater than 4000.",
+  "sql": "SELECT DEPTNO, MAX(SAL) FROM SCOTT.EMP GROUP BY DEPTNO HAVING MAX(SAL) > 4000;",
+  "output": [
+    ["DEPTNO","MAX(SAL)"],
+    [10,5000]
+  ]
+},
+{
+"question": "Display jobs having more than 2 employees.",
+  "sql": "SELECT JOB, COUNT(*) FROM SCOTT.EMP GROUP BY JOB HAVING COUNT(*) > 2;",
+  "output": [
+    ["JOB","COUNT"],
+    ["CLERK",4],
+    ["MANAGER",3],
+    ["SALESMAN",4]
+  ]
+},
+{
+"question": "Display departments whose total salary is greater than 10000.",
+  "sql": "SELECT DEPTNO, SUM(SAL) FROM SCOTT.EMP GROUP BY DEPTNO HAVING SUM(SAL) > 10000;",
+  "output": [
+    ["DEPTNO","SUM(SAL)"],
+    [20,10875]
+  ]
+},
+{
+"question": "Display jobs having average salary greater than 2500.",
+  "sql": "SELECT JOB, AVG(SAL) FROM SCOTT.EMP GROUP BY JOB HAVING AVG(SAL) > 2500;",
+  "output": [
+    ["JOB","AVG(SAL)"],
+    ["ANALYST",3000],
+    ["MANAGER",2750],
+    ["PRESIDENT",5000]
+  ]
+},
+{
+"question": "Display departments having more than 3 employees.",
+  "sql": "SELECT DEPTNO, COUNT(*) FROM SCOTT.EMP GROUP BY DEPTNO HAVING COUNT(*) > 3;",
+  "output": [
+    ["DEPTNO","COUNT"],
+    [20,5],
+    [30,6]
+  ]
+},
+{
+"question": "Display job-wise total commission where commission is NOT NULL.",
+  "sql": "SELECT JOB, SUM(COMM) FROM SCOTT.EMP WHERE COMM IS NOT NULL GROUP BY JOB;",
+  "output": [
+    ["JOB","SUM(COMM)"],
+    ["SALESMAN",2200]
+  ]
+},
+{
+"question": "Display job-wise max salary where salary > 1500.",
+  "sql": "SELECT JOB, MAX(SAL) FROM SCOTT.EMP WHERE SAL > 1500 GROUP BY JOB;",
+  "output": [
+    ["JOB","MAX(SAL)"],
+    ["ANALYST",3000],
+    ["MANAGER",2975],
+    ["PRESIDENT",5000]
+  ]
+},
+{
+"question": "Display department-wise total salary excluding department 30.",
+  "sql": "SELECT DEPTNO, SUM(SAL) FROM SCOTT.EMP WHERE DEPTNO <> 30 GROUP BY DEPTNO;",
+  "output": [
+    ["DEPTNO","SUM(SAL)"],
+    [10,8750],
+    [20,10875]
+  ]
+},
+{
+"question": "Display job-wise average salary where department is 20.",
+  "sql": "SELECT JOB, AVG(SAL) FROM SCOTT.EMP WHERE DEPTNO = 20 GROUP BY JOB;",
+  "output": [
+    ["JOB","AVG(SAL)"],
+    ["ANALYST",3000],
+    ["CLERK",1100],
+    ["MANAGER",2975]
+  ]
+},
+{
+question: "Display department-wise number of employees where commission is NOT NULL.",
+  "sql": "SELECT DEPTNO, COUNT(*) FROM SCOTT.EMP WHERE COMM IS NOT NULL GROUP BY DEPTNO;",
+  "output": [
+    ["DEPTNO","COUNT"],
+    [30,4]
+  ]
+},
+{
+"question": "Display job-wise total salary for CLERK and MANAGER.",
+  "sql": "SELECT JOB, SUM(SAL) FROM SCOTT.EMP WHERE JOB IN ('CLERK','MANAGER') GROUP BY JOB;",
+  "output": [
+    ["JOB","SUM(SAL)"],
+    ["CLERK",4150],
+    ["MANAGER",8275]
+  ]
+},
+{
+"question": "Display department-wise average salary for employees hired after 1981.",
+  "sql": "SELECT DEPTNO, AVG(SAL) FROM SCOTT.EMP WHERE HIREDATE > TO_DATE('31-DEC-1981','DD-MON-YYYY') GROUP BY DEPTNO;",
+  "output": [
+    ["DEPTNO","AVG(SAL)"],
+    [10,1300],
+    [20,3050],
+    [30,950]
+  ]
+},
+{
+"question": "Display job-wise employee count where salary > 2000.",
+  "sql": "SELECT JOB, COUNT(*) FROM SCOTT.EMP WHERE SAL > 2000 GROUP BY JOB;",
+  "output": [
+    ["JOB","COUNT"],
+    ["ANALYST",2],
+    ["MANAGER",3],
+    ["PRESIDENT",1]
+  ]
+},
+{
+"question": "Display department-wise total salary for department numbers greater than 10.",
+  "sql": "SELECT DEPTNO, SUM(SAL) FROM SCOTT.EMP WHERE DEPTNO > 10 GROUP BY DEPTNO;",
+  "output": [
+    ["DEPTNO","SUM(SAL)"],
+    [20,10875],
+    [30,9400]
+  ]
+},
+{
+"question": "Display department and job having maximum number of employees.",
+  "sql": "SELECT DEPTNO, JOB, COUNT(*) FROM SCOTT.EMP GROUP BY DEPTNO, JOB HAVING COUNT(*) = (SELECT MAX(COUNT(*)) FROM SCOTT.EMP GROUP BY DEPTNO, JOB);",
+  "output": [
+    ["DEPTNO","JOB","COUNT"],
+    [30,"SALESMAN",4]
+  ]
+},
+{
+"question": "Display department-wise job-wise employee count.",
+  "sql": "SELECT DEPTNO, JOB, COUNT(*) FROM SCOTT.EMP GROUP BY DEPTNO, JOB ORDER BY DEPTNO;",
+  "output": [
+    ["DEPTNO","JOB","COUNT"],
+    [10,"CLERK",1],
+    [10,"MANAGER",1],
+    [10,"PRESIDENT",1],
+    [20,"ANALYST",2],
+    [20,"CLERK",2],
+    [20,"MANAGER",1],
+    [30,"CLERK",1],
+    [30,"MANAGER",1],
+    [30,"SALESMAN",4]
+  ]
+},
+{
+question: "Display department-wise job-wise total commission.",
+  "sql": "SELECT DEPTNO, JOB, SUM(COMM) FROM SCOTT.EMP GROUP BY DEPTNO, JOB ORDER BY DEPTNO;",
+  "output": [
+    ["DEPTNO","JOB","SUM(COMM)"],
+    [30,"SALESMAN",2200]
+  ]
+},
+{
+"question": "Display department and job having lowest average salary.",
+  "sql": "SELECT DEPTNO, JOB, AVG(SAL) FROM SCOTT.EMP GROUP BY DEPTNO, JOB HAVING AVG(SAL) = (SELECT MIN(AVG(SAL)) FROM SCOTT.EMP GROUP BY DEPTNO, JOB);",
+  "output": [
+    ["DEPTNO","JOB","AVG(SAL)"],
+    [30,"CLERK",950]
+  ]
+}]
+    };
+
+    // Set Title
+    document.getElementById("GRP").innerText = topicData.title;
+
+    const container = document.getElementById("queryList");
+
+    // Create Queries
+    topicData.queries.forEach((q, index) => {
+      const div = document.createElement("div");
+      div.className = "query-box";
+
+      div.innerHTML = `
+        <div class="query-title">
+          (${index + 1}) ${q.question}
+        </div>
+
+        <button onclick="toggleAnswer(${index})">
+          Show Answer
+        </button>
+
+        <div class="answer" id="answer-${index}">
+          <div class="answer-container">
+            
+            <div class="query-code">
+              ${q.sql}
+            </div>
+
+            <div class="output">
+              ${createTable(q.output)}
+            </div>
+
+          </div>
+        </div>
+      `;
+
+      container.appendChild(div);
+    });
+
+    // Toggle Answer
+    function toggleAnswer(index) {
+      const ans = document.getElementById(`answer-${index}`);
+      ans.style.display = ans.style.display === "block" ? "none" : "block";
+    }
+
+    // Create Table
+    function createTable(data) {
+      let html = "<table>";
+
+      data.forEach((row, i) => {
+        html += "<tr>";
+        row.forEach(cell => {
+          html += i === 0 ? `<th>${cell}</th>` : `<td>${cell}</td>`;
+        });
+        html += "</tr>";
+      });
+
+      html += "</table>";
+      return html;
+    }
+  </script>
+
+</body>
+</html>

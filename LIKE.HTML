@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Topic Page</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #DEF2F1;
+      padding: 20px;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      padding: 15px;
+      border: 1px solid black;
+      border-radius: 15px;
+      font-size: 26px;
+      font-weight: bold;
+      background: #78E7E0 ;
+      color: #17252a;
+      margin-bottom: 30px;
+    }
+
+    /* Query Box */
+    .query-box {
+      background: #DEF2F1;
+      border: 0px solid black;
+      border-radius: 15px;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+
+    .query-title {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    button {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 15px;
+      background: #78E7E0 ;
+      color: black;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #2B7A78;
+    }
+
+    /* Answer Section */
+    .answer {
+      display: none;
+      margin-top: 15px;
+      border-top: 2px solid black;
+      padding-top: 10px;
+    }
+
+    .answer-container {
+      display: flex;
+      gap: 20px;
+    }
+
+    .query-code {
+      width: 50%;
+      background: #DEF2F1;
+      padding: 10px;
+      border: 1px solid black;
+      border-radius: 5px;
+      font-family: monospace;
+    }
+
+    .output {
+      width: 50%;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      border-radius: 5px;
+    }
+
+    th, td {
+      border: 1px solid black;
+      border-radius: 5px;
+      padding: 6px;
+      text-align: center;
+    }
+
+    /* Responsive */
+    @media (max-width: 700px) {
+      .answer-container {
+        flex-direction: column;
+      }
+
+      .query-code, .output {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Topic Title -->
+  <div class="header" id="LIKE">
+    LIKE Operator
+  </div>
+
+  <!-- Query List -->
+  <div id="queryList"></div>
+
+  <script>
+    // SAMPLE DATA (EDIT THIS)
+    const topicData = {
+      title: "PATTERN MATCHING LIKE OPERATOR",
+      queries: [
+        {
+  question: "Display employees whose name starts with A.",
+    sql: "SELECT * FROM SCOTT.EMP WHERE ENAME LIKE 'A%';",
+    output: [
+      ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+      [7499,"ALLEN","SALESMAN",7698,"1981-02-20",1600,300,30],
+      [7876,"ADAMS","CLERK",7788,"1987-05-23",1100,null,20]
+    ]
+},
+{
+  question: "Display employees whose name starts with S.",
+    sql: "SELECT * FROM SCOTT.EMP WHERE ENAME LIKE 'S%';",
+    output: [
+      ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+      [7369,"SMITH","CLERK",7902,"1980-12-17",800,null,20],
+      [7788,"SCOTT","ANALYST",7566,"1987-04-19",3000,null,20]
+    ]
+},
+{
+  question: "Display employees whose name ends with N.",
+    sql: "SELECT * FROM SCOTT.EMP WHERE ENAME LIKE '%N';",
+    output: [
+      ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+      [7499,"ALLEN","SALESMAN",7698,"1981-02-20",1600,300,30],
+      [7654,"MARTIN","SALESMAN",7698,"1981-09-28",1250,1400,30]
+    ]
+},
+{
+  question: "Display employees whose name ends with R.",
+    sql: "SELECT * FROM SCOTT.EMP WHERE ENAME LIKE '%R';",
+    output: [
+      ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+      [7844,"TURNER","SALESMAN",7698,"1981-09-08",1500,0,30],
+      [7934,"MILLER","CLERK",7782,"1982-01-23",1300,null,10]
+    ]
+},
+{
+  question: "Display employees whose name contains LL.",
+    sql: "SELECT * FROM SCOTT.EMP WHERE ENAME LIKE '%LL%';",
+    output: [
+      ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+      [7499,"ALLEN","SALESMAN",7698,"1981-02-20",1600,300,30],
+      [7934,"MILLER","CLERK",7782,"1982-01-23",1300,null,10]
+    ]
+},
+{
+  question: "Display employees whose name contains AR.",
+    sql: "SELECT * FROM SCOTT.EMP WHERE ENAME LIKE '%AR%';",
+    output: [
+      ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+      [7654,"MARTIN","SALESMAN",7698,"1981-09-28",1250,1400,30],
+      [7782,"CLARK","MANAGER",7839,"1981-06-09",2450,null,10],
+      [7521,"WARD","SALESMAN",7698,"1981-02-22",1250,500,30]
+    ]
+},
+{
+  question: "Display employees whose job starts with M.",
+    sql: "SELECT * FROM SCOTT.EMP WHERE JOB LIKE 'M%';",
+    output: [
+      ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+      [7698,"BLAKE","MANAGER",7839,"1981-05-01",2850,null,30],
+      [7782,"CLARK","MANAGER",7839,"1981-06-09",2450,null,10],
+      [7566,"JONES","MANAGER",7839,"1981-04-02",2975,null,20]
+    ]
+},
+{
+  question: "Display employees whose job ends with AN.",
+    sql: "SELECT * FROM SCOTT.EMP WHERE JOB LIKE '%AN';",
+    output: [
+      ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+      [7499,"ALLEN","SALESMAN",7698,"1981-02-20",1600,300,30],
+      [7521,"WARD","SALESMAN",7698,"1981-02-22",1250,500,30],
+      [7654,"MARTIN","SALESMAN",7698,"1981-09-28",1250,1400,30],
+      [7844,"TURNER","SALESMAN",7698,"1981-09-08",1500,0,30]
+    ]
+},
+{
+  question: "Display employees whose job contains CL.",
+    sql: "SELECT * FROM SCOTT.EMP WHERE JOB LIKE '%CL%';",
+    output: [
+      ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+      [7369,"SMITH","CLERK",7902,"1980-12-17",800,null,20],
+      [7876,"ADAMS","CLERK",7788,"1987-05-23",1100,null,20],
+      [7900,"JAMES","CLERK",7698,"1981-12-03",950,null,30],
+      [7934,"MILLER","CLERK",7782,"1982-01-23",1300,null,10]
+    ]
+},
+{
+  question: "Display departments whose location starts with N.",
+    sql: "SELECT * FROM SCOTT.DEPT WHERE LOC LIKE 'N%';",
+    output: [
+      ["DEPTNO","DNAME","LOC"],
+      [10,"ACCOUNTING","NEW YORK"]
+    ]
+},
+{
+  question: "Display employees whose name has exactly 4 characters.",
+    sql: "SELECT * FROM SCOTT.EMP WHERE ENAME LIKE '____';",
+    output: [
+      ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+      [7566,"JONES","MANAGER",7839,"1981-04-02",2975,null,20],
+      [7698,"BLAKE","MANAGER",7839,"1981-05-01",2850,null,30],
+      [7782,"CLARK","MANAGER",7839,"1981-06-09",2450,null,10],
+      [7902,"FORD","ANALYST",7566,"1981-12-03",3000,null,20]
+    ]
+},
+{
+   question: "Display employees whose name has exactly 5 characters.",
+    sql: "SELECT * FROM SCOTT.EMP WHERE ENAME LIKE '_____';",
+    output: [
+      ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+      [7839,"KING","PRESIDENT",null,"1981-11-17",5000,null,10],
+      [7788,"SCOTT","ANALYST",7566,"1987-04-19",3000,null,20],
+      [7876,"ADAMS","CLERK",7788,"1987-05-23",1100,null,20],
+      [7900,"JAMES","CLERK",7698,"1981-12-03",950,null,30]
+    ]
+},
+{
+  question: "Display employees whose name has A as the second character.",
+    sql: "SELECT * FROM SCOTT.EMP WHERE ENAME LIKE '_A%';",
+    output: [
+      ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+      [7499,"ALLEN","SALESMAN",7698,"1981-02-20",1600,300,30],
+      [7521,"WARD","SALESMAN",7698,"1981-02-22",1250,500,30],
+      [7654,"MARTIN","SALESMAN",7698,"1981-09-28",1250,1400,30],
+      [7900,"JAMES","CLERK",7698,"1981-12-03",950,null,30]
+    ]
+},
+{
+  question: "Display employees whose name has L as the third character.",
+    sql: "SELECT * FROM SCOTT.EMP WHERE ENAME LIKE '__L%';",
+    output: [
+      ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+      [7499,"ALLEN","SALESMAN",7698,"1981-02-20",1600,300,30]
+    ]
+},
+{
+  question: "Display employees whose job has exactly 6 characters.",
+    sql: "SELECT * FROM SCOTT.EMP WHERE JOB LIKE '______';",
+    output: [
+      ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+      [7788,"SCOTT","ANALYST",7566,"1987-04-19",3000,null,20],
+      [7902,"FORD","ANALYST",7566,"1981-12-03",3000,null,20]
+    ]
+},
+{
+  question: "Display employees whose name starts with any letter but ends with N.",
+    sql: "SELECT * FROM SCOTT.EMP WHERE ENAME LIKE '%N';",
+    output: [
+      ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+      [7499,"ALLEN","SALESMAN",7698,"1981-02-20",1600,300,30],
+      [7654,"MARTIN","SALESMAN",7698,"1981-09-28",1250,1400,30]
+    ]
+},
+{
+  question: "Display employees whose job starts with any one character and ends with ER.",
+    sql: "SELECT * FROM SCOTT.EMP WHERE JOB LIKE '%ER';",
+    output: [
+      ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+      [7698,"BLAKE","MANAGER",7839,"1981-05-01",2850,null,30],
+      [7782,"CLARK","MANAGER",7839,"1981-06-09",2450,null,10],
+      [7566,"JONES","MANAGER",7839,"1981-04-02",2975,null,20]
+    ]
+},
+{
+  question: "Display employees whose name has A as the first and N as the last character.",
+    sql: "SELECT * FROM SCOTT.EMP WHERE ENAME LIKE 'A%N';",
+    output: [
+      ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+      [7499,"ALLEN","SALESMAN",7698,"1981-02-20",1600,300,30]
+    ]
+},
+{
+  question: "Display employees whose name has exactly 2 characters before 'E'.",
+    sql: "SELECT * FROM SCOTT.EMP WHERE ENAME LIKE '__E%';",
+    output: [
+      ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+      [7900,"JAMES","CLERK",7698,"1981-12-03",950,null,30]
+    ]
+},
+{
+  question: "Display employees whose name has exactly 1 character after 'A'.",
+    sql: "SELECT * FROM SCOTT.EMP WHERE ENAME LIKE '_A%';",
+    output: [
+      ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+      [7499,"ALLEN","SALESMAN",7698,"1981-02-20",1600,300,30],
+      [7521,"WARD","SALESMAN",7698,"1981-02-22",1250,500,30],
+      [7654,"MARTIN","SALESMAN",7698,"1981-09-28",1250,1400,30],
+      [7900,"JAMES","CLERK",7698,"1981-12-03",950,null,30]
+    ]
+},
+{
+  question: "Display employees whose name starts with A and ends with N.",
+    sql: "SELECT * FROM SCOTT.EMP WHERE ENAME LIKE 'A%N';",
+    output: [
+      ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+      [7499,"ALLEN","SALESMAN",7698,"1981-02-20",1600,300,30]
+    ]
+},
+{
+  question: "Display employees whose name contains E anywhere.",
+    sql: "SELECT * FROM SCOTT.EMP WHERE ENAME LIKE '%E%';",
+    output: [
+      ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+      [7839,"KING","PRESIDENT",null,"1981-11-17",5000,null,10],
+      [7698,"BLAKE","MANAGER",7839,"1981-05-01",2850,null,30],
+      [7782,"CLARK","MANAGER",7839,"1981-06-09",2450,null,10],
+      [7566,"JONES","MANAGER",7839,"1981-04-02",2975,null,20],
+      [7499,"ALLEN","SALESMAN",7698,"1981-02-20",1600,300,30],
+      [7844,"TURNER","SALESMAN",7698,"1981-09-08",1500,0,30],
+      [7900,"JAMES","CLERK",7698,"1981-12-03",950,null,30],
+      [7934,"MILLER","CLERK",7782,"1982-01-23",1300,null,10]
+    ]
+},
+{
+  question: "Display employees whose name does not contain A.",
+    sql: "SELECT * FROM SCOTT.EMP WHERE ENAME NOT LIKE '%A%';",
+    output: [
+      ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+      [7839,"KING","PRESIDENT",null,"1981-11-17",5000,null,10],
+      [7788,"SCOTT","ANALYST",7566,"1987-04-19",3000,null,20],
+      [7369,"SMITH","CLERK",7902,"1980-12-17",800,null,20]
+    ]
+},
+{
+  question: "Display employees whose job contains MAN.",
+    sql: "SELECT * FROM SCOTT.EMP WHERE JOB LIKE '%MAN%';",
+    output: [
+      ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+      [7698,"BLAKE","MANAGER",7839,"1981-05-01",2850,null,30],
+      [7782,"CLARK","MANAGER",7839,"1981-06-09",2450,null,10],
+      [7566,"JONES","MANAGER",7839,"1981-04-02",2975,null,20],
+      [7499,"ALLEN","SALESMAN",7698,"1981-02-20",1600,300,30],
+      [7521,"WARD","SALESMAN",7698,"1981-02-22",1250,500,30],
+      [7654,"MARTIN","SALESMAN",7698,"1981-09-28",1250,1400,30],
+      [7844,"TURNER","SALESMAN",7698,"1981-09-08",1500,0,30]
+    ]
+},
+{
+  question: "Display employees whose job does not start with C.",
+    sql: "SELECT * FROM SCOTT.EMP WHERE JOB NOT LIKE 'C%';",
+    output: [
+      ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+      [7839,"KING","PRESIDENT",null,"1981-11-17",5000,null,10],
+      [7698,"BLAKE","MANAGER",7839,"1981-05-01",2850,null,30],
+      [7782,"CLARK","MANAGER",7839,"1981-06-09",2450,null,10],
+      [7566,"JONES","MANAGER",7839,"1981-04-02",2975,null,20],
+      [7788,"SCOTT","ANALYST",7566,"1987-04-19",3000,null,20],
+      [7902,"FORD","ANALYST",7566,"1981-12-03",3000,null,20],
+      [7499,"ALLEN","SALESMAN",7698,"1981-02-20",1600,300,30],
+      [7521,"WARD","SALESMAN",7698,"1981-02-22",1250,500,30],
+      [7654,"MARTIN","SALESMAN",7698,"1981-09-28",1250,1400,30],
+      [7844,"TURNER","SALESMAN",7698,"1981-09-08",1500,0,30]
+    ]
+},
+{
+  question: "Display employees whose name contains two L consecutively.",
+    sql: "SELECT * FROM SCOTT.EMP WHERE ENAME LIKE '%LL%';",
+    output: [
+      ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+      [7499,"ALLEN","SALESMAN",7698,"1981-02-20",1600,300,30],
+      [7934,"MILLER","CLERK",7782,"1982-01-23",1300,null,10]
+    ]
+},
+{
+  question: "Display employees whose name starts with J and has S anywhere.",
+    sql: "SELECT * FROM SCOTT.EMP WHERE ENAME LIKE 'J%S%';",
+    output: [
+      ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+      [7566,"JONES","MANAGER",7839,"1981-04-02",2975,null,20],
+      [7900,"JAMES","CLERK",7698,"1981-12-03",950,null,30]
+    ]
+},
+{
+  question: "Display employees whose job starts with S and ends with AN.",
+    sql: "SELECT * FROM SCOTT.EMP WHERE JOB LIKE 'S%AN';",
+    output: [
+      ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+      [7499,"ALLEN","SALESMAN",7698,"1981-02-20",1600,300,30],
+      [7521,"WARD","SALESMAN",7698,"1981-02-22",1250,500,30],
+      [7654,"MARTIN","SALESMAN",7698,"1981-09-28",1250,1400,30],
+      [7844,"TURNER","SALESMAN",7698,"1981-09-08",1500,0,30]
+    ]
+},
+{
+  question: "Display employees whose name contains A as the second last character.",
+    sql: "SELECT * FROM SCOTT.EMP WHERE ENAME LIKE '%A_';",
+    output: [
+      ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+      [7900,"JAMES","CLERK",7698,"1981-12-03",950,null,30]
+    ]
+},
+{
+   question: "Display employees whose name contains exactly one character between A and E.",
+    sql: "SELECT * FROM SCOTT.EMP WHERE ENAME LIKE '%A_E%';",
+    output: [
+      ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+      [7900,"JAMES","CLERK",7698,"1981-12-03",950,null,30]
+    ]
+},
+{
+  "question": "Display employees whose name starts with S and salary > 2000.",
+    "sql": "SELECT * FROM SCOTT.EMP WHERE ENAME LIKE 'S%' AND SAL>2000;",
+    "output": [
+      ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+      [7788,"SCOTT","ANALYST",7566,"1987-04-19",3000,null,20]
+    ]
+},
+{
+  "question": "Display employees whose job ends with MAN and department is 20.",
+    "sql": "SELECT * FROM SCOTT.EMP WHERE JOB LIKE '%MAN' AND DEPTNO = 20;",
+    "output": [
+      ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"]
+    ]
+},
+{
+  "question": "Display employees whose name contains A and commission is NULL.",
+    "sql": "SELECT * FROM SCOTT.EMP WHERE ENAME LIKE '%A%' AND COMM IS NULL;",
+    "output": [
+      ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+      [7698,"BLAKE","MANAGER",7839,"1981-05-01",2850,null,30],
+      [7782,"CLARK","MANAGER",7839,"1981-06-09",2450,null,10],
+      [7566,"JONES","MANAGER",7839,"1981-04-02",2975,null,20],
+      [7876,"ADAMS","CLERK",7788,"1987-05-23",1100,null,20],
+      [7900,"JAMES","CLERK",7698,"1981-12-03",950,null,30]
+    ]
+},
+{
+  "question": "Display employees whose job starts with C and salary < 1500.",
+    "sql": "SELECT * FROM SCOTT.EMP WHERE JOB LIKE 'C%' AND SAL<1500;",
+    "output": [
+      ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+      [7369,"SMITH","CLERK",7902,"1980-12-17",800,null,20],
+      [7876,"ADAMS","CLERK",7788,"1987-05-23",1100,null,20],
+      [7900,"JAMES","CLERK",7698,"1981-12-03",950,null,30],
+      [7934,"MILLER","CLERK",7782,"1982-01-23",1300,null,10]
+    ]
+},
+{
+  "question": "Display employees whose name ends with S and hired after 1981.",
+    "sql": "SELECT * FROM SCOTT.EMP WHERE ENAME LIKE '%S' AND HIREDATE > '31-DEC-1981';",
+    "output": [
+      ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+      [7876,"ADAMS","CLERK",7788,"1987-05-23",1100,null,20]
+    ]
+},
+{
+  "question": "Display employees whose name starts with M and department is not 10.",
+    "sql": "SELECT * FROM SCOTT.EMP WHERE ENAME LIKE 'M%' AND DEPTNO <>10;",
+    "output": [
+      ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+      [7654,"MARTIN","SALESMAN",7698,"1981-09-28",1250,1400,30]
+    ]
+
+},
+{
+  "question": "Display employees whose job contains ER and salary between 2000 and 3000.",
+    "sql": "SELECT * FROM SCOTT.EMP WHERE JOB LIKE '%ER%' AND SAL BETWEEN 2000 AND 3000;",
+    "output": [
+      ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+      [7698,"BLAKE","MANAGER",7839,"1981-05-01",2850,null,30],
+      [7782,"CLARK","MANAGER",7839,"1981-06-09",2450,null,10],
+      [7566,"JONES","MANAGER",7839,"1981-04-02",2975,null,20]
+    ]
+},
+{
+  "question": "Display employees whose name starts with A or job starts with S.",
+    "sql": "SELECT * FROM SCOTT.EMP WHERE ENAME LIKE 'A%' OR JOB LIKE 'S%';",
+    "output": [
+      ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+      [7499,"ALLEN","SALESMAN",7698,"1981-02-20",1600,300,30],
+      [7876,"ADAMS","CLERK",7788,"1987-05-23",1100,null,20],
+      [7521,"WARD","SALESMAN",7698,"1981-02-22",1250,500,30],
+      [7654,"MARTIN","SALESMAN",7698,"1981-09-28",1250,1400,30],
+      [7844,"TURNER","SALESMAN",7698,"1981-09-08",1500,0,30]
+    ]
+},
+{
+  "question": "Display employees whose name contains I and manager is NOT NULL.",
+    "sql": "SELECT * FROM SCOTT.EMP WHERE ENAME LIKE '%I%' AND MGR IS NOT NULL;",
+    "output": [
+      ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+      [7369,"SMITH","CLERK",7902,"1980-12-17",800,null,20],
+      [7654,"MARTIN","SALESMAN",7698,"1981-09-28",1250,1400,30],
+      [7844,"TURNER","SALESMAN",7698,"1981-09-08",1500,0,30],
+      [7934,"MILLER","CLERK",7782,"1982-01-23",1300,null,10]
+    ]
+
+},
+{
+  "question": "Display employees whose name ends with N and commission is NOT NULL.",
+    "sql": "SELECT * FROM SCOTT.EMP WHERE ENAME LIKE '%N' AND COMM IS NOT NULL;",
+    "output": [
+      ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+      [7499,"ALLEN","SALESMAN",7698,"1981-02-20",1600,300,30],
+      [7654,"MARTIN","SALESMAN",7698,"1981-09-28",1250,1400,30]
+    ]
+},
+{
+  "question": "Display employee name as Name whose name starts with S, ordered alphabetically.",
+    "sql": "SELECT ENAME AS NAME FROM SCOTT.EMP WHERE ENAME LIKE 'S%' ORDER BY ENAME;",
+    "output": [
+      ["NAME"],
+      ["SCOTT"],
+      ["SMITH"]
+    ]
+},
+{
+  "question": "Display employee name and salary as Pay whose name contains A, ordered by salary.",
+    "sql": "SELECT ENAME, SAL AS PAY FROM SCOTT.EMP WHERE ENAME LIKE '%A%' ORDER BY SAL;",
+    "output": [
+      ["ENAME","PAY"],
+      ["JAMES",950],
+      ["ADAMS",1100],
+      ["WARD",1250],
+      ["MARTIN",1250],
+      ["ALLEN",1600],
+      ["CLARK",2450],
+      ["BLAKE",2850]
+    ]
+},
+{
+  "question": "Display employees whose job starts with M, ordered by job and salary.",
+    "sql": "SELECT * FROM SCOTT.EMP WHERE JOB LIKE 'M%' ORDER BY JOB, SAL;",
+    "output": [
+      ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+      [7782,"CLARK","MANAGER",7839,"1981-06-09",2450,null,10],
+      [7698,"BLAKE","MANAGER",7839,"1981-05-01",2850,null,30],
+      [7566,"JONES","MANAGER",7839,"1981-04-02",2975,null,20]
+    ]
+},
+{
+  "question": "Display employees whose name ends with E, ordered by hire date.",
+    "sql": "SELECT * FROM SCOTT.EMP WHERE ENAME LIKE '%E' ORDER BY HIREDATE;",
+    "output": [
+      ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+      [7566,"JONES","MANAGER",7839,"1981-04-02",2975,null,20],
+      [7698,"BLAKE","MANAGER",7839,"1981-05-01",2850,null,30]
+    ]
+},
+{
+  "question": "Display employee name and annual salary for employees whose name starts with J.",
+    "sql": "SELECT ENAME, SAL*12 AS ANNUAL_SALARY FROM SCOTT.EMP WHERE ENAME LIKE 'J%';",
+    "output": [
+      ["ENAME","ANNUAL_SALARY"],
+      ["JONES",35700],
+      ["JAMES",11400]
+    ]
+},
+{
+  "question": "Display employees whose name contains L, ordered by name and salary.",
+    "sql": "SELECT * FROM SCOTT.EMP WHERE ENAME LIKE '%L%' ORDER BY ENAME, SAL;",
+    "output": [
+      ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+      [7499,"ALLEN","SALESMAN",7698,"1981-02-20",1600,300,30],
+      [7698,"BLAKE","MANAGER",7839,"1981-05-01",2850,null,30],
+      [7782,"CLARK","MANAGER",7839,"1981-06-09",2450,null,10],
+      [7934,"MILLER","CLERK",7782,"1982-01-23",1300,null,10]
+    ]
+},
+{
+  "question": "Display employees whose job starts with C, ordered by job.",
+    "sql": "SELECT * FROM SCOTT.EMP WHERE JOB LIKE 'C%' ORDER BY JOB;",
+    "output": [
+      ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+      [7369,"SMITH","CLERK",7902,"1980-12-17",800,null,20],
+      [7876,"ADAMS","CLERK",7788,"1987-05-23",1100,null,20],
+      [7900,"JAMES","CLERK",7698,"1981-12-03",950,null,30],
+      [7934,"MILLER","CLERK",7782,"1982-01-23",1300,null,10]
+    ]
+},
+{
+  "question": "Display employees whose name has exactly 6 characters and ends with R.",
+    "sql": "SELECT * FROM SCOTT.EMP WHERE ENAME LIKE '_____R';",
+    "output": [
+      ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"]
+    ]
+},
+{
+  "question": "Display employees whose name has A as the third character from start.",
+    "sql": "SELECT * FROM SCOTT.EMP WHERE ENAME LIKE '__A%';",
+    "output": [
+      ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+      [7499,"ALLEN","SALESMAN",7698,"1981-02-20",1600,300,30],
+      [7900,"JAMES","CLERK",7698,"1981-12-03",950,null,30]
+    ]
+},
+{
+  "question": "Display employees whose name has E as the second character from end.",
+    "sql": "SELECT * FROM SCOTT.EMP WHERE ENAME LIKE '%E_';",
+    "output": [
+      ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+      [7900,"JAMES","CLERK",7698,"1981-12-03",950,null,30]
+    ]
+},
+{
+  "question": "Display employees whose name contains at least two characters before 'A'.",
+    "sql": "SELECT * FROM SCOTT.EMP WHERE ENAME LIKE '__A%';",
+    "output": [
+      ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+      [7499,"ALLEN","SALESMAN",7698,"1981-02-20",1600,300,30],
+      [7900,"JAMES","CLERK",7698,"1981-12-03",950,null,30]
+    ]
+},
+{
+  "question": "Display employees whose job contains exactly one 'A'.",
+    "sql": "Manual logic applied (no direct LIKE for exactly one A)",
+    "output": [
+      ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+      [7788,"SCOTT","ANALYST",7566,"1987-04-19",3000,null,20],
+      [7902,"FORD","ANALYST",7566,"1981-12-03",3000,null,20]
+    ]
+},
+{
+  "question": "Display employees whose name does not start with a vowel.",
+    "sql": "SELECT * FROM SCOTT.EMP WHERE ENAME NOT LIKE 'A%' AND ENAME NOT LIKE 'E%' AND ENAME NOT LIKE 'I%' AND ENAME NOT LIKE 'O%' AND ENAME NOT LIKE 'U%';",
+    "output": [
+      ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+      [7839,"KING","PRESIDENT",null,"1981-11-17",5000,null,10],
+      [7698,"BLAKE","MANAGER",7839,"1981-05-01",2850,null,30],
+      [7782,"CLARK","MANAGER",7839,"1981-06-09",2450,null,10],
+      [7566,"JONES","MANAGER",7839,"1981-04-02",2975,null,20],
+      [7788,"SCOTT","ANALYST",7566,"1987-04-19",3000,null,20],
+      [7902,"FORD","ANALYST",7566,"1981-12-03",3000,null,20],
+      [7369,"SMITH","CLERK",7902,"1980-12-17",800,null,20],
+      [7844,"TURNER","SALESMAN",7698,"1981-09-08",1500,0,30],
+      [7934,"MILLER","CLERK",7782,"1982-01-23",1300,null,10]
+    ]
+},
+{
+  "question": "Display employees whose job does not contain ER.",
+    "sql": "SELECT * FROM SCOTT.EMP WHERE JOB NOT LIKE '%ER%';",
+    "output": [
+      ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+      [7839,"KING","PRESIDENT",null,"1981-11-17",5000,null,10],
+      [7788,"SCOTT","ANALYST",7566,"1987-04-19",3000,null,20],
+      [7902,"FORD","ANALYST",7566,"1981-12-03",3000,null,20]
+    ]
+},
+{
+  "question": "Display employees whose name contains A and E in any order.",
+    "sql": "SELECT * FROM SCOTT.EMP WHERE ENAME LIKE '%A%E%' OR ENAME LIKE '%E%A%';",
+    "output": [
+      ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+      [7698,"BLAKE","MANAGER",7839,"1981-05-01",2850,null,30],
+      [7782,"CLARK","MANAGER",7839,"1981-06-09",2450,null,10],
+      [7499,"ALLEN","SALESMAN",7698,"1981-02-20",1600,300,30],
+      [7900,"JAMES","CLERK",7698,"1981-12-03",950,null,30]
+    ]
+},
+{
+  "question": "Display employees whose name contains A but not as the first character.",
+    "sql": "SELECT * FROM SCOTT.EMP WHERE ENAME LIKE '%A%' AND ENAME NOT LIKE 'A%';",
+    "output": [
+      ["EMPNO","ENAME","JOB","MGR","HIREDATE","SAL","COMM","DEPTNO"],
+      [7698,"BLAKE","MANAGER",7839,"1981-05-01",2850,null,30],
+      [7782,"CLARK","MANAGER",7839,"1981-06-09",2450,null,10],
+      [7566,"JONES","MANAGER",7839,"1981-04-02",2975,null,20],
+      [7521,"WARD","SALESMAN",7698,"1981-02-22",1250,500,30],
+      [7654,"MARTIN","SALESMAN",7698,"1981-09-28",1250,1400,30],
+      [7900,"JAMES","CLERK",7698,"1981-12-03",950,null,30]
+    ]
+}
+      ]
+    };
+
+    // Set Title
+    document.getElementById("LIKE").innerText = topicData.title;
+
+    const container = document.getElementById("queryList");
+
+    // Create Queries
+    topicData.queries.forEach((q, index) => {
+      const div = document.createElement("div");
+      div.className = "query-box";
+
+      div.innerHTML = `
+        <div class="query-title">
+          (${index + 1}) ${q.question}
+        </div>
+
+        <button onclick="toggleAnswer(${index})">
+          Show Answer
+        </button>
+
+        <div class="answer" id="answer-${index}">
+          <div class="answer-container">
+            
+            <div class="query-code">
+              ${q.sql}
+            </div>
+
+            <div class=output>
+              ${createTable(q.output)}
+            </div>
+
+          </div>
+        </div>
+      `;
+
+      container.appendChild(div);
+    });
+
+    // Toggle Answer
+    function toggleAnswer(index) {
+      const ans = document.getElementById(`answer-${index}`);
+      ans.style.display = ans.style.display === "block" ? "none" : "block";
+    }
+
+    // Create Table
+    function createTable(data) {
+      let html = "<table>";
+
+      data.forEach((row, i) => {
+        html += "<tr>";
+        row.forEach(cell => {
+          html += i === 0 ? `<th>${cell}</th>` : `<td>${cell}</td>`;
+        });
+        html += "</tr>";
+      });
+
+      html += "</table>";
+      return html;
+    }
+  </script>
+
+</body>
+</html>
