@@ -420,13 +420,6 @@
   ]
 },
 {
-  "question": "Display employees not assigned to any department.",
-  "sql": "SELECT ENAME FROM SCOTT.EMP E, SCOTT.DEPT D WHERE E.DEPTNO = D.DEPTNO(+) AND D.DNAME IS NULL;",
-  "output": [
-    ["ENAME"]
-  ]
-},
-{
   "question": "Display all departments with employees (even if no employees).",
   "sql": "SELECT DNAME, ENAME FROM SCOTT.EMP E, SCOTT.DEPT D WHERE E.DEPTNO(+) = D.DEPTNO;",
   "output": [
