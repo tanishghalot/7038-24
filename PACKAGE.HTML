@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Topic Page</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #DEF2F1;
+      padding: 20px;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      padding: 15px;
+      border: 1px solid black;
+      border-radius: 15px;
+      font-size: 26px;
+      font-weight: bold;
+      background: #78E7E0 ;
+      color: #17252a;
+      margin-bottom: 30px;
+    }
+
+    /* Query Box */
+    .query-box {
+      background: #DEF2F1;
+      border: 0px solid black;
+      border-radius: 15px;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+
+    .query-title {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    button {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 15px;
+      background: #78E7E0 ;
+      color: black;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #2B7A78;
+    }
+
+    /* Answer Section */
+    .answer {
+      display: none;
+      margin-top: 15px;
+      border-top: 2px solid black;
+      padding-top: 10px;
+    }
+
+    .answer-container {
+      display: flex;
+      gap: 20px;
+    }
+
+    .query-code {
+      width: 50%;
+      background: #DEF2F1;
+      padding: 10px;
+      border: 1px solid black;
+      border-radius: 5px;
+      font-family: monospace;
+    }
+
+    .output {
+      width: 50%;
+      background: #DEF2F1;
+      padding: 10px;
+      border: 1px solid black;
+      border-radius: 5px;
+      font-family: monospace;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      border-radius: 5px;
+    }
+
+    th, td {
+      border: 1px solid black;
+      border-radius: 5px;
+      padding: 6px;
+      text-align: center;
+    }
+
+    /* Responsive */
+    @media (max-width: 700px) {
+      .answer-container {
+        flex-direction: column;
+      }
+
+      .query-code, .output {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Topic Title -->
+  <div class="header" id="PKG">
+    PL PACKAGES
+  </div>
+
+  <!-- Query List -->
+  <div id="queryList"></div>
+
+  <script>
+    // SAMPLE DATA (EDIT THIS)
+    const topicData = {
+      title: "PACKAGES",
+      queries: [
+        {
+question : "Write a package specification and body to display 'Hello Oracle'. (Package Basic Structure)",
+sql:` CREATE OR REPLACE PACKAGE PACK IS
+    PROCEDURE MSG;
+END PACK;
+
+CREATE OR REPLACE PACKAGE BODY PACK IS
+ PROCEDURE MSG IS
+ BEGIN
+    DBMS_OUTPUT.PUT_LINE('HELLO ORACLE');
+ END;
+END PACK;`,
+output:`SQL> CREATE OR REPLACE PACKAGE PACK IS
+         PROCEDURE MSG;
+     END PACK;
+
+
+
+Package PACK compiled
+ `
+},
+{
+question : "Create a package with one procedure to display employee details. (Package + Procedure)",
+sql:` 
+CREATE OR REPLACE PACKAGE PACK_EMP IS 
+ PROCEDURE DIS_EMP(EMPNO NUMBER);
+END PACK_EMP;
+
+CREATE OR REPLACE PACKAGE BODY PACK_EMP IS
+    PROCEDURE DIS_EMP(E NUMBER) IS 
+        N EMP.ENAME%TYPE;
+        SAL EMP.SAL%TYPE;
+    BEGIN
+        SELECT ENAME,SAL INTO N,SAL FROM EMP WHERE EMPNO = E;
+        DBMS_OUTPUT.PUT_LINE(N || ' ' || SAL);
+    END;
+END PACK_EMP;`,
+output:`SQL> CREATE OR REPLACE PACKAGE PACK_EMP IS 
+      PROCEDURE DIS_EMP(EMPNO NUMBER);
+     END PACK_EMP;
+
+
+
+Package PACK_EMP compiled`
+},
+{
+question : "Create a package containing a function to return square of a number. (Package + Function)",
+sql:`CREATE OR REPLACE PACKAGE PACK_MATH IS
+    FUNCTION SQR(N NUMBER) RETURN NUMBER;
+END PACK_MATH;
+
+CREATE OR REPLACE PACKAGE BODY PACK_MATH IS
+    FUNCTION SQR(N NUMBER) RETURN NUMBER IS
+    BEGIN 
+        RETURN N*N;
+    END;
+END PACK_MATH; `,
+output:`SQL> CREATE OR REPLACE PACKAGE PACK_MATH IS
+         FUNCTION SQR(N NUMBER) RETURN NUMBER;
+     END PACK_MATH;
+
+
+
+Package PACK_MATH compiled
+`
+},
+{
+question : "Write a package with both procedure and function. (Package Structure)",
+sql:`CREATE OR REPLACE PACKAGE PACK_MIX IS
+    PROCEDURE GREET;
+    FUNCTION CUBE (N NUMBER) RETURN NUMBER;
+END PACK_MIX;
+
+CREATE OR REPLACE PACKAGE BODY PACK_MIX IS
+    PROCEDURE GREET IS
+    BEGIN
+        DBMS_OUTPUT.PUT_LINE('WELCOME');
+    END;
+    FUNCTION CUBE(N NUMBER) RETURN NUMBER IS
+    BEGIN
+        RETURN N*N*N;
+    END;
+END PACK_MIX; `,
+output:` Package PACK_MIX compiled`
+},
+{
+question : "Create a package to group employee-related operations. (Package Design)",
+sql:`CREATE OR REPLACE PACKAGE PACK_EMP_OP IS 
+    PROCEDURE SHOW_ALL;
+    FUNCTION COUNT_EMP RETURN NUMBER;
+END PACK_EMP_OP;
+
+CREATE OR REPLACE PACKAGE BODY PACKAGE_EMP_OP IS
+    PROCEDURE SHOW_ALL IS
+    BEGIN
+        FOR REC IN (SELECT ENAME FROM EMP ) LOOP
+            DBMS_OUTPUT.PUT_LINE(REC.ENAME);
+        END LOOP;
+    END;
+
+    FUNCTION COUNT_EMP RETURN NUMBER IS
+        C NUMBER;
+    BEGIN
+        SELECT COUNT(*) INTO C FROM EMP;
+        RETURN C;
+    END;
+END PACK_EMP_OP; `,
+output:` SQL> CREATE OR REPLACE PACKAGE PACK_EMP_OP IS 
+         PROCEDURE SHOW_ALL;
+         FUNCTION COUNT_EMP RETURN NUMBER;
+     END PACK_EMP_OP;
+
+
+
+Package PACK_EMP_OP compiled`
+},
+{
+question : "Create a package with a global variable and display its value. (Package Variable)",
+sql:` CREATE OR REPLACE PACKAGE PACK_VAR IS
+    PACK_VAR VARCHAR2(50) := 'Hello Global';
+    PROCEDURE show;
+END PACK_VAR;
+/
+
+CREATE OR REPLACE PACKAGE BODY PACK_VAR IS
+    PROCEDURE show IS
+    BEGIN
+        DBMS_OUTPUT.PUT_LINE(MSG);
+    END;
+END PACK_VAR;`,
+output:`SQL> CREATE OR REPLACE PACKAGE PACK_VAR IS
+         PACK_VAR VARCHAR2(50) := 'Hello Global';
+         PROCEDURE show;
+     END PACK_VAR;
+
+
+
+Package PACK_VAR compiled `
+},
+{
+question : "Write a package to store company name as constant and display it. (Package Constant)",
+sql:` CREATE OR REPLACE PACKAGE PACK_CONST IS
+    N CONSTANT VARCHAR2(50) := 'ABC Company';
+    PROCEDURE show;
+END PACK_CONST;
+
+
+CREATE OR REPLACE PACKAGE BODY PACK_CONST IS
+    PROCEDURE show IS
+    BEGIN
+        DBMS_OUTPUT.PUT_LINE(N);
+    END;
+END PACK_CONST;`,
+output:` SQL> CREATE OR REPLACE PACKAGE PACK_CONST IS
+         N CONSTANT VARCHAR2(50) := 'ABC Company';
+         PROCEDURE show;
+     END PACK_CONST;
+
+
+
+Package PACK_CONST compiled`
+},
+{
+question : "Create a package that uses a variable to count number of procedure calls. (Package State Management)",
+sql:`CREATE OR REPLACE PACKAGE pkg_counter IS
+    cnt NUMBER := 0;
+    PROCEDURE call_proc;
+END pkg_counter;
+/
+
+CREATE OR REPLACE PACKAGE BODY pkg_counter IS
+    PROCEDURE call_proc IS
+    BEGIN
+        cnt := cnt + 1;
+        DBMS_OUTPUT.PUT_LINE('Called: ' || cnt);
+    END;
+END pkg_counter; `,
+output:`SQL> CREATE OR REPLACE PACKAGE pkg_counter IS
+         cnt NUMBER := 0;
+         PROCEDURE call_proc;
+     END pkg_counter;
+
+
+
+Package PKG_COUNTER compiled
+ `
+},
+{
+question : "Write a package with a global variable used in multiple procedures. (Shared Variable in Package)",
+sql:` CREATE OR REPLACE PACKAGE pkg_shared IS
+    v_num NUMBER := 10;
+    PROCEDURE inc;
+    PROCEDURE show;
+END pkg_shared;
+/
+
+CREATE OR REPLACE PACKAGE BODY pkg_shared IS
+    PROCEDURE inc IS
+    BEGIN
+        v_num := v_num + 1;
+    END;
+
+    PROCEDURE show IS
+    BEGIN
+        DBMS_OUTPUT.PUT_LINE(v_num);
+    END;
+END pkg_shared;`,
+output:`SQL> CREATE OR REPLACE PACKAGE pkg_shared IS
+         v_num NUMBER := 10;
+         PROCEDURE inc;
+         PROCEDURE show;
+
+Package PKG_SHARED compiled `
+},
+{
+question : "Create a package procedure to fetch employee details using empno. (Package Procedure)",
+sql:`CREATE OR REPLACE PACKAGE pkg_fetch IS
+    PROCEDURE get_emp(p_empno NUMBER);
+END pkg_fetch;
+/
+
+CREATE OR REPLACE PACKAGE BODY pkg_fetch IS
+    PROCEDURE get_emp(p_empno NUMBER) IS
+        v_name EMP.ENAME%TYPE;
+    BEGIN
+        SELECT ENAME INTO v_name
+        FROM EMP
+        WHERE EMPNO = p_empno;
+
+        DBMS_OUTPUT.PUT_LINE(v_name);
+    END;
+END pkg_fetch;`,
+output:`SQL> CREATE OR REPLACE PACKAGE pkg_fetch IS
+         PROCEDURE get_emp(p_empno NUMBER);
+     END pkg_fetch;
+
+
+
+Package PKG_FETCH compiled`
+},
+
+
+      ]
+    };
+
+    // Set Title
+    document.getElementById("PKG").innerText = topicData.title;
+
+    const container = document.getElementById("queryList");
+
+    // Create Queries
+    topicData.queries.forEach((q, index) => {
+      const div = document.createElement("div");
+      div.className = "query-box";
+
+      div.innerHTML = `
+        <div class="query-title">
+          (${index + 1}) ${q.question}
+        </div>
+
+        <button onclick="toggleAnswer(${index})">
+          Show Answer
+        </button>
+
+        <div class="answer" id="answer-${index}">
+          <div class="answer-container">
+            
+            <div class="query-code">
+              <PRE>${q.sql}</PRE>
+            </div>
+
+            <div class="output">
+              <PRE>${q.output}</PRE>
+            </div>
+
+          </div>
+        </div>
+      `;
+
+      container.appendChild(div);
+    });
+
+    // Toggle Answer
+    function toggleAnswer(index) {
+      const ans = document.getElementById(`answer-${index}`);
+      ans.style.display = ans.style.display === "block" ? "none" : "block";
+    }
+
+  </script>
+
+</body>
+</html>
