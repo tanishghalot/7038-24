@@ -105,173 +105,242 @@
 <body>
 
   <!-- Topic Title -->
-  <div class="header" id="SINGLED">
-    SINGLE DIMENSION ARRAY
+  <div class="header" id="DDL">
+    DATA DEFINITION LANGAUGE
   </div>
 
   <!-- Query List -->
-  <div id="quesList"></div>
+  <div id="queryList"></div>
 
-<script>
-    // SAMPLE DATA
+  <script>
+    // SAMPLE DATA (EDIT THIS)
     const topicData = {
-        title: "SINGLE DIMENSION ARRAY",
+      title: "DATA DEFINITION Language",
+      queries: [
+        {
+  question : "Create a table called STUDENT with columns: SID (NUMBER) , SNAME (VARCHAR2(30)) , AGE (NUMBER) , COURSE (VARCHAR2(20))",
+  sql : "CREATE TABLE STUDENT ( SID NUMBER(3) PRIMARY KEY, SNAME VARCHAR2(30) DEFAULT 'UNKNOWN', AGE NUMBER(2), COURSE VARCHAR2(20) );",
+output : "Table STUDENT created"
+},
+{
+  question : "Create a table EMPLOYEE with columns: EID NUMBER , ENAME VARCHAR2(40) , SALARY NUMBER(8,2) , DEPTNO NUMBER",
+sql : "CREATE TABLE EMPLOYEEE ( EID NUMBER(2) PRIMARY KEY, ENAME VARCHAR2(40), SALARY NUMBER(8,2), DEPTNO NUMBER(2) );",
+output : "Table EMPLOYEEE created"
+},
+{
+  question : "Create a table DEPARTMENT with columns: DEPTNO NUMBER , DNAME VARCHAR2(30) , LOCATION VARCHAR2(30)",
+sql : "CREATE TABLE DEPARTMENT ( DEPTNO NUMBER(2) PRIMARY KEY, DNAME VARCHAR2(30), LOCATION VARCHAR2(30) );",
+output : "Table DEPARTMENT created"
+},
+{
+  question : "Create a table BOOK with columns: BOOK_ID NUMBER , TITLE VARCHAR2(50) , AUTHOR VARCHAR2(40) , PRICE NUMBER",
+sql : "CREATE TABLE BOOK ( BOOK_ID NUMBER(2) PRIMARY KEY, TITLE VARCHAR2(50), AUTHOR VARCHAR2(40), PRICE NUMBER(3) );",
+output : "Table BOOK created"
+},
+{
+  question : "Create a table COURSE with columns: CID NUMBER , CNAME VARCHAR2(40) , DURATION NUMBER",
+sql : "CREATE TABLE COURSE ( CID NUMBER(2) PRIMARY KEY, CNAME VARCHAR2(40), DURATION NUMBER(2) );",
+output : "Table COURSE created"
+},
+{
+  question : "Create a table PROJECT with columns: PID NUMBER , PNAME VARCHAR2(50) , START_DATE DATE , END_DATE DATE",
+sql : "CREATE TABLE PROJECT ( PID NUMBER(2) PRIMARY KEY, PNAME VARCHAR2(50), START_DATE DATE, END_DATE DATE );",
+output : "Table PROJECT created"
+},
+{
+  question : "Create a table CUSTOMER with columns: CID NUMBER , CNAME VARCHAR2(40) , CITY VARCHAR2(30) , PHONE NUMBER",
+sql : "CREATE TABLE CUSTOMER ( CID NUMBER(2) PRIMARY KEY, CNAME VARCHAR2(40), CITY VARCHAR2(30), PHONE NUMBER(10) );",
+output : "Table CUSTOMER created"
+},
+{
+  question : "Create a table SALES with columns: SALE_ID NUMBER , PRODUCT_NAME VARCHAR2(50) , QUANTITY NUMBER , PRICE NUMBER",
+sql : "CREATE TABLE SALES ( SALE_ID NUMBER(3) PRIMARY KEY, PRODUCT_NAME VARCHAR2(50), QUANTITY NUMBER(3), PRICE NUMBER(3) );",
+output : "Table SALES created"
+},
+{
+  question : "Create a table EMP_COPY from the existing EMP table (structure only)",
+sql : "CREATE TABLE EMP_COPY AS SELECT * FROM EMPLOYEEE WHERE 1 = 0;",
+output : "Table EMP_COPY created"
+},
 
-        questions: [
-            {
-                question: "Program to find the second smallest number in an array",
+{
+    question : "Add a column EMAIL VARCHAR2(50) to the STUDENT table",
+sql : "ALTER TABLE STUDENT ADD(EMAIL VARCHAR2(50));",
+output : "Table STUDENT altered"
+},
+{
+    question : "Add a column PHONE NUMBER to the EMPLOYEE table",
+sql : "ALTER TABLE EMPLOYEEE ADD(PHONE NUMBER(10));",
+output : "Table EMPLOYEEE altered"
+},
+{
+    question : "Modify the column SNAME in STUDENT table to VARCHAR2(50)",
+sql : "ALTER TABLE STUDENT MODIFY(SNAME VARCHAR2(50));",
+output : "Table STUDENT altered"
+},
+{
+   question : "Modify the column SALARY in EMPLOYEE table to NUMBER(10,2)",
+sql : "ALTER TABLE EMPLOYEEE MODIFY (SALARY NUMBER(10,2));",
+output : "Table EMPLOYEEE altered" 
+},
+{
+    question : "Add two columns CITY VARCHAR2(30) and PINCODE NUMBER to CUSTOMER table",
+sql : "ALTER TABLE CUSTOMER ADD (CITY VARCHAR2(30) , PINCODE NUMBER(5));",
+output : "table CUSTOMER altered"
+},
+{
+    question : "Rename the column SNAME to STUDENT_NAME in STUDENT table",
+sql : "ALTER TABLE STUDENT RENAME COLUMN SNAME TO STUDENT_NAME;",
+output : "Table STUDENT altered"
+},
+{
+    question : "Drop the column AGE from STUDENT table",
+sql : "ALTER TABLE STUDENT DROP COLUMN AGE;",
+output : "Table STUDENT altered"
+},
+{
+    question : "Set the column SALARY in EMPLOYEE table to NOT NULL",
+sql : "ALTER TABLE EMPLOYEEE MODIFY(SALARY NOT NULL);",
+output : "Table EMPLOYEEE altered"
+},
+{
+    question : "Increase the size of column TITLE in BOOK table to VARCHAR2(100)",
+sql : "ALTER TABLE BOOK MODIFY (TITLE VARCHAR2(100));",
+output : "Table BOOK altered"
+},
+{
+    question : "Add a column MANAGER_ID NUMBER to EMPLOYEE table",
+sql : "ALTER TABLE EMPLOYEEE ADD(MANAGER_ID NUMBER(3));",
+output : "Table EMPLOYEEE altered"
+},
+{
+    question : "Drop the table STUDENT",
+sql : "DROP TABLE STUDENT;",
+output : "Table STUDENT dropped"
+},
+{
+    question : "Drop the table CUSTOMER from the database",
+sql : "DROP TABLE CUSTOMER;",
+output : "Table CUSTOMER dropped"
+},
+{
+    question : "Drop the table PROJECT permanently",
+sql : "DROP TABLE PROJECT;",
+output : "Table PROJECT dropped"
+},
+{
+    question : "Remove the table SALES",
+sql : "DROP TABLE SALES;",
+output : "Table SALES dropped"
+},
+{
+    question : "Drop the table COURSE",
+sql : "DROP TABLE COURSE;",
+output : "Table COURSE dropped"
+},
+{
+    question : "Rename table STUDENT TO STUDENTS",
+sql : "RENAME TABLE STUDENT TO STUDENTS;",
+output : "Table STUDENT renamed"
+},
+{
+    question : "Rename table EMPLOYEEE TO EMP_MASTER",
+sql : "RENAME TABLE EMPLOYEEE TO EMP_MASTER;",
+output : "Table EMPLOYEEE renamed"
+},
+{
+    question : "Rename table BOOK TO BOOK_DETAILS",
+sql : "RENAME TABLE BOOK TO BOOK_DETAILS;",
+output : "Table BOOK renamed"
+},
+{
+    question : "Delete all records from STUDENT table",
+sql : "DELETE FROM STUDENT;",
+output : "5 rows deleted"
+},
+{
+    question : "Truncate table EMPLOYEEE",
+sql : "TRUNCATE TABLE EMPLOYEEE;",
+output : "Table EMPLOYEEE truncated"
+},
+{
+    question : "Truncate table CUSTOMER",
+sql : "TRUNCATE TABLE CUSTOMER;",
+output : "Table CUSTOMER truncated"
+},
+{
+    question : "Truncate table SALES",
+sql : "TRUNCATE TABLE SALES;",
+output : "Table SALES truncated"
+},
+{
+    question : "Delete all records from PROJECT table",
+sql : "DELETE FROM PROJECT;",
+output : "Table EMPLOYEEE DELETED"
+},
+{
+    question : "Create table TRAINING",
+sql : "CREATE TABLE TRAINING ( TID NUMBER(2) PRIMARY KEY, TNAME VARCHAR2(30), DURATION NUMBER );",
+output : "Table TRAINING created"
+},
+{
+    question : "Add column TRAINER_NAME to TRAINING",
+sql : "ALTER TABLE TRAINING ADD(TRAINER_NAME VARCHAR2(40));",
+output : "Table TRAINING altered"
+},
+{
+    question : "Modify column TNAME in TRAINING",
+sql : "ALTER TABLE TRAINING MODIFY(TNAME VARCHAR2(60));",
+output : "Table TRAINING altered"
+},
+{
+    question : "Rename table TRAINING TO TRAINING_PROGRAM",
+sql : "RENAME TABLE TRAINING TO TRAINING_PROGRAM;",
+output : "Table TRAINING renamed"
+},
+{
+    question : "Truncate table TRAINING_PROGRAM",
+sql : "TRUNCATE TABLE TRAINING_PROGRAM;",
+output : "Table TRAINING_PROGRAM truncated"
+},
+{
+    question : "Drop table TRAINING_PROGRAM",
+sql : "DROP TABLE TRAINING_PROGRAM;",
+output : "Table TRAINING_PROGRAM dropped"
+},
+{
+    question : "Create and alter EMP_PROJECT table",
+sql : "CREATE TABLE EMP_PROJECT ( EMP_ID NUMBER PRIMARY KEY, PROJECT_ID NUMBER, START_DATE DATE, END_DATE DATE, ROLE VARCHAR2(30) ); ALTER TABLE EMP_PROJECT MODIFY(ROLE VARCHAR2(60)) ADD(STATUS VARCHAR2(20));",
+output : "Table EMP_PROJECT created and altered"
+},
+{
+    question : "Create and alter ORDER table",
+sql : "CREATE TABLE ORDER ( ORDER_ID NUMBER, CUSTOMER_ID NUMBER, ORDER_DATE DATE, TOTAL_AMOUNT NUMBER ); ALTER TABLE ORDER ADD(STATUS VARCHAR2(20)) DROP COLUMN TOTAL_AMOUNT ADD(TOTAL_AMOUNT NUMBER(10,2));",
+output : "Error: invalid table name / syntax error"
+},
+{
+    question : "Create, rename, truncate and drop EMP_HIGH_SALARY table",
+sql : "CREATE TABLE EMP_TEMP AS SELECT * FROM SCOTT.EMP WHERE SAL > 2000; RENAME EMP_TEMP TO EMP_HIGH_SALARY; TRUNCATE TABLE EMP_HIGH_SALARY; DROP TABLE EMP_HIGH_SALARY;",
+output : "Table created, renamed, truncated and dropped successfully"
+},
+{
+    question : "Create and alter STUDENT_RECORD table",
+sql : "CREATE TABLE STUDENT_RECORD ( SID NUMBER, SNAME VARCHAR2(40), COURSE VARCHAR2(30), MARKS NUMBER ); ALTER TABLE STUDENT_RECORD ADD GRADE CHAR(1); ALTER TABLE STUDENT_RECORD MODIFY MARKS NUMBER(5,2); ALTER TABLE STUDENT_RECORD RENAME COLUMN COURSE TO COURSE_NAME;",
+output : "Table STUDENT_RECORD created and altered"
+},
+{
+    question : "Create and alter EMP_HISTORY table",
+sql : "CREATE TABLE EMP_ARCHIVE AS SELECT * FROM SCOTT.EMP WHERE 1 = 0; ALTER TABLE EMP_ARCHIVE ADD ARCHIVE_DATE DATE; RENAME EMP_ARCHIVE TO EMP_HISTORY;",
+output : "Table EMP_HISTORY created and altered"
+}
 
-                source_code: `package SingleD_array;
-
-class SecondSmallestDigit {
-    public static void main(String args[]) {
-
-        int arr[] = {2,3,4,7,4,5,8};
-        int len = arr.length;
-
-        int s_index = 0;
-        int s_index_sec = -1;
-
-        for(int i = 1; i < len; i++) {
-            if(arr[i] < arr[s_index]) {
-                s_index = i;
-            }
-        }
-
-        for(int j = 0; j < len; j++) {
-            if(arr[j] > arr[s_index]) {
-                if(s_index_sec == -1 || arr[j] < arr[s_index_sec]) {
-                    s_index_sec = j;
-                }
-            }
-        }
-
-        if(s_index_sec != -1) {
-            System.out.println("The second smallest number is: " + arr[s_index_sec]);
-        }
-    }
-}`,
-
-                output: "The second smallest number in the array is: 3"
-            },
-
-            {
-                question: "2. Program to find the frequency of each element in the array",
-                source_code: "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/370",
-                output: ""
-            },
-            {
-                question: "3. Program to left rotate the elements of an array",
-                source_code: "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/371",
-                output: ""
-            },
-            {
-                question: "4. Program to print the duplicate elements of an array",
-                source_code: "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/372",
-                output: ""
-            },
-            {
-                question: "5. Program to print the elements of an array",
-                source_code: "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/373",
-                output: ""
-            },
-            {
-                question: "6. Program to print the elements of an array in reverse order",
-                source_code: "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/374",
-                output: ""
-            },
-            {
-                question: "7. Program to print the elements of an array present on even position",
-                source_code: "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/375",
-                output: ""
-            },
-            {
-                question: "8. Program to print the elements of an array present on odd position",
-                source_code: "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/376",
-                output: ""
-            },
-            {
-                question: "9. Program to print the largest element in an array",
-                source_code: "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/377",
-                output: ""
-            },
-            {
-                question: "10. Program to print the smallest element in an array",
-                source_code: "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/378",
-                output: ""
-            },
-            {
-                question: "11. Program to print the number of elements present in an array",
-                source_code: "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/379",
-                output: ""
-            },
-            {
-                question: "12. Program to print the sum of all the items of the array",
-                source_code: "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/380",
-                output: ""
-            },
-            {
-                question: "13. Program to right rotate the elements of an array",
-                source_code: "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/381",
-                output: ""
-            },
-            {
-                question: "14. Program to sort the elements of an array in ascending order",
-                source_code: "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/382",
-                output: ""
-            },
-            {
-                question: "15. Program to sort the elements of an array in descending order",
-                source_code: "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/383",
-                output: ""
-            },
-            {
-                question: "16. Program to find 3rd Largest Number in an array",
-                source_code: "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/384",
-                output: ""
-            },
-            {
-                question: "17. Program to find 2nd Largest Number in an array",
-                source_code: "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/385",
-                output: ""
-            },
-            {
-                question: "18. Program to find Largest Number in an array",
-                source_code: "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/386",
-                output: ""
-            },
-            {
-                question: "19. Program to find 2nd Smallest Number in an array",
-                source_code: "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/387",
-                output: ""
-            },
-            {
-                question: "20. Program to find Smallest Number in an array",
-                source_code: "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/388",
-                output: ""
-            },
-            {
-                question: "21. Program to remove duplicate elements in an array",
-                source_code: "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/389",
-                output: ""
-            },
-            {
-                question: "22. Program to print odd and even numbers from an array",
-                source_code: "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/390",
-                output: ""
-            },
-            {
-                question: "23. How to sort an array in Java",
-                source_code: "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/391",
-                output: ""
-            }
-        ]
+      ]
     };
 
     // Set Title
-    document.getElementById("SINGLED").innerText = topicData.title;
+    document.getElementById("DDL").innerText = topicData.title;
 
-    const container = document.getElementById("quesList");
+    const container = document.getElementById("queryList");
 
     // Create Queries
     topicData.queries.forEach((q, index) => {
@@ -315,4 +384,5 @@ class SecondSmallestDigit {
 
 </body>
 </html>
+
 
