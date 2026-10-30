@@ -112,128 +112,160 @@
   <!-- Query List -->
   <div id="quesList"></div>
 
-  <script>
-    // SAMPLE DATA (EDIT THIS)
+<script>
+    // SAMPLE DATA
     const topicData = {
-      title: "SINGLE DIMENSION ARRAY",
-      questions: [
-        {
-  {
-    question : "1. Program to copy all elements of one array into another array",
-    source_code : "package SingleD_array;\n\nclass SecondSmallestDigit {\n    public static void main(String args[]) {\n        int arr[] = {2,3,4,7,4,5,8};\n        int len = arr.length;\n        int s_index = 0;\n        int s_index_sec = -1;\n\n        for(int i=1; i<len; i++) {\n            if(arr[i] < arr[s_index]) {\n                s_index = i;\n            }\n        }\n\n        for(int j=0; j<len; j++) {\n            if(arr[j] > arr[s_index]) {\n                if(s_index_sec == -1 || arr[j] < arr[s_index_sec]) {\n                    s_index_sec = j;\n                }\n            }\n        }\n\n        if(s_index_sec != -1) {\n            System.out.println(\"The second smallest number is: \" + arr[s_index_sec]);\n        }\n    }\n}",
-    output : ""
-},
-{
-    question : "2. Program to find the frequency of each element in the array",
-    source_code : "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/370",
-    output : ""
-},
-{
-    question : "3. Program to left rotate the elements of an array",
-    source_code : "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/371",
-    output : ""
-},
-{
-    question : "4. Program to print the duplicate elements of an array",
-    source_code : "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/372",
-    output : ""
-},
-{
-    question : "5. Program to print the elements of an array",
-    source_code : "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/373",
-    output : ""
-},
-{
-    question : "6. Program to print the elements of an array in reverse order",
-    source_code : "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/374",
-    output : ""
-},
-{
-    question : "7. Program to print the elements of an array present on even position",
-    source_code : "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/375",
-    output : ""
-},
-{
-    question : "8. Program to print the elements of an array present on odd position",
-    source_code : "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/376",
-    output : ""
-},
-{
-    question : "9. Program to print the largest element in an array",
-    source_code : "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/377",
-    output : ""
-},
-{
-    question : "10. Program to print the smallest element in an array",
-    source_code : "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/378",
-    output : ""
-},
-{
-    question : "11. Program to print the number of elements present in an array",
-    source_code : "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/379",
-    output : ""
-},
-{
-    question : "12. Program to print the sum of all the items of the array",
-    source_code : "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/380",
-    output : ""
-},
-{
-    question : "13. Program to right rotate the elements of an array",
-    source_code : "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/381",
-    output : ""
-},
-{
-    question : "14. Program to sort the elements of an array in ascending order",
-    source_code : "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/382",
-    output : ""
-},
-{
-    question : "15. Program to sort the elements of an array in descending order",
-    source_code : "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/383",
-    output : ""
-},
-{
-    question : "16. Program to find 3rd Largest Number in an array",
-    source_code : "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/384",
-    output : ""
-},
-{
-    question : "17. Program to find 2nd Largest Number in an array",
-    source_code : "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/385",
-    output : ""
-},
-{
-    question : "18. Program to find Largest Number in an array",
-    source_code : "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/386",
-    output : ""
-},
-{
-    question : "19. Program to find 2nd Smallest Number in an array",
-    source_code : "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/387",
-    output : ""
-},
-{
-    question : "20. Program to find Smallest Number in an array",
-    source_code : "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/388",
-    output : ""
-},
-{
-    question : "21. Program to remove duplicate elements in an array",
-    source_code : "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/389",
-    output : ""
-},
-{
-    question : "22. Program to print odd and even numbers from an array",
-    source_code : "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/390",
-    output : ""
-},
-{
-    question : "23. How to sort an array in Java",
-    source_code : "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/391",
-    output : ""
-}
-      ]
+        title: "SINGLE DIMENSION ARRAY",
+
+        questions: [
+            {
+                question: "Program to find the second smallest number in an array",
+
+                source_code: `package SingleD_array;
+
+class SecondSmallestDigit {
+    public static void main(String args[]) {
+
+        int arr[] = {2,3,4,7,4,5,8};
+        int len = arr.length;
+
+        int s_index = 0;
+        int s_index_sec = -1;
+
+        for(int i = 1; i < len; i++) {
+            if(arr[i] < arr[s_index]) {
+                s_index = i;
+            }
+        }
+
+        for(int j = 0; j < len; j++) {
+            if(arr[j] > arr[s_index]) {
+                if(s_index_sec == -1 || arr[j] < arr[s_index_sec]) {
+                    s_index_sec = j;
+                }
+            }
+        }
+
+        if(s_index_sec != -1) {
+            System.out.println("The second smallest number is: " + arr[s_index_sec]);
+        }
+    }
+}`,
+
+                output: "The second smallest number in the array is: 3"
+            },
+
+            {
+                question: "2. Program to find the frequency of each element in the array",
+                source_code: "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/370",
+                output: ""
+            },
+            {
+                question: "3. Program to left rotate the elements of an array",
+                source_code: "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/371",
+                output: ""
+            },
+            {
+                question: "4. Program to print the duplicate elements of an array",
+                source_code: "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/372",
+                output: ""
+            },
+            {
+                question: "5. Program to print the elements of an array",
+                source_code: "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/373",
+                output: ""
+            },
+            {
+                question: "6. Program to print the elements of an array in reverse order",
+                source_code: "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/374",
+                output: ""
+            },
+            {
+                question: "7. Program to print the elements of an array present on even position",
+                source_code: "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/375",
+                output: ""
+            },
+            {
+                question: "8. Program to print the elements of an array present on odd position",
+                source_code: "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/376",
+                output: ""
+            },
+            {
+                question: "9. Program to print the largest element in an array",
+                source_code: "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/377",
+                output: ""
+            },
+            {
+                question: "10. Program to print the smallest element in an array",
+                source_code: "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/378",
+                output: ""
+            },
+            {
+                question: "11. Program to print the number of elements present in an array",
+                source_code: "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/379",
+                output: ""
+            },
+            {
+                question: "12. Program to print the sum of all the items of the array",
+                source_code: "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/380",
+                output: ""
+            },
+            {
+                question: "13. Program to right rotate the elements of an array",
+                source_code: "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/381",
+                output: ""
+            },
+            {
+                question: "14. Program to sort the elements of an array in ascending order",
+                source_code: "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/382",
+                output: ""
+            },
+            {
+                question: "15. Program to sort the elements of an array in descending order",
+                source_code: "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/383",
+                output: ""
+            },
+            {
+                question: "16. Program to find 3rd Largest Number in an array",
+                source_code: "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/384",
+                output: ""
+            },
+            {
+                question: "17. Program to find 2nd Largest Number in an array",
+                source_code: "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/385",
+                output: ""
+            },
+            {
+                question: "18. Program to find Largest Number in an array",
+                source_code: "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/386",
+                output: ""
+            },
+            {
+                question: "19. Program to find 2nd Smallest Number in an array",
+                source_code: "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/387",
+                output: ""
+            },
+            {
+                question: "20. Program to find Smallest Number in an array",
+                source_code: "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/388",
+                output: ""
+            },
+            {
+                question: "21. Program to remove duplicate elements in an array",
+                source_code: "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/389",
+                output: ""
+            },
+            {
+                question: "22. Program to print odd and even numbers from an array",
+                source_code: "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/390",
+                output: ""
+            },
+            {
+                question: "23. How to sort an array in Java",
+                source_code: "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/391",
+                output: ""
+            }
+        ]
     };
 
     // Set Title
@@ -241,47 +273,102 @@
 
     const container = document.getElementById("quesList");
 
-    // Create Queries
+    // Create Questions
     topicData.questions.forEach((q, index) => {
-      const div = document.createElement("div");
-      div.className = "query-box";
 
-      div.innerHTML = `
-  <div class="query-title">
-    (${index + 1}) ${q.question}
-  </div>
+        const div = document.createElement("div");
+        div.className = "query-box";
 
-  <button onclick="toggleAnswer(${index})">
-    Show Answer
-  </button>
+        const title = document.createElement("div");
+        title.className = "query-title";
+        title.textContent = `(${index + 1}) ${q.question}`;
 
-  <div class="answer" id="answer-${index}">
-    <div class="answer-container">
+        const button = document.createElement("button");
+        button.textContent = "Show Answer";
+        button.onclick = () => toggleAnswer(index);
 
-      <div class="query-code">
-        <strong>source_code:</strong><br>
-        ${q.source_code}
-      </div>
+        const answer = document.createElement("div");
+        answer.className = "answer";
+        answer.id = `answer-${index}`;
 
-      <div class="output">
-        <strong>Output:</strong><br>
-        ${q.output}
-      </div>
+        const answerContainer = document.createElement("div");
+        answerContainer.className = "answer-container";
 
-    </div>
-  </div>
-`;
+        // Source Code Section
+        const codeDiv = document.createElement("div");
+        codeDiv.className = "query-code";
 
-      container.appendChild(div);
+        const codeTitle = document.createElement("strong");
+        codeTitle.textContent = "Source Code:";
+
+        codeDiv.appendChild(codeTitle);
+        codeDiv.appendChild(document.createElement("br"));
+
+        // Check whether source_code is a URL or Java code
+        if (q.source_code.startsWith("http")) {
+
+            const link = document.createElement("a");
+            link.href = q.source_code;
+            link.textContent = "Start Solving";
+            link.target = "_blank";
+            link.rel = "noopener noreferrer";
+
+            codeDiv.appendChild(link);
+
+        } else {
+
+            const pre = document.createElement("pre");
+            const code = document.createElement("code");
+
+            code.className = "language-java";
+            code.textContent = q.source_code;
+
+            pre.appendChild(code);
+            codeDiv.appendChild(pre);
+
+            // Apply Syntax Highlighting
+            hljs.highlightElement(code);
+        }
+
+        // Output Section
+        const outputDiv = document.createElement("div");
+        outputDiv.className = "output";
+
+        const outputTitle = document.createElement("strong");
+        outputTitle.textContent = "Output:";
+
+        const outputText = document.createElement("p");
+        outputText.textContent = q.output || "Output not added yet.";
+
+        outputDiv.appendChild(outputTitle);
+        outputDiv.appendChild(document.createElement("br"));
+        outputDiv.appendChild(outputText);
+
+        answerContainer.appendChild(codeDiv);
+        answerContainer.appendChild(outputDiv);
+
+        answer.appendChild(answerContainer);
+
+        div.appendChild(title);
+        div.appendChild(button);
+        div.appendChild(answer);
+
+        container.appendChild(div);
     });
 
     // Toggle Answer
     function toggleAnswer(index) {
-      const ans = document.getElementById(`answer-${index}`);
-      ans.style.display = ans.style.display === "block" ? "none" : "block";
+
+        const ans = document.getElementById(`answer-${index}`);
+
+        ans.style.display =
+            ans.style.display === "block" ? "none" : "block";
     }
 
-  </script>
+</script>
+</body>
+</html>
+
 
 </body>
 </html>
