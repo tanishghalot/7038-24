@@ -132,31 +132,7 @@
         {
   {
     question : "1. Program to copy all elements of one array into another array",
-    source_code : `package SingleD_array;
-
-class second_smallest_digit{
-	public static void main(String args[]){
-		int arr[] = {2,3,4,7,4,5,8};
-		int len = arr.length;
-		int s_index = 0;
-		int s_index_sec = -1;
-		for(int i=1;i<len;i++){
-			if(arr[i]<arr[s_index]){
-				s_index = i;
-			}
-		}
-		for(int j = 0;j<len;j++){
-			if(j == s_index){
-				continue;
-			}
-			else if(s_index_sec == -1 || arr[j] < arr[s_index_sec]){
-				s_index_sec = j;
-			}
-		}
-		System.out.print("The second smallest number in the array is:"+arr[s_index_sec]);
-	}
-}
-			`,
+    source_code : "",
     output : ""
 },
 {
