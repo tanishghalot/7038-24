@@ -1,582 +1,172 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <title>DBMS Practical</title>
 
-<title>Java Programming</title>
-
-<style>
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  <style>
+    body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #F3F4FA;
 }
 
-body {
-    font-family: 'Segoe UI', Arial, sans-serif;
-    background: #f4f7fb;
-    color: #1e293b;
+/* Header */
+.header {
+  text-align: center;
+  padding: 20px;
+  border: 3px solid #28345C;
+  border-radius: 15px;
+  margin: 20px;
+  font-size: 28px;
+  font-weight: bold;
+  background: #28345C;
+  color: #FFFFFF;
 }
 
-/* NAVBAR */
-.navbar {
-    background: #111827;
-    color: white;
-    padding: 18px 7%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.logo {
-    font-size: 23px;
-    font-weight: bold;
-}
-
-.logo span {
-    color: #38bdf8;
-}
-
-.navbar a {
-    color: #cbd5e1;
-    text-decoration: none;
-    margin-left: 25px;
-    font-size: 14px;
-}
-
-.navbar a:hover {
-    color: #38bdf8;
-}
-
-/* HERO */
-.hero {
-    background: linear-gradient(120deg, #172554, #0369a1);
-    color: white;
-    padding: 65px 8%;
-}
-
-.hero h1 {
-    font-size: 38px;
-    margin-bottom: 12px;
-}
-
-.hero p {
-    color: #dbeafe;
-    font-size: 16px;
-    max-width: 600px;
-    line-height: 1.7;
-}
-
-.hero .tag {
-    display: inline-block;
-    background: #ffffff20;
-    padding: 7px 14px;
-    border-radius: 20px;
-    margin-bottom: 18px;
-    font-size: 13px;
-}
-
-/* MAIN */
-.main {
-    padding: 40px 7%;
-}
-
-/* STATS */
-.stats {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-    margin-bottom: 40px;
-}
-
-.stat-box {
-    background: white;
-    padding: 22px;
-    border-radius: 12px;
-    border: 1px solid #e2e8f0;
-}
-
-.stat-box h2 {
-    color: #0284c7;
-    font-size: 27px;
-}
-
-.stat-box p {
-    color: #64748b;
-    margin-top: 5px;
-    font-size: 14px;
-}
-
-/* SECTION */
-.section-heading {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-.section-heading h2 {
-    font-size: 23px;
-}
-
-.section-heading p {
-    color: #64748b;
-    font-size: 14px;
-    margin-top: 5px;
-}
-
-/* SEARCH */
-.search {
-    width: 100%;
-    padding: 14px 17px;
-    border: 1px solid #cbd5e1;
-    border-radius: 9px;
-    font-size: 15px;
-    outline: none;
-    margin-bottom: 25px;
-}
-
-.search:focus {
-    border-color: #0284c7;
-}
-
-/* CATEGORY */
-.category {
-    margin-bottom: 40px;
-}
-
-.category-title {
-    font-size: 19px;
-    margin-bottom: 17px;
-    color: #334155;
-}
-
-/* CARDS */
+/* Card Container */
 .container {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  padding: 20px;
 }
 
+/* Card Design */
 .card {
-    display: block;
-    text-decoration: none;
-    color: inherit;
-    background: white;
-    padding: 23px;
-    border: 1px solid #e2e8f0;
-    border-radius: 13px;
-    transition: 0.25s;
+  background: #FFFFFF;
+  border: 2px solid #D6D9EA;
+  border-radius: 20px;
+  padding: 25px;
+  text-align: center;
+  cursor: pointer;
+  transition: 0.3s;
 }
 
 .card:hover {
-    transform: translateY(-5px);
-    border-color: #38bdf8;
-    box-shadow: 0 10px 25px #0f172a12;
+  background: #E8E5FF;
+  transform: scale(1.05);
 }
 
-.card-icon {
-    font-size: 27px;
-    margin-bottom: 14px;
-}
-
-.card h3 {
-    font-size: 17px;
-    margin-bottom: 9px;
+.card h2 {
+  margin: 10px 0;
+  color: #28345C;
 }
 
 .card p {
-    color: #64748b;
-    font-size: 13px;
-    line-height: 1.5;
+  color: #777B96;
+  font-size: 16px;
 }
-
-.card-bottom {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 20px;
-    font-size: 13px;
-}
-
-.count {
-    color: #0284c7;
-    font-weight: 600;
-}
-
-.arrow {
-    color: #0284c7;
-    font-size: 19px;
-}
-
-/* FOOTER */
-.footer {
-    text-align: center;
-    padding: 25px;
-    background: #111827;
-    color: #94a3b8;
-    font-size: 13px;
-}
-
-/* RESPONSIVE */
-@media(max-width: 900px) {
-    .container {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media(max-width: 600px) {
-    .container {
-        grid-template-columns: 1fr;
-    }
-
-    .stats {
-        grid-template-columns: 1fr;
-    }
-
-    .hero h1 {
-        font-size: 29px;
-    }
-
-    .navbar {
-        padding: 16px 5%;
-    }
-
-    .navbar a {
-        margin-left: 10px;
-        font-size: 12px;
-    }
-
-    .main {
-        padding: 30px 5%;
-    }
-}
-</style>
+  </style>
 </head>
-
 <body>
+	<div class = "header">DATABASE MANAGEMENT SYSTEM</div>
+	<div class = "container" id = "cardcontainer">
+		<a href="DDL.html">
+		<div class = "card">
+			<h2>Data Definition Language</h2>
+			<p>45 Queries</p>
+		</div>
+    </a>
+    <a href = "DML.HTML">	
+    <div class = "card">
+			<h2>Data Manipulation Language</h2>
+			<p>30 Queries</p>
+		</div></a>
+		<a href = "DQL.html">
+		<div class = "card">
+			<h2>Data Query Language</h2>
+			<p>10 Queries</p>
+		</div></a>
+    <a href="WHERE_CLAUSE.HTML">
+    <div class = "card">
+			<h2>where And Order by Clause</h2>
+			<p>54 Queries</p>
+		</div></a>
+    <a href="LIKE.HTML">	
+		<div class = "card">
+			<h2>PATTERN MATCHING Operator(LIKE)</h2>
+			<p>56 Queries</p>
+		</div>
+    <a href="GROUP_FUNCTION.HTML">
+    <div class = "card">
+			<h2>Group Function</h2>
+			<p>61 Queries</p>
+		</div></a>
+    <a href="SUBQUERY.HTML">
+    <div class = "card">
+			<h2>SUBQUERIES</h2>
+			<p>66 Queries</p>
+		</div></a>
+    <a href="SCALARR.HTML">
+    <div class = "card">
+			<h2>SCALAR FUNCTION</h2>
+			<p>32 Queries</p>
+		</div></a>
+    <a href="JOIN.HTML">
+    <div class = "card">
+			<h2>JOINS: INNER,CARTESIAN OR CROSS</h2>
+			<p>30 Queries</p>
+		</div></a>
+    
+    <a href="SETOP.HTML">
+		<div class = "card">
+			<h2>Set Operator</h2>
+			<p>25 Queries</p>
+		</div>
+    </a>
+    </a><a href="VIEW.HTML">			
+    <div class = "card">
+			<h2>View Tables</h2>
+			<p>20 Queries</p>
+		</div></a>
 
-<!-- NAVBAR -->
-<nav class="navbar">
-    <div class="logo">Java Programming</div>
-
-    <div>
-        <a href="#">Home</a>
-    </div>
-</nav>
-
-<!-- HERO -->
-<header class="hero">
-    <h1>PRACTICE QUESTIONS OF JAVA PROGRAMMING</h1>
-</header>
-
-<main class="main">
-
-    <!-- STATISTICS -->
-    <div class="stats">
-        <div class="stat-box">
-            <h2>13</h2>
-            <p>Total Practical Topics</p>
-        </div>
-
-        <div class="stat-box">
-            <h2>480</h2>
-            <p>Total Questions</p>
-        </div>
-    </div>
-
-    <!-- SEARCH -->
-    <div class="section-heading">
-        <div>
-            <h2>Explore Practicals</h2>
-            <p>Select a topic to start learning.</p>
-        </div>
-    </div>
-
-    <input
-        type="text"
-        class="search"
-        id="searchInput"
-        placeholder="Search topics... (e.g. Strings, Functions, Interface)"
-    >
-
-    <!-- SQL SECTION -->
-    <section class="category" id="sql">
-
-        <h3 class="category-title">Java Topics</h3>
-
-        <div class="container">
-
-            <a href="DDL.html" class="card">
-                <div class="card-icon">🗄️</div>
-                <h3>Single Dimension array</h3>
-                <p>Java programs to handle 1-D array.</p>
-                <div class="card-bottom">
-                    <span class="count">23</span>
-                    <span class="arrow">→</span>
-                </div>
-            </a>
-
-            <a href="DML.HTML" class="card">
-                <div class="card-icon">✏️</div>
-                <h3>Functions</h3>
-                <p>User defined and in-built functions of java.</p>
-                <div class="card-bottom">
-                    <span class="count">13</span>
-                    <span class="arrow">→</span>
-                </div>
-            </a>
-
-            <a href="DQL.html" class="card">
-                <div class="card-icon">🔍</div>
-                <h3>Strings</h3>
-                <p>Java Classes and functions for String manipulations.</p>
-                <div class="card-bottom">
-                    <span class="count">50</span>
-                    <span class="arrow">→</span>
-                </div>
-            </a>
-
-            <a href="WHERE_CLAUSE.HTML" class="card">
-                <div class="card-icon">📋</div>
-                <h3>Multi - Dimension Arrays</h3>
-                <p>Java classes handling 2-D arrays.</p>
-                <div class="card-bottom">
-                    <span class="count">13</span>
-                    <span class="arrow">→</span>
-                </div>
-            </a>
-
-            <a href="LIKE.HTML" class="card">
-                <div class="card-icon">🔎</div>
-                <h3>Basic Programming Constructs</h3>
-                <p>Simple to advance Java programs.</p>
-                <div class="card-bottom">
-                    <span class="count">139 Queries</span>
-                    <span class="arrow">→</span>
-                </div>
-            </a>
-
-            <a href="GROUP_FUNCTION.HTML" class="card">
-                <div class="card-icon">📊</div>
-                <h3>Interfaces</h3>
-                <p>Interfaces.</p>
-                <div class="card-bottom">
-                    <span class="count">11 Queries</span>
-                    <span class="arrow">→</span>
-                </div>
-            </a>
-
-            <a href="SUBQUERY.HTML" class="card">
-                <div class="card-icon">🧩</div>
-                <h3>Packages</h3>
-                <p>Write nested queries to solve complex problems.</p>
-                <div class="card-bottom">
-                    <span class="count">66 Queries</span>
-                    <span class="arrow">→</span>
-                </div>
-            </a>
-
-            <a href="SCALARR.HTML" class="card">
-                <div class="card-icon">⚙️</div>
-                <h3>Inheritance</h3>
-                <p>Use built-in functions to manipulate values.</p>
-                <div class="card-bottom">
-                    <span class="count">32 Queries</span>
-                    <span class="arrow">→</span>
-                </div>
-            </a>
-
-            <a href="JOIN.HTML" class="card">
-                <div class="card-icon">🔗</div>
-                <h3>Input/Output</h3>
-                <p>Combine data from multiple database tables.</p>
-                <div class="card-bottom">
-                    <span class="count">30 Queries</span>
-                    <span class="arrow">→</span>
-                </div>
-            </a>
-
-            <a href="SETOP.HTML" class="card">
-                <div class="card-icon">🔀</div>
-                <h3>Exception Handling</h3>
-                <p>Combine results using UNION and other operators.</p>
-                <div class="card-bottom">
-                    <span class="count">25 Queries</span>
-                    <span class="arrow">→</span>
-                </div>
-            </a>
-
-            <a href="VIEW.HTML" class="card">
-                <div class="card-icon">👁️</div>
-                <h3>Multi-Threading</h3>
-                <p>Create and manage virtual database tables.</p>
-                <div class="card-bottom">
-                    <span class="count">20 Queries</span>
-                    <span class="arrow">→</span>
-                </div>
-            </a>
-            <a href="VIEW.HTML" class="card">
-                <div class="card-icon">👁️</div>
-                <h3>Data Conversion</h3>
-                <p>Create and manage virtual database tables.</p>
-                <div class="card-bottom">
-                    <span class="count">20 Queries</span>
-                    <span class="arrow">→</span>
-                </div>
-            </a>
-             <a href="VIEW.HTML" class="card">
-                <div class="card-icon">👁️</div>
-                <h3>Object Oriented Programming</h3>
-                <p>Create and manage virtual database tables.</p>
-                <div class="card-bottom">
-                    <span class="count">20 Queries</span>
-                    <span class="arrow">→</span>
-                </div>
-            </a>
-
-        </div>
-    </section>
-
-    <!-- PL SQL SECTION -->
-    <section class="category" id="plsql">
-
-        <h3 class="category-title">02. PL/SQL Practicals</h3>
-
-        <div class="container">
-
-            <a href="PL_VAR.HTML" class="card">
-                <div class="card-icon">💻</div>
-                <h3>Variables & Datatypes</h3>
-                <p>Declare variables and display output in PL/SQL.</p>
-                <div class="card-bottom">
-                    <span class="count">22 Queries</span>
-                    <span class="arrow">→</span>
-                </div>
-            </a>
-
-            <a href="PL_IF.HTML" class="card">
-                <div class="card-icon">🔄</div>
-                <h3>Conditional Statements</h3>
-                <p>Use IF, IF-ELSIF and ELSE conditions.</p>
-                <div class="card-bottom">
-                    <span class="count">24 Queries</span>
-                    <span class="arrow">→</span>
-                </div>
-            </a>
-
-            <a href="LOOP.HTML" class="card">
-                <div class="card-icon">🔁</div>
-                <h3>PL/SQL Loops</h3>
-                <p>Practice basic, FOR and WHILE loops.</p>
-                <div class="card-bottom">
-                    <span class="count">23 Queries</span>
-                    <span class="arrow">→</span>
-                </div>
-            </a>
-
-            <a href="TYPE_ROWTYPE.HTML" class="card">
-                <div class="card-icon">📦</div>
-                <h3>%TYPE & %ROWTYPE</h3>
-                <p>Work with table column and row datatypes.</p>
-                <div class="card-bottom">
-                    <span class="count">17 Queries</span>
-                    <span class="arrow">→</span>
-                </div>
-            </a>
-
-            <a href="CURSOR.HTML" class="card">
-                <div class="card-icon">📂</div>
-                <h3>Cursors</h3>
-                <p>Retrieve and process rows using cursors.</p>
-                <div class="card-bottom">
-                    <span class="count">21 Queries</span>
-                    <span class="arrow">→</span>
-                </div>
-            </a>
-
-            <a href="STORED_PROCEDURE.HTML" class="card">
-                <div class="card-icon">⚡</div>
-                <h3>Stored Procedures</h3>
-                <p>Create reusable procedures in PL/SQL.</p>
-                <div class="card-bottom">
-                    <span class="count">9 Queries</span>
-                    <span class="arrow">→</span>
-                </div>
-            </a>
-
-            <a href="EXCEPT.HTML" class="card">
-                <div class="card-icon">⚠️</div>
-                <h3>Exception Handling</h3>
-                <p>Handle errors and runtime exceptions.</p>
-                <div class="card-bottom">
-                    <span class="count">17 Queries</span>
-                    <span class="arrow">→</span>
-                </div>
-            </a>
-
-            <a href="TRIGGER.HTML" class="card">
-                <div class="card-icon">🎯</div>
-                <h3>Triggers</h3>
-                <p>Execute automatic actions on database events.</p>
-                <div class="card-bottom">
-                    <span class="count">19 Queries</span>
-                    <span class="arrow">→</span>
-                </div>
-            </a>
-
-            <a href="PACKAGE.HTML" class="card">
-                <div class="card-icon">📚</div>
-                <h3>Packages</h3>
-                <p>Organize procedures and functions into packages.</p>
-                <div class="card-bottom">
-                    <span class="count">10 Queries</span>
-                    <span class="arrow">→</span>
-                </div>
-            </a>
-
-        </div>
-    </section>
-
-</main>
-
-<footer class="footer">
-    DBMS Practical Hub | Learn • Practice • Improve
-</footer>
-
-<!-- SEARCH FUNCTIONALITY -->
-<script>
-const searchInput = document.getElementById("searchInput");
-
-searchInput.addEventListener("input", function() {
-
-    let value = this.value.toLowerCase();
-
-    document.querySelectorAll(".card").forEach(card => {
-
-        let text = card.innerText.toLowerCase();
-
-        card.style.display = text.includes(value)
-            ? "block"
-            : "none";
-
-    });
-
-    document.querySelectorAll(".category").forEach(section => {
-
-        const cards = section.querySelectorAll(".card");
-
-        const visibleCards = [...cards].some(card =>
-            card.style.display !== "none"
-        );
-
-        section.style.display = visibleCards ? "block" : "none";
-    });
-
-});
-</script>
-
+    <a href="PL_VAR.HTML">
+    <div class = "card">
+			<h2>PLSQL : VARIABLE,DATATYPE,OUTPUT</h2>
+			<p>22 Queries</p>
+		</div></a>
+    <a href="PL_IF.HTML">
+    <div class = "card">
+			<h2>PLSQL : IF,IF-ELSIF,ELSE</h2>
+			<p>24 Queries</p>
+		</div></a>
+    <a href="LOOP.HTML">
+    <div class = "card">
+			<h2>PLSQL : LOOPS</h2>
+			<p>23 Queries</p>
+		</div></a>
+    <a href="TYPE_ROWTYPE.HTML">
+    <div class = "card">
+			<h2>%TYPE AND %ROWTYPE</h2>
+			<p>17 Queries</p>
+		</div></a>
+    <a href="CURSOR.HTML">
+    <div class = "card">
+			<h2>CURSORS</h2>
+			<p>21 Queries</p>
+		</div></a>
+     <a href="STORED_PROCEDURE.HTML">
+    <div class = "card">
+			<h2>STORED_PROCEDURE</h2>
+			<p>9 Queries</p>
+		</div></a>
+    <a href="EXCEPT.HTML">
+    <div class = "card">
+			<h2>EXCEPTION HANDLING</h2>
+			<p>17 Queries</p>
+		</div></a>
+    <a href="TRIGGER.HTML">
+    <div class = "card">
+			<h2>TRIGGERS</h2>
+			<p>19 Queries</p>
+		</div></a>
+	<a href="PACKAGE.HTML">
+    <div class = "card">
+			<h2>PACKAGES</h2>
+			<p>10 Queries</p>
+		</div></a>
+  </div>
 </body>
 </html>
+    
