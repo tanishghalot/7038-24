@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Java - Single Dimension Array</title>
+<title>Java - FUNCTIONS</title>
 
 <style>
 * {
@@ -152,7 +152,7 @@ pre {
 
 <!-- Topic Header -->
 <div class="header" id="SINGLED">
-    SINGLE DIMENSION ARRAY
+    FUNCTIONS
 </div>
 
 <!-- Questions -->
@@ -167,169 +167,190 @@ pre {
 
 const topicData = {
 
-    title: "SINGLE DIMENSION ARRAY",
+    title: "FUNCTIONS",
 
     queries: [
 
         {
-            question: "Program to copy all elements of one array into another array",
-            source_code: "",
-            output: "",
-            reference_url: ""
-        },
+            question: "1. Write a Java method to find the smallest number among three numbers.",
+            source_code: `package function;
 
-        {
-            question: "Program to find the frequency of each element in the array",
-            source_code: "",
-            output: "",
-            reference_url: "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/370"
-        },
+class Q1{
+	public static void main(String args[]){
+		int num1,num2,num3;
+		num1 = 3;
+		num2 = 8;
+		num3 = 5;
+		smallest_number(num1,num2,num3);
+	}
+	
+	public static void smallest_number(int num1,int num2,int num3){			
+		if(num1>num2){
+			if(num2>num3){
+				System.out.print("the smallest number is "+num3);
+			}
+			else{
+				System.out.print("the smallest number is "+num2);
+			}
+		}
+		else{
+			if(num1>num3){
+				System.out.print("the smallest number is "+num3);
+				}
+			else{
+				System.out.print("the smallest number is "+num1);
+			}
+		}
+	}
+}
+	   `,
+            output: `E:\Java\practical file\Functions_source>javac -d . Q1.java
 
-        {
-            question: "Program to left rotate the elements of an array",
-            source_code: "",
-            output: "",
-            reference_url: "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/371"
+E:\Java\practical file\Functions_source>java function.Q1
+the smallest number is 3`,
+            link: "https://c4knowledgeseekers.in/practice/core-java-programming/functions/449"
         },
-
         {
-            question: "Program to print the duplicate elements of an array",
-            source_code: "",
-            output: "",
-            reference_url: "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/372"
+            question: "2. Write a Java method to compute the average of three numbers.",
+            source_code: `package function;
+
+class Q2{
+	public static void main(String args[]){
+		int num1,num2,num3;
+		num1 = 3;
+		num2 = 8;
+		num3 = 5;
+		average(num1,num2,num3);
+	}
+	
+	public static void average(int num1,int num2,int num3){			
+		int avg;
+		avg = (num1+num2+num3)/3;
+		System.out.print("The average of three numbers is: "+avg);
+	}
+}
+	   ` ,
+            output: `E:\Java\practical file\Functions_source>javac -d . Q2.java
+
+E:\Java\practical file\Functions_source>java function.Q2
+The average of three numbers is: 5`,
+            link: "https://c4knowledgeseekers.in/practice/core-java-programming/functions/450"
         },
-
         {
-            question: "Program to print the elements of an array",
-            source_code: "",
-            output: "",
-            reference_url: "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/373"
+            question: "3. Write a Java method to display the middle character of a string. Note: If the length of the string is odd, there will be one middle character. If the length is even, there will be two middle characters.",
+            source_code: `package function;
+
+class Q3{
+	public static void main(String args[]){
+		String str;
+		str = "GOODMORNING";
+		display_midchar(str);
+	}
+	
+	public static void display_midchar(String str){			
+		int len = str.length();
+		if(len%2!=0){
+			int midchar_ind = len/2;
+			System.out.print(str.charAt(midchar_ind));
+		}
+		else{
+			int midchar_ind1 = len/2-1;
+			int midchar_ind2 = len/2;	
+			System.out.print(str.charAt(midchar_ind1) + str.charAt(midchar_ind2));
+		}
+		
+	}
+}
+	   `,
+            output: `E:\Java\practical file\Functions_source>javac -d . Q3.java
+
+E:\Java\practical file\Functions_source>java function.Q3
+O`,
+            link: "https://c4knowledgeseekers.in/practice/core-java-programming/functions/451"
         },
-
         {
-            question: "Program to print the elements of an array in reverse order",
-            source_code: "",
-            output: "",
-            reference_url: "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/374"
+            question: "4. Write a Java method to count all the words in a string.",
+            source_code: `package function;
+
+class Q4{
+	public static void main(String args[]){
+		String str;
+		str = "hey GOOD MORNING";
+		count_words(str);
+	}
+	
+	public static void count_words(String str){			
+		int len = str.length();
+		int count =1;
+		for(int i=0;i<len;i++){
+			if(str.charAt(i) == ' ' && i>0){
+				count++;
+			}  
+		}
+		System.out.print("The number of words in the string is : "+count);
+		
+	}
+}
+	   `,
+            output: `E:\Java\practical file\Functions_source>javac -d . Q4.java
+
+E:\Java\practical file\Functions_source>java function.Q4
+The number of words in the string is : 3`,
+            link: "https://c4knowledgeseekers.in/practice/core-java-programming/functions/452"
         },
-
         {
-            question: "Program to print the elements of an array present on even position",
+            question: "5. Write a Java method to compute the future investment value at a given interest rate for a specified number of years.",
             source_code: "",
             output: "",
-            reference_url: "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/375"
+            link: "https://c4knowledgeseekers.in/practice/core-java-programming/functions/453"
         },
-
         {
-            question: "Program to print the elements of an array present on odd position",
+            question: "6. Write a Java method to print characters between two characters (i.e. A to P).",
             source_code: "",
             output: "",
-            reference_url: "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/376"
+            link: "https://c4knowledgeseekers.in/practice/core-java-programming/functions/454"
         },
-
         {
-            question: "Program to print the largest element in an array",
+            question: "7. Write a Java method to check whether a string is a valid password.",
             source_code: "",
             output: "",
-            reference_url: "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/377"
+            link: "https://c4knowledgeseekers.in/practice/core-java-programming/functions/455"
         },
-
         {
-            question: "Program to print the smallest element in an array",
+            question: "8. Write a Java method to display the current date and time.",
             source_code: "",
             output: "",
-            reference_url: "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/378"
+            link: "https://c4knowledgeseekers.in/practice/core-java-programming/functions/456"
         },
-
         {
-            question: "Program to print the number of elements present in an array",
+            question: "9. Write a Java method to find all twin prime numbers less than 100.",
             source_code: "",
             output: "",
-            reference_url: "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/379"
+            link: "https://c4knowledgeseekers.in/practice/core-java-programming/functions/457"
         },
-
         {
-            question: "Program to print the sum of all the items of the array",
+            question: "10. Write a Java method to count the number of digits in an integer with the value 2. The integer may be assumed to be non-negative.",
             source_code: "",
             output: "",
-            reference_url: "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/380"
+            link: "https://c4knowledgeseekers.in/practice/core-java-programming/functions/458"
         },
-
         {
-            question: "Program to right rotate the elements of an array",
+            question: "11. Write a Java method that accepts three integers and checks whether they are consecutive or not. Returns true or false.",
             source_code: "",
             output: "",
-            reference_url: "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/381"
+            link: "https://c4knowledgeseekers.in/practice/core-java-programming/functions/459"
         },
-
         {
-            question: "Program to sort the elements of an array in ascending order",
+            question: "12. Write a Java method that accepts three integers and returns true if one is the middle point between the other two integers, otherwise false.",
             source_code: "",
             output: "",
-            reference_url: "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/382"
+            link: "https://c4knowledgeseekers.in/practice/core-java-programming/functions/460"
         },
-
         {
-            question: "Program to sort the elements of an array in descending order",
+            question: "13. Write a Java method that checks whether all the characters in a given string are vowels (a, e, i, o, u) or not. Return true if each character in the string is a vowel, otherwise return false.",
             source_code: "",
             output: "",
-            reference_url: "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/383"
-        },
-
-        {
-            question: "Program to find 3rd Largest Number in an array",
-            source_code: "",
-            output: "",
-            reference_url: "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/384"
-        },
-
-        {
-            question: "Program to find 2nd Largest Number in an array",
-            source_code: "",
-            output: "",
-            reference_url: "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/385"
-        },
-
-        {
-            question: "Program to find Largest Number in an array",
-            source_code: "",
-            output: "",
-            reference_url: "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/386"
-        },
-
-        {
-            question: "Program to find 2nd Smallest Number in an array",
-            source_code: "",
-            output: "",
-            reference_url: "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/387"
-        },
-
-        {
-            question: "Program to find Smallest Number in an array",
-            source_code: "",
-            output: "",
-            reference_url: "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/388"
-        },
-
-        {
-            question: "Program to remove duplicate elements in an array",
-            source_code: "",
-            output: "",
-            reference_url: "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/389"
-        },
-
-        {
-            question: "Program to print odd and even numbers from an array",
-            source_code: "",
-            output: "",
-            reference_url: "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/390"
-        },
-
-        {
-            question: "How to sort an array in Java",
-            source_code: "",
-            output: "",
-            reference_url: "https://c4knowledgeseekers.in/practice/core-java-programming/arrays/391"
+            link: "https://c4knowledgeseekers.in/practice/core-java-programming/functions/461"
         }
 
     ]
