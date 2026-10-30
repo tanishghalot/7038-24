@@ -54,62 +54,50 @@
       background: #6556B8;
     }
 
-    /* Answer Section */
-    .answer {
-      display: none;
-      margin-top: 15px;
-      border-top: 2px solid #D6D9EA;
-      padding-top: 10px;
-    }
+   /* Answer Section */
+.answer {
+  display: none;
+  margin-top: 15px;
+  border-top: 2px solid #D6D9EA;
+  padding-top: 10px;
+}
 
-    .answer-container {
-      display: flex;
-      gap: 20px;
-    }
+.answer-container {
+  display: block;
+}
 
-    .query-code {
-      width: 50%;
-      background: #F3F4FA;
-      padding: 10px;
-      border: 1px solid #D6D9EA;
-      border-radius: 5px;
-      font-family: monospace;
-      color: #28345C;
-    }
+.query-code {
+  width: auto;
+  background: #F3F4FA;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  font-family: monospace;
+  color: #28345C;
+  margin-bottom: 8px;
+  white-space: pre-wrap;
+}
 
-    .output {
-      width: 50%;
-      background: #F3F4FA;
-      padding: 10px;
-      border: 1px solid #D6D9EA;
-      border-radius: 5px;
-      font-family: monospace;
-      color: #28345C;
-    }
+.output {
+  width: auto;
+  background: #F3F4FA;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  font-family: monospace;
+  color: #6556B8;
+  white-space: pre-wrap;
+}
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      border-radius: 5px;
-    }
-
-    th, td {
-      border: 1px solid #C5C9DC;
-      border-radius: 5px;
-      padding: 6px;
-      text-align: center;
-      color: #28345C;
-    }
 
     /* Responsive */
-    @media (max-width: 700px) {
-      .answer-container {
-        flex-direction: column;
-      }
+   .answer-container {
+  flex-direction: column;
+}
 
-      .query-code, .output {
-        width: 100%;
-      }
+.query-code, .output {
+  width: 100%;
+}
     }
 </style>
 </head>
@@ -360,28 +348,30 @@ output : "Table EMP_HISTORY created and altered"
       div.className = "query-box";
 
       div.innerHTML = `
-        <div class="query-title">
-          (${index + 1}) ${q.question}
-        </div>
+  <div class="query-title">
+    (${index + 1}) ${q.question}
+  </div>
 
-        <button onclick="toggleAnswer(${index})">
-          Show Answer
-        </button>
+  <button onclick="toggleAnswer(${index})">
+    Show Answer
+  </button>
 
-        <div class="answer" id="answer-${index}">
-          <div class="answer-container">
-            
-            <div class="query-code">
-              ${q.sql}
-            </div>
+  <div class="answer" id="answer-${index}">
+    <div class="answer-container">
 
-            <div class="output">
-              ${q.output}
-            </div>
+      <div class="query-code">
+        <strong>SQL Query:</strong><br>
+        ${q.sql}
+      </div>
 
-          </div>
-        </div>
-      `;
+      <div class="output">
+        <strong>Output:</strong><br>
+        ${q.output}
+      </div>
+
+    </div>
+  </div>
+`;
 
       container.appendChild(div);
     });
