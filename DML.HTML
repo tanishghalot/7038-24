@@ -112,17 +112,17 @@
 <body>
 
   <!-- Topic Title -->
-  <div class="header" id="DML">
+  <div class="header" id="SINGLED">
     PL CURSORS
   </div>
 
   <!-- Query List -->
-  <div id="queryList"></div>
+  <div id="quesList"></div>
 
   <script>
     // SAMPLE DATA (EDIT THIS)
     const topicData = {
-      title: "DATA MANIPULATION LANGUAGE",
+      title: "SINGLED DIMENSION ARRAY",
       queries: [
         {
 question : "Insert a record into STUDENT table with values: SID = 101, SNAME = 'RAHUL', AGE = 20, COURSE = 'MCA'.",
@@ -425,9 +425,9 @@ output:`SQL> DELETE FROM EMP WHERE MGR IS NULL
     };
 
     // Set Title
-    document.getElementById("DML").innerText = topicData.title;
+    document.getElementById("SINGLED").innerText = topicData.title;
 
-    const container = document.getElementById("queryList");
+    const container = document.getElementById("quesList");
 
     // Create Queries
     topicData.queries.forEach((q, index) => {
