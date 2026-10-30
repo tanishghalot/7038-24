@@ -269,102 +269,50 @@ class SecondSmallestDigit {
     };
 
     // Set Title
-    document.getElementById("SINGLED").innerText = topicData.title;
+    document.getElementById("DDL").innerText = topicData.title;
 
-    const container = document.getElementById("quesList");
+    const container = document.getElementById("queryList");
 
-    // Create Questions
-    topicData.questions.forEach((q, index) => {
+    // Create Queries
+    topicData.queries.forEach((q, index) => {
+      const div = document.createElement("div");
+      div.className = "query-box";
 
-        const div = document.createElement("div");
-        div.className = "query-box";
+      div.innerHTML = `
+        <div class="query-title">
+          (${index + 1}) ${q.question}
+        </div>
 
-        const title = document.createElement("div");
-        title.className = "query-title";
-        title.textContent = `(${index + 1}) ${q.question}`;
+        <button onclick="toggleAnswer(${index})">
+          Show Answer
+        </button>
 
-        const button = document.createElement("button");
-        button.textContent = "Show Answer";
-        button.onclick = () => toggleAnswer(index);
+        <div class="answer" id="answer-${index}">
+          <div class="answer-container">
+            
+            <div class="query-code">
+              ${q.sql}
+            </div>
 
-        const answer = document.createElement("div");
-        answer.className = "answer";
-        answer.id = `answer-${index}`;
+            <div class="output">
+              ${q.output}
+            </div>
 
-        const answerContainer = document.createElement("div");
-        answerContainer.className = "answer-container";
+          </div>
+        </div>
+      `;
 
-        // Source Code Section
-        const codeDiv = document.createElement("div");
-        codeDiv.className = "query-code";
-
-        const codeTitle = document.createElement("strong");
-        codeTitle.textContent = "Source Code:";
-
-        codeDiv.appendChild(codeTitle);
-        codeDiv.appendChild(document.createElement("br"));
-
-        // Check whether source_code is a URL or Java code
-        if (q.source_code.startsWith("http")) {
-
-            const link = document.createElement("a");
-            link.href = q.source_code;
-            link.textContent = "Start Solving";
-            link.target = "_blank";
-            link.rel = "noopener noreferrer";
-
-            codeDiv.appendChild(link);
-
-        } else {
-
-            const pre = document.createElement("pre");
-            const code = document.createElement("code");
-
-            code.className = "language-java";
-            code.textContent = q.source_code;
-
-            pre.appendChild(code);
-            codeDiv.appendChild(pre);
-
-            // Apply Syntax Highlighting
-            hljs.highlightElement(code);
-        }
-
-        // Output Section
-        const outputDiv = document.createElement("div");
-        outputDiv.className = "output";
-
-        const outputTitle = document.createElement("strong");
-        outputTitle.textContent = "Output:";
-
-        const outputText = document.createElement("p");
-        outputText.textContent = q.output || "Output not added yet.";
-
-        outputDiv.appendChild(outputTitle);
-        outputDiv.appendChild(document.createElement("br"));
-        outputDiv.appendChild(outputText);
-
-        answerContainer.appendChild(codeDiv);
-        answerContainer.appendChild(outputDiv);
-
-        answer.appendChild(answerContainer);
-
-        div.appendChild(title);
-        div.appendChild(button);
-        div.appendChild(answer);
-
-        container.appendChild(div);
+      container.appendChild(div);
     });
 
     // Toggle Answer
     function toggleAnswer(index) {
-
-        const ans = document.getElementById(`answer-${index}`);
-
-        ans.style.display =
-            ans.style.display === "block" ? "none" : "block";
+      const ans = document.getElementById(`answer-${index}`);
+      ans.style.display = ans.style.display === "block" ? "none" : "block";
     }
 
-</script>
+  </script>
+
 </body>
 </html>
+
